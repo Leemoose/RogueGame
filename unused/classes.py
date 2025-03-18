@@ -1,5 +1,4 @@
-from items import Dagger, Sword, TwoHandedSword, BasicShield
-from items import Dagger, Sword, TwoHandedSword, BasicShield
+from items.items import Dagger, Sword, BasicShield
 from spell_implementation import TeleportOther, BurningAttack, Lullaby
 class PlayerClass():
     def __init__(self, name = "Class", items = [], spells = [], endurance = 0, intelligence = 0, dexterity = 0, strength = 0, description = ""):

@@ -1,7 +1,6 @@
 import random
 from .branch_params import branch_params
 from .item_initializations import ItemSpawns
-import items as I
 
 
 class ItemSpawner():

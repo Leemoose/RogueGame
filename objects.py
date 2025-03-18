@@ -94,27 +94,3 @@ class Tile(Objects):
             return(".")
         else:
             return("#")
-
-class Item(Objects):
-    def __init__(self, x=-1, y=-1, id_tag=-1, render_tag=-1, name=-1):
-        super().__init__(x, y, id_tag, render_tag, name)
-        self.equipable = False
-        self.dropable = True
-        self.consumeable = False
-        self.equipped = False
-        self.destroy = False
-        self.description = "Its a " + name + "."
-        self.stackable = False
-        self.yendorb = False
-        self.can_be_levelled = True
-        self.level = 1
-        self.attached_skill_exists = False
-        self.equipment_type = None
-        self.traits["item"] = True
-        self.rarity = "Common"
-
-    def get_string_description(self):
-        description = []
-        description.append(self.get_name())
-        description.append("Equipment Type " + str(self.equipment_type))
-        return description
