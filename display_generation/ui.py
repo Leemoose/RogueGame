@@ -95,19 +95,10 @@ class MessageBox(pygame_gui.elements.UITextBox):
     def __init__(self, rect, manager, loop):
         super().__init__(relative_rect=rect, manager=manager, html_text="Error")
         self.loop = loop #Store loop to retrieve messages
-        self.set_message()
 
     def update(self, time_delta: float):
-        if (self.loop.dirty_messages):
-            self.set_message()
-
+        self.set_text(html_text=self.loop.messages.get_message_display())
         return super().update(time_delta)
-    
-    def set_message(self):
-        text = "".join([message[0] + "<br>" for message in (self.loop.messages)])
-        text = text[:-3] #Remove last <br>
-        self.set_text(html_text=text)
-        self.loop.dirty_messages = False
 
 class DialogueButton(pygame_gui.elements.UIButton):
     def __init__(self, rect, manager, object_id, container, color=(252, 252, 252), text="...", left=False):

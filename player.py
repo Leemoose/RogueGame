@@ -1,9 +1,6 @@
 from objects import Objects
 from character_implementation import character as C, statistics, Body, Fighter
-import random
-import loops as L
 from navigation_utility import pathfinding
-import tiles as T
 import skills as S
 from spell_implementation import Mage
 from loop_workflow import LoopType
@@ -116,7 +113,7 @@ class Player(Objects):
         if self.character.can_take_action():
             self.character.energy -= self.character.action_costs[
                 "attack"]  # / (1.05**(self.character.dexterity + self.character.round_bonus())))
-            loop.screen_focus = (defender.x, defender.y)
+            #Set target to the defender
             damage = self.fighter.do_attack(defender, loop)
             self.statistics.add_attack_details(damage)
             loop.add_message(f"The player attacked for {damage} damage")

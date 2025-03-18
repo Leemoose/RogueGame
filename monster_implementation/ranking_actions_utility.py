@@ -80,14 +80,14 @@ def rank_pickup(ai, loop):
 def rank_move(ai, loop):
     return ai.randomize_action("move")
 
-def rank_stairs(ai, loop):
-    if loop.taking_stairs == True:
-        playerx, playery = loop.player.get_location()
-        monsterx, monstery = ai.parent.get_location()
-        if ai.parent.get_distance(playerx, playery) < 1.5 and loop.generator.tile_map.get_entity(playerx, playery).has_trait("stairs"):
-            ai.stairs_location = (playerx, playery)
-            return ai.randomize_action("stairs")
-    return -1
+# def rank_stairs(ai, loop):
+#     if loop.taking_stairs == True:
+#         playerx, playery = loop.player.get_location()
+#         monsterx, monstery = ai.parent.get_location()
+#         if ai.parent.get_distance(playerx, playery) < 1.5 and loop.generator.tile_map.get_entity(playerx, playery).has_trait("stairs"):
+#             ai.stairs_location = (playerx, playery)
+#             return ai.randomize_action("stairs")
+#     return -1
 
 def rank_flee(ai, loop):
     # print("Does this monster have the flee condition? {}".format(ai.parent.flee))

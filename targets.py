@@ -1,22 +1,48 @@
 
 class Target:
-    def __init__(self):
+    def __init__(self, parent):
+        self.parent = parent
+        self.target_coordinates = (0, 0)
         self.target_current = None
+
         self.index_to_cast = None
         self.skill_to_cast = None
         self.caster = None
         self.temp_cast = None
         self.quick_cast = False
 
-    def start_target(self, starting_target):
-        self.target_current = starting_target
 
-    def adjust(self, xdelta, ydelta, tile_map, loop):
-        if (tile_map.get_passable(self.target_current[0] + xdelta,self.target_current[1] + ydelta) and
-            tile_map.get_seen(self.target_current[0] + xdelta,self.target_current[1] + ydelta)):
-            x, y = self.target_current
-            self.target_current = (x+xdelta, y + ydelta)
-            loop.screen_focus = self.target_current
+    def set_target(self, target):
+        if target is None:
+            self.target_current = None
+            self.target_coordinates = (0, 0)
+        else:
+            x, y = target
+            if self.parent.generator.tile_map.in_map(x,y) and self.parent.generator.tile_map.get_visible(x,y):
+                if self.parent.generator.monster_map.get_has_entity(x, y):
+                    self.target_current = self.parent.generator.monster_map.get_entity(x, y)
+                elif self.parent.generator.item_map.get_has_entity(x, y):
+                    self.target_current = self.parent.generator.item_map.get_entity(x, y)
+                else:
+                    self.target_current = self.parent.generator.tile_map.get_entity(x, y)
+                self.target_coordinates = target
+
+    def set_item_target(self, item):
+        self.target_current = item
+
+
+    def get_target(self):
+        return self.target_current
+
+    def get_target_coordinates(self):
+        return self.target_coordinates
+
+    def adjust(self, xdelta, ydelta):
+        x, y = self.get_target_coordinates()
+        tile_map = self.parent.generator.tile_map
+        if (tile_map.get_passable(x + xdelta, y + ydelta) and
+            tile_map.get_seen(x + xdelta,y + ydelta)):
+            self.set_target((x+xdelta, y + ydelta))
 
 
     def store_skill(self, index_to_cast, skill_to_cast, caster, temp_cast = False, quick_cast=False):
@@ -72,23 +98,5 @@ class Target:
                     self.void_skill()
             else:
                 loop.add_message("Not a valid target there")
-            
 
-
-    def explain_target(self, loop):
-        x, y = self.target_current
-        monster_map = loop.generator.monster_map
-        item_map = loop.generator.item_map
-        tile_map = loop.generator.tile_map
-        if not tile_map.get_visible(x,y):
-            loop.add_message("You can't see that location")
-            return False
-        loop.add_message("That is a " + tile_map.get_entity(x,y).get_name() + " my friend")
-        if  monster_map.get_has_entity(x,y):
-            monster = monster_map.get_entity(x,y)
-            loop.add_message("And there is a " + monster.name + " inhabiting it" )
-        if  item_map.get_has_entity(x,y):
-            item = item_map.get_entity(x, y)
-            loop.add_message("There is a " + item.name + " there as well")
-        return True
 

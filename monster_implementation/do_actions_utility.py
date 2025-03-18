@@ -18,8 +18,6 @@ def do_flee(ai, loop):
         return
 
     update_target = False
-    if loop.screen_focus == (monster.x, monster.y):
-        update_target = True
 
     start = (monster.x, monster.y)
     end = (player.x, player.y)
@@ -40,7 +38,6 @@ def do_flee(ai, loop):
             loop.add_message(f"{monster} cowers in a corner since it can't run further.")
     if update_target:
         loop.add_target((monster.x, monster.y))
-        loop.screen_focus = (monster.x, monster.y)
 
 def do_ungroup(ai, loop):
     tile_map = loop.generator.tile_map
@@ -55,19 +52,12 @@ def do_ungroup(ai, loop):
         loop.add_message(f"{monster} is petrified and cannot move.")
         return
 
-    update_target = False
-    if loop.target_to_display == (monster.x, monster.y):
-        update_target = True
-
     if player.get_distance(monster.x, monster.y) <= 2.5:
         moves = ai.move_path
     if len(moves) > 1:
         xmove, ymove = moves.pop(1)
         monster.move(xmove - monster.x, ymove - monster.y, loop)
         ai.grouped = False
-    if update_target:
-        loop.add_target((monster.x, monster.y))
-
 def do_item_pickup(ai, loop):
     # print("Picking up item")
     item = loop.generator.item_map.get_entity(ai.parent.get_x(), ai.parent.get_y())
@@ -111,8 +101,7 @@ def do_move(ai, loop):
         return
 
     update_target = False
-    if loop.screen_focus == (monster.x, monster.y):
-        update_target = True
+
     if ai.target is not None:
         start = (ai.target.x, ai.target.y)
     else:
@@ -133,7 +122,7 @@ def do_move(ai, loop):
 
     if update_target:
         loop.add_target((monster.x, monster.y))
-        loop.screen_focus = (monster.x, monster.y)
+
 
 
 

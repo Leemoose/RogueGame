@@ -2,6 +2,7 @@
 WEAPONS
 """
 from .equipment import Equipment
+from skills import MagicMissile
 
 class Weapon(Equipment):
     def __init__(self, x=-1, y=-1, id_tag=-1, render_tag=-1, name="Unknown weapon", damage_min=0, damage_max=0,
@@ -379,7 +380,7 @@ class MagicWand(Weapon):
 
     def attached_skill(self, owner):
         self.attached_skill_exists = True
-        return S.MagicMissile(owner, self.magic_missile_cooldown,
+        return MagicMissile(owner, self.magic_missile_cooldown,
                               self.magic_missile_cost,
                               self.magic_missile_damage,
                               self.magic_missile_range,

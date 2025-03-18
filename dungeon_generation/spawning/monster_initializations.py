@@ -1,5 +1,5 @@
-import monster as M
-from .spawn_params import MonsterSpawnParams, BossSpawnParams
+from monsters import monster as M
+from .spawn_params import MonsterSpawnParams
 
 MonsterSpawns = []
 

@@ -110,7 +110,6 @@ class Keyboard():
                 if loop.generator.tile_map.get_passable(x_tile, y_tile):
                     loop.targets.target_current = (x_tile, y_tile)
                     loop.add_target((x_tile, y_tile))
-                    loop.screen_focus = (x_tile, y_tile)
                     loop.update_screen = True
             else:
                 return "return"

@@ -1,5 +1,6 @@
 from objects import Objects
-from items.items import ForestOrb, OceanOrb, YellowFlowerPetal
+from items.orb import *
+from items.items import YellowFlowerPetal
 
 class Interactable(Objects):
     def __init__(self, render_tag = 0, x=-1, y=-1, name="Interactable"):

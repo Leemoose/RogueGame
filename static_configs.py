@@ -289,6 +289,3 @@ class TileDict():
     def tile_string(self, key):
         return self.tiles[key]
 
-    def get_shaded_tile_string(self, key):
-        return self.tiles[key]
-

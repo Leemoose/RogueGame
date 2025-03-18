@@ -117,7 +117,7 @@ class Display:
         self.draw_player(loop)
         self.uiManager.draw_ui(self.win)
         self.update_mini_map(loop, mini_map_left_offset, mini_map_top_offset, mini_map_width, mini_map_height, num_tiles_wide, num_tiles_height)
-        self.draw_examine_window(loop, loop.screen_focus)
+        self.draw_examine_window(loop, loop.targets.get_target_coordinates())
         self.depth_label.update(1)
 
     def draw_single_entity(self, loop, entity):
@@ -325,7 +325,7 @@ class Display:
 
 
     def update_entity(self, loop, item_screen = True, create = False):
-        entity = loop.screen_focus
+        entity = loop.targets.get_target()
         tileDict = loop.tileDict
         player = loop.player
         if create == True:
@@ -522,13 +522,17 @@ class Display:
         self.win.blit(text, (25, 25))
 
     def draw_single_tile(self, loop, tile):
-        if tile.get_visible():
+        if tile.get_visible() or tile.get_seen():
             tag = loop.tileDict.tile_string(tile.get_render_tag())
-        elif tile.get_seen():
-            tag = loop.tileDict.get_shaded_tile_string(tile.get_render_tag())
-        else:
-            return
-        self.win.blit(tag, (self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)))
+            self.win.blit(tag, (
+            self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)))
+        if tile.get_seen() and not tile.get_visible():
+            black_img = pygame.Surface((32, 32))
+            black_img.fill([int(100)] * 3)
+            self.win.blit(black_img, (
+            self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)),
+                          special_flags=pygame.BLEND_RGB_MULT)
+
 
     def update_examine(self, target, loop):
         x, y = target

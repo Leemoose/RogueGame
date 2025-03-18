@@ -3,10 +3,9 @@ import items
 from dungeon_generation import mapping as M
 import player
 import targets as T
-import tiles as TI
 from navigation_utility import shadowcasting
-from unused.stars import GreenBuck
 from loop_utility import *
+from loop_workflow import MessageHandler
 
 from display_generation import *
 
@@ -25,13 +24,10 @@ class Loops():
     This is the brains of the game and after accepting an input from keyboard, will decide what needs to be done
     """
 
-    def __init__(self, textSize, tileDict, display, keyboard, dungeon_data):
+    def __init__(self, tileDict, display, keyboard, dungeon_data):
         self.display = display
         self.update_screen = True
         self.currentLoop = LoopType.none
-
-        self.textSize = textSize
-        self.screen_focus = None
 
         self.memory = Memory()
         self.tileDict = tileDict
@@ -39,16 +35,13 @@ class Loops():
         self.keyboard = keyboard
 
         self.generator = None  # Dungeon Generator
-        self.messages = []
-        self.dirty_messages = True  # ;)
-        self.targets = T.Target()
-        self.target_to_display = None
+        self.messages = MessageHandler()
 
-        self.screen_focus = None
+        self.targets = T.Target(self)
+
         self.current_stat = 0  # index of stat for levelling up
         self.timer = 0
 
-        self.taking_stairs = False
         self.npc_focus = None
         self.quest_recieved = False
         self.quest_completed = False
@@ -237,14 +230,12 @@ class Loops():
                 shadowcasting.compute_fov(self)
                 mos_x, mos_y = pygame.mouse.get_pos()
                 (x, y) = display.screen_to_tile(self.player, mos_x, mos_y)  # Get the tile the mouse is on
-                self.screen_focus = (x, y)
                 display.update_display(self)
             elif self.currentLoop == LoopType.items:
                 display.update_entity(self)
             elif self.currentLoop == LoopType.examine or self.currentLoop == LoopType.targeting:
-                self.screen_focus = self.targets.target_current
                 display.update_display(self)
-                display.update_examine(self.targets.target_current, self)
+                display.update_examine(self.targets.get_target_coordinates(), self)
             elif self.currentLoop == LoopType.specific_examine:
                 display.update_entity(self, item_screen=False, create=True)
         if self.player.quest_recieved == True:
@@ -280,7 +271,6 @@ class Loops():
 
 
     def change_floor(self):
-        self.taking_stairs = True
         playerx, playery = self.player.get_location()
         if self.player.character.energy < 0:
             self.time_passes(-self.player.character.energy)
@@ -301,7 +291,6 @@ class Loops():
             self.player.visited_stairs = []
             self.generator = new_generator
 
-        self.taking_stairs = False
 
     def init_game(self):
         self.player = player.Player(0, 0)
@@ -321,33 +310,14 @@ class Loops():
         self.player.y = y
 
 
-    def add_message(self, message, color = (255,255,255)):
-        if len(self.messages) >= 5:
-            self.messages.pop(0)
-        self.messages.append((message, color))
-        self.dirty_messages = True
-
-    def clear_message(self):
-        self.messages = []
-
-    def add_target(self, target):
-        self.prev_target = self.target_to_display
-        self.target_to_display = target
-
-    def void_target(self):
-        self.target_to_display = None
 
     def start_targetting(self, start_on_player=False):
         self.change_loop(LoopType.targeting)
         if start_on_player:
-            self.targets.start_target(self.player.get_location())
-            self.add_target(self.player.get_location())
-            self.screen_focus = self.player.get_location()
+            target = player
         else:
-            closest_monster = get_closest_monster(self)
-            self.targets.start_target(closest_monster.get_location())
-            self.add_target(closest_monster.get_location())
-            self.screen_focus = closest_monster.get_location()
+            target = get_closest_monster(self)
+        self.targets.set_target(target.get_location())
 
     def load_game(self):
         self.update_screen = False
@@ -360,10 +330,9 @@ class Loops():
     def clear_data(self):
         self.change_loop(LoopType.main)
         self.update_screen = True
-        self.screen_focus = None
         self.memory = Memory()
         self.generator = None
-        self.messages = []
+        self.messages.clear_message()
 
     def time_passes(self, time):
         self.timer += time
@@ -409,5 +378,14 @@ class Loops():
 
     def get_height(self):
         return self.generator.get_height()
+
+    def add_message(self, message, color = (255,255,255)):
+        self.messages.add_message(message, color)
+
+    def clear_message(self):
+        self.messages.clear_message()
+
+    def set_target(self, target):
+        self.targets.set_target(target)
 
 

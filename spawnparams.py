@@ -1,5 +1,5 @@
 import items as I
-import monster as M
+from monsters import monster as M
 import copy
 import random
 

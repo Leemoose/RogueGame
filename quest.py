@@ -1,5 +1,6 @@
 import items as I
-import monster as M
+from monsters import monster as M
+
 
 class Quest():
     def __init__(self, experience_given = 10, name = "Quest"):

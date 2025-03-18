@@ -9,3 +9,6 @@ from .ring import *
 from .pants import *
 from .shield import *
 from .amulet import *
+from .potion import *
+from .scroll import *
+from .book import *

@@ -4,91 +4,69 @@ def key_targeting_screen(loop, key):
     loop.update_screen = True
     targets = loop.targets
     if key == "up":
-        targets.adjust(0, -1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(0, -1)
+        
     elif key == "left":
-        targets.adjust(-1, 0, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(-1, 0)
+        
     elif key == "down":
-        targets.adjust(0, 1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(0, 1)
+        
     elif key == "right":
-        targets.adjust(1, 0, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(1, 0)
+        
     elif key == "y":
-        targets.adjust(-1, -1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(-1, -1)
+        
     elif key == "u":
-        targets.adjust(1, -1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(1, -1)
+        
     elif key == "b":
-        targets.adjust(-1, 1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(-1, 1)
+        
     elif key == "n":
-        targets.adjust(1, 1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(1, 1)
+        
     elif key == "esc":
         targets.void_skill()
-        loop.void_target()
+        loop.set_target(None)
         loop.player.inventory.ready_scroll = None
         loop.change_loop(LoopType.action)
     elif key == "return":
         targets.cast_on_target(loop)
         loop.change_loop(LoopType.action)
-        loop.void_target()
+        loop.set_target(None)
 
 def key_examine_screen(loop, key):
     loop.update_screen = True
     targets = loop.targets
     if key == "up":
-        targets.adjust(0, -1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(0, -1)
     elif key == "left":
-        targets.adjust(-1, 0, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(-1, 0)
     elif key == "down":
-        targets.adjust(0, 1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(0, 1)
     elif key == "right":
-        targets.adjust(1, 0, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(1, 0)
     elif key == "y":
-        targets.adjust(-1, -1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(-1, -1)
     elif key == "u":
-        targets.adjust(1, -1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(1, -1)
     elif key == "b":
-        targets.adjust(-1, 1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(-1, 1)
     elif key == "n":
-        targets.adjust(1, 1, loop.generator.tile_map, loop)
-        loop.add_target(targets.target_current)
+        targets.adjust(1, 1)
     elif key == "esc":
         targets.void_skill()
-        loop.void_target()
+        loop.set_target(None)
         loop.change_loop(LoopType.action)
     elif key == "return":
-        if targets.explain_target(loop):
-            x, y = targets.target_current
-            if loop.generator.monster_map.get_has_entity(x,y):
-                loop.screen_focus = loop.generator.monster_map.get_entity(x,y)
-                loop.change_loop(LoopType.specific_examine)
-            elif loop.generator.interact_map.get_has_entity(x,y):
-                loop.screen_focus = loop.generator.interact_map.get_entity(x, y)
-                loop.change_loop(LoopType.specific_examine)
-            elif loop.generator.item_map.get_has_entity(x,y):
-                loop.screen_focus = loop.generator.item_map.get_entity(x,y)
-                loop.change_loop(LoopType.specific_examine)
-            else:
-                loop.screen_focus = loop.generator.tile_map.get_entity(x,y)
-                loop.change_loop(LoopType.specific_examine)
+        loop.change_loop(LoopType.specific_examine)
 
 
 def key_specific_examine(loop, key):
     if key == "esc":
         loop.change_loop(LoopType.examine)
-        loop.screen_focus = loop.targets.target_current
 
 def key_help(loop, key):
     if key == "esc":
@@ -174,9 +152,8 @@ def key_action(loop, key):
         loop.add_message("The player waits.")
     elif key == 'x':
         loop.change_loop(LoopType.examine)
-        loop.targets.start_target(loop.player.get_location())
-        loop.add_target(loop.player.get_location())
-        loop.screen_focus = loop.targets.target_current
+        loop.targets.set_target(loop.player.get_location())
+        loop.set_target(loop.player.get_location())
         loop.update_screen = True
     elif key == "o":
         print(loop.generator.tile_map)
@@ -209,7 +186,6 @@ def key_action(loop, key):
                     loop.add_message("You can't cast " + player.mage.quick_cast_spells[skill_num].name + " right now.")
             else:
                 loop.start_targetting(start_on_player=(not player.mage.quick_cast_spells[skill_num].targets_monster))
-                loop.screen_focus = loop.targets.target_current
                 loop.targets.store_skill(skill_num, player.mage.quick_cast_spells[skill_num], player.character, quick_cast=True)
 
 def key_inventory(loop, key):
@@ -231,8 +207,9 @@ def key_inventory(loop, key):
 
     for i in range(len(player.inventory.get_limit_inventory())):
         if chr(ord("a") + i) == key:
-            loop.screen_focus = player.inventory.get_limit_inventory()[i]
+            loop.targets.set_item_target(player.get_inventory()[i])
             loop.change_loop(LoopType.items)
+
 
 
 def key_rest(loop, key):
@@ -365,7 +342,7 @@ def key_main_screen(loop, key):
 
 def key_item_screen(loop, key):
     player = loop.player
-    item = loop.screen_focus
+    item = loop.targets.get_target()
     item_map = loop.generator.item_map
     item_dict = None #Should not be used
     if key == "esc":
@@ -449,7 +426,6 @@ def key_spell_individual(loop, key):
                 loop.current_spell = None
         else:
             loop.start_targetting(start_on_player=(not player.mage.known_spells[skill_num].targets_monster))
-            loop.screen_focus = loop.targets.target_current
             loop.targets.store_skill(skill_num, player.mage.known_spells[skill_num], player.character)
             loop.current_spell = None
     elif key == "q":

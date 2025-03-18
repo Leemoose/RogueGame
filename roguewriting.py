@@ -28,7 +28,7 @@ dungeonData = DungeonData()
 
 display = Display(width, height, textSize, textWidth, textHeight)
 keyboard = K.Keyboard()
-loop = L.Loops(textSize, tileDict, display, keyboard, dungeonData)
+loop = L.Loops(tileDict, display, keyboard, dungeonData)
 
 player_turn = True
 loop.init_game()
