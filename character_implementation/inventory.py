@@ -1,13 +1,12 @@
 class Inventory():
-    def __init__(self, parent):
+    def __init__(self, parent, gold = 0):
         self.parent = parent
         self.inventory_limit = 18
         self.inventory = []
         self.orb_inventory = []
-        self.gold = 0
+        self.gold = gold
         self.ready_scroll = None # index of actively used scroll
         self.limit_inventory = "item"
-
         self.active_inventory = self.inventory
 
     def get_orb_inventory(self):
@@ -101,8 +100,7 @@ class Inventory():
         if len(self.inventory) != 0: #Seems unnecessary? Good to be safe...
             if item.equipable and item.equipped:
                 self.parent.unequip(item)
-            item.x = self.parent.x
-            item.y = self.parent.y
+            item.set_location(self.parent.get_x(), self.parent.get_y())
             item_map.place_thing(item)
             self.remove_item(item)
             return True

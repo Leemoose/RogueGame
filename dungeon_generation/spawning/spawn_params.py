@@ -52,14 +52,8 @@ class MonsterSpawnParams:
         for _ in range(depth):
             if (depth % 2 == 1):
                 copied.character.level_up(1,0,1,0)
-                copied.character.health = copied.character.max_health
-                copied.character.mana = copied.character.max_mana
             else:
                 copied.character.level_up(0,1,0,1)
-                copied.character.health = copied.character.max_health
-                copied.character.mana = copied.character.max_mana
-                
-
         return copied
     
 class BossSpawnParams(MonsterSpawnParams):

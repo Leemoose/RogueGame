@@ -71,17 +71,17 @@ def key_examine_screen(loop, key):
     elif key == "return":
         if targets.explain_target(loop):
             x, y = targets.target_current
-            if loop.generator.monster_map.track_map[x][y] != -1:
-                loop.screen_focus = loop.generator.monster_map.locate(x,y)
+            if loop.generator.monster_map.get_has_entity(x,y):
+                loop.screen_focus = loop.generator.monster_map.get_entity(x,y)
                 loop.change_loop(LoopType.specific_examine)
-            elif loop.generator.interact_map.track_map[x][y] != -1:
-                loop.screen_focus = loop.generator.interact_map.locate(x, y)
+            elif loop.generator.interact_map.get_has_entity(x,y):
+                loop.screen_focus = loop.generator.interact_map.get_entity(x, y)
                 loop.change_loop(LoopType.specific_examine)
-            elif loop.generator.item_map.track_map[x][y] != -1:
-                loop.screen_focus = loop.generator.item_map.locate(x,y)
+            elif loop.generator.item_map.get_has_entity(x,y):
+                loop.screen_focus = loop.generator.item_map.get_entity(x,y)
                 loop.change_loop(LoopType.specific_examine)
             else:
-                loop.screen_focus = loop.generator.tile_map.track_map[x][y]
+                loop.screen_focus = loop.generator.tile_map.get_entity(x,y)
                 loop.change_loop(LoopType.specific_examine)
 
 
@@ -104,7 +104,7 @@ def key_quest(loop, key):
 def key_death(loop, key):
     if key == "esc":
         loop.clear_data()
-        loop.init_game(loop.display)
+        loop.init_game()
 
 
 # Any actions done in the battle screen
@@ -132,7 +132,7 @@ def key_action(loop, key):
     elif key == "n":
         player.attack_move(1, 1, loop)
     elif key == "g": #This could be so much simpler to grab, should change to just checking if item at location
-        for item in loop.generator.item_map.all_entities():
+        for item in loop.generator.item_map.get_all_entities():
             if item.x == player.x and item.y == player.y:
                 player.do_grab(item, loop)
                 break
@@ -324,7 +324,6 @@ def key_equipment(loop, key):
         loop.change_loop(LoopType.inventory)
     elif key == "z":
         loop.player.inventory.change_limit_inventory("ring")
-        player.inventory.force_ring = 2  # equip to second slot
         loop.change_loop(LoopType.inventory)
     elif key == "w":
         loop.player.inventory.change_limit_inventory("helmet")
@@ -346,7 +345,6 @@ def key_equipment(loop, key):
         loop.change_loop(LoopType.inventory)
     elif key == "r":
         loop.player.inventory.change_limit_inventory("ring")
-        player.inventory.force_ring = 1
         loop.change_loop(LoopType.inventory)
 
 
@@ -361,7 +359,7 @@ def key_main_screen(loop, key):
     elif key == "s":
         loop.change_loop(LoopType.story)
     else:
-        loop.change_loop(LoopType.classes)
+        loop.change_loop(LoopType.action)
     return True
 
 
@@ -371,7 +369,6 @@ def key_item_screen(loop, key):
     item_map = loop.generator.item_map
     item_dict = None #Should not be used
     if key == "esc":
-        player.inventory.force_ring = -1
         if loop.player.inventory.limit_inventory == "item":
             loop.change_loop(LoopType.inventory)
         else:
@@ -402,7 +399,7 @@ def key_victory(loop, key):
     display = loop.display
     loop.change_loop(LoopType.main)
     loop.clear_data()
-    loop.init_game(display)
+    loop.init_game()
 
 
 def key_paused(loop, key):
@@ -412,7 +409,7 @@ def key_paused(loop, key):
     elif key == "m":
         loop.change_loop(LoopType.main)
         loop.clear_data()
-        loop.init_game(display)
+        loop.init_game()
     elif key == 's':
         loop.memory.keyboard =  loop.keyboard
         loop.memory.save_objects()
@@ -501,14 +498,14 @@ def key_binding(loop, key):
                 loop.add_message("The keys you have chosen are: " + messages)
     return True
 
-def key_classes(loop, key):
-    if key == "esc":
-        loop.change_loop(LoopType.main)
-    elif key == "return" and loop.class_selection != None:
-        loop.implement_class()
-        loop.change_loop(LoopType.action)
-    if key in ("1","2","3","4","5","6","7","8","9"):
-        classes = loop.get_available_classes()
-        if int(key) <= len(classes):
-            loop.class_selection = classes[int(key) - 1]
-        loop.change_loop(loop.currentLoop)
+# def key_classes(loop, key):
+#     if key == "esc":
+#         loop.change_loop(LoopType.main)
+#     elif key == "return" and loop.class_selection != None:
+#         loop.implement_class()
+#         loop.change_loop(LoopType.action)
+#     if key in ("1","2","3","4","5","6","7","8","9"):
+#         classes = loop.get_available_classes()
+#         if int(key) <= len(classes):
+#             loop.class_selection = classes[int(key) - 1]
+#         loop.change_loop(loop.currentLoop)

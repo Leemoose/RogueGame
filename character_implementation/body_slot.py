@@ -10,12 +10,7 @@ class Body():
                                 "hand_slot": [None, None]
                                 }
         self.parent = parent
-        self.force_ring = 1 # by default rings are equipped to slot 1
 
-
-        # queue to store rings in order they were equipped
-        # keep a backup so we can temporarily move a ring to the front of queue if coming from equip screen
-        self.ring_to_replace = []
 
     def can_equip(self, item):
         return True
@@ -23,7 +18,10 @@ class Body():
     def can_unequip(self, item):
         return True
 
-    def free_equipment_slots(self, slot):
+    def num_total_equipment_slots(self, slot):
+        return len(self.equipment_slots[slot])
+
+    def get_num_free_equipment_slots(self, slot):
         if slot not in self.equipment_slots:
             raise Exception("You are trying to find a {} in {}'s equipment slot".format(slot, self.parent.name))
         free_slots = 0
@@ -34,18 +32,11 @@ class Body():
 
     def add_item_to_equipment_slot(self, item, slot, num_slots):
         i = 0
-        max_check = len(self.equipment_slots[slot])
         for item_slot in range(len(self.equipment_slots[slot])):
             if self.equipment_slots[slot][item_slot] is None:
                 self.equipment_slots[slot][item_slot] = item
-                i += 1
-            if i >= num_slots:
-                break
-        if i >= num_slots:
-            return True
-        else:
-            print("Something has probably gone wrong with equipping if you reached this")
-            return False
+                return True
+        raise Exception("You failed to equip an item to an equipment slot")
 
     def remove_item_from_equipment_slot(self, item, slot, num_slots):
         i = 0
@@ -102,8 +93,7 @@ class Body():
             if item.attached_skill_exists:
                 self.parent.character.add_skill(item.attached_skill(self.parent))
             item.activate(self.parent)
-            if item.has_trait("ring"):
-                self.ring_to_replace.append(item)
+
 
     def unequip_current(self, item):
         if item.has_trait("weapon"):
@@ -116,21 +106,16 @@ class Body():
             if weapon and weapon.slots_taken > 1: # two handed weapon must be unequipped for a shield
                 self.unequip(weapon)
         elif item.has_trait("ring"):
-            if self.force_ring > 0:
-                next_to_remove = self.equipment_slots["ring_slot"][self.force_ring - 1]
-                self.unequip(next_to_remove)
-                if next_to_remove:
-                    self.ring_to_replace.remove(next_to_remove)
-            if item.slots_taken > self.free_equipment_slots("ring_slot"):
-                next_to_remove = self.ring_to_replace.pop(0)
-                self.unequip(next_to_remove)
-        else:
-            self.unequip(self.get_in_slot(item.get_slot()))
+            if self.num_free_equipment_slots("ring_slot") == 0:
+                self.unequip(self.get_items_in_equipment_slot("ring_slot")[0])
+                for slot in range(self.num_total_equipment_slots("ring_slot") - 1):
+                    self.equipment_slots["ring_slot"][slot] = self.equipment_slots["ring_slot"][slot + 1]
+                self.equipment_slots["ring_slot"][-1] = None
             
 
     def unequip(self, item):
         if item == None: # lets us call unequip with get_weapon
-            return
+            return False
         slot = item.get_slot()
         self.remove_item_from_equipment_slot(item, slot, item.slots_taken)
         item.dropable = True

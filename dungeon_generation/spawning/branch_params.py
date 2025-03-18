@@ -126,7 +126,7 @@ class BranchParams:
     # returns true on tiles that can be spawned on
     # def check_monster_restrictions(self, monster, tileMap, location, generator):
     #     return generator.get_passable(location)
-    check_monster_restrictions = None
+
         
 
 class DungeonParams(BranchParams):
@@ -194,14 +194,6 @@ class OceanParams(BranchParams):
         self.branch_name = "Ocean"
         self.seen = set()
 
-    def check_monster_restrictions(self, monster, tileMap, location, generator):
-        if monster.restriction == "deep water":    
-            if tileMap.track_map_render[location[0]][location[1]] != "dw":
-                return False
-            else:
-                return True
-            
-        return generator.get_passable(location)
 
 params_list = [DungeonParams(),
               ForestParams(),

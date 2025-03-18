@@ -8,9 +8,10 @@ import static_configs
 import warnings
 warnings.filterwarnings("ignore")
 
-#..random.seed(420)1
+#..random.seed(420)
 pygame.init()
 pygame.font.init()
+
 
 #Size of tiles
 textSize = 32
@@ -22,16 +23,15 @@ textWidth = int(width / textSize)
 textHeight = int(height / textSize)
 #dictionary mapping renderID to the image
 tileDict = static_configs.TileDict(textSize)
-ascaiiDict = static_configs.AscaiiTileDict()
 dungeonData = DungeonData()
 #Responsible for game loops
 
 display = Display(width, height, textSize, textWidth, textHeight)
 keyboard = K.Keyboard()
-loop = L.Loops(width, height, textSize, tileDict, display, keyboard, ascaiiDict, dungeonData)
+loop = L.Loops(textSize, tileDict, display, keyboard, dungeonData)
 
 player_turn = True
-loop.init_game(display)
+loop.init_game()
 loop.change_loop(L.LoopType.main)
 
 while player_turn:

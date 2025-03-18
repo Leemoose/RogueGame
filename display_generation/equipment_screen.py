@@ -117,7 +117,7 @@ def create_equipment(display, loop):
         button.action = ring_keys[i]
     
 
-    if player.body.free_equipment_slots("amulet_slot") != 0:
+    if player.body.get_num_free_equipment_slots("amulet_slot") != 0:
         available_slot = False
         for item in player.get_inventory():
             if item.equipment_type == "Amulet":
@@ -146,7 +146,7 @@ def create_equipment(display, loop):
     display.draw_on_button(button, img, "a", (medium_button_width, medium_button_height))
     button.action = 'a'
 
-    if player.body.free_equipment_slots("helmet_slot") != 0:
+    if player.body.get_num_free_equipment_slots("helmet_slot") != 0:
         available_slot = False
         for item in player.get_inventory():
             if item.equipment_type == "Helmet":
@@ -174,7 +174,7 @@ def create_equipment(display, loop):
     display.draw_on_button(button, img, "w", (medium_button_width, medium_button_height))
     button.action = 'w'
 
-    if player.body.free_equipment_slots("body_armor_slot") != 0:
+    if player.body.get_num_free_equipment_slots("body_armor_slot") != 0:
         available_slot = False
         for item in player.get_inventory():
             if item.equipment_type == "Body Armor":
@@ -203,7 +203,7 @@ def create_equipment(display, loop):
     display.draw_on_button(button, img, "s", (medium_button_width, medium_button_height))
     button.action = 's'
 
-    if player.body.free_equipment_slots("boots_slot") != 0:
+    if player.body.get_num_free_equipment_slots("boots_slot") != 0:
         available_slot = False
         for item in player.get_inventory():
             if item.equipment_type == "Boots":
@@ -271,7 +271,7 @@ def create_equipment(display, loop):
     display.draw_on_button(button, img, "d", (medium_button_width, medium_button_height), shrink=True)
     button.action = 'd'
 
-    if player.body.free_equipment_slots("gloves_slot") != 0:
+    if player.body.get_num_free_equipment_slots("gloves_slot") != 0:
         available_slot = False
         for item in player.get_inventory():
             if item.equipment_type == "Gloves":
@@ -302,7 +302,7 @@ def create_equipment(display, loop):
     display.draw_on_button(button, img, "c", (medium_button_width, medium_button_height))
     button.action = 'c'
 
-    if player.body.free_equipment_slots("pants_slot") != 0:
+    if player.body.get_num_free_equipment_slots("pants_slot") != 0:
         available_slot = False
         for item in player.get_inventory():
             if item.equipment_type == "Pants":

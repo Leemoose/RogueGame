@@ -41,7 +41,7 @@ class MassFear(Spell):
         self.duration = duration
 
     def activate(self, target, loop):
-        for monster in loop.generator.monsters_in_sight():
+        for monster in loop.generator.get_monsters_in_sight():
             print("When trying to do the mass fear effect, {} is in sight".format(monster))
             effect = E.Fear(self.duration, self.parent)
             monster.character.add_status_effect(effect)

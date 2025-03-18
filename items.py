@@ -1688,7 +1688,7 @@ class HealthPotion(Potion):
         self.rarity = "Common"
 
     def activate_once(self, entity):
-        entity.character.gain_health(20 + (entity.character.get_max_health() // 10))
+        entity.character.change_health(20 + (entity.character.get_max_health() // 10))
 
 class MightPotion(Potion):
     def __init__(self, render_tag = 404):
@@ -1754,7 +1754,7 @@ class ManaPotion(Potion):
         self.rarity = "Common"
 
     def activate_once(self, entity):
-        entity.character.gain_mana(20 + (entity.character.max_mana // 10))
+        entity.character.change_mana(20 + (entity.character.max_mana // 10))
 
 class EnchantScrorb(Scroll):
     def __init__(self, render_tag):
@@ -1950,7 +1950,7 @@ class YellowFlowerPetal(Consumeable):
         self.rarity = "Common"
 
     def activate_once(self, entity):
-        entity.character.gain_health(5 + (entity.character.get_max_health() // 50))
+        entity.character.change_health(5 + (entity.character.get_max_health() // 50))
 
 
 

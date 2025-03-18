@@ -78,7 +78,7 @@ def astar_multi_goal(maze, start, goals, monster_map, player, monster_blocks = F
             return path # Return reversed path
 
         # Make sure walkable terrain
-        if monster_blocks == True and (not monster_map.get_passable(current_position[0],current_position[1])): # and not start == (node_position[0],node_position[1])):
+        if monster_blocks == True and (not monster_map.get_has_no_entity(current_position[0],current_position[1])): # and not start == (node_position[0],node_position[1])):
             continue
         if player_blocks == True and (player.x == current_position[0] and player.y == current_position[1]):
             continue

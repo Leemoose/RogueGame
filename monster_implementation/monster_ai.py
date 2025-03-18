@@ -3,23 +3,10 @@ from .ranking_actions_utility import *
 
 class Monster_AI():
     def __init__(self, parent):
-        self.frontier = None
-        self.is_awake = False
         self.parent = parent
         self.grouped = False
         self.target = None
         self.stairs_location = None
-        self.old_key = None
-
-        self.personality = {"Goblin": 0,
-                            "Kobold": 0,
-                            "Player": -90,
-                            "Hobgoblin": -10,
-                            "Gargoyle": 10,
-                            "Orc": -100,
-                            "Golem": 50,
-                            "Slime": 50
-                            }
 
         # first number is average, second is spread
         self.tendencies = {"combat": (90, 10),
@@ -37,13 +24,10 @@ class Monster_AI():
         self.options = {"combat": (rank_combat, do_combat),
                         "pickup": (rank_pickup, do_item_pickup),
                         "find_item": (rank_find_item, do_find_item),
-                        "equip": (rank_equip_item, do_equip),  # need to be fixed
-                        "consume": (rank_use_consumeable, do_use_consumeable),
                         "move": (rank_move, do_move),
                         "ungroup": (rank_ungroup, do_ungroup),
-                        "skill": (rank_skill, do_skill),
                         "flee": (rank_flee, do_flee),
-                        "stairs": (rank_stairs, do_stairs),
+                       # "stairs": (rank_stairs, do_stairs),
                         }
 
     """
@@ -66,6 +50,7 @@ class Monster_AI():
         self.parent.character.energy -= 1
         # print(f"{ai.parent} is doing {called_function} with utility {max_utility}")
         self.options[called_function][1](self,loop)
+
     def change_tendency(self, type, new_value):
         if type in self.tendencies:
             self.tendencies[type] = new_value
@@ -97,9 +82,6 @@ class Goblin_AI(Monster_AI):
                            "flee": (105, 10),
                            "stairs": (-1, 0)
                            }
-
-        self.personality["Goblin"] =  100
-
 class Stumpy_AI(Monster_AI):
     def __init__(self, parent):
         super().__init__(parent)
@@ -154,32 +136,5 @@ class Insect_Nest_AI(Monster_AI):
                            }
         # what it can actually do
         self.options = {"nothing":(rank_nothing, do_nothing)}
-
-
-class Friendly_AI(Monster_AI):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.tendencies = {"combat": (80, 10),
-                           "pickup": (-1, 0),
-                           "find_item": (-1, 0),
-                           "equip": (-1, 0),
-                           "consume": (-1, 0),
-                           "move": (40, 20),
-                           "ungroup": (-1, 0),
-                           "skill": (-1, 0),
-                           "flee": (-1, 0),
-                           "stairs": (100, 10)
-                           }
-
-        self.personality = {"Goblin": -100,
-                            "Kobold": -100,
-                            "Player": 100,
-                            "Hobgoblin": -100,
-                            "Gargoyle": -100,
-                            "Orc": -100,
-                            "Golem": -100,
-                            "Slime": -100,
-                            "Stumpy": -100
-                            }
 
 

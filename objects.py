@@ -28,6 +28,32 @@ class Objects():
     def get_distance(self, x, y):
         return ((self.x - x)**2 + (self.y - y)**2)**(1/2)
 
+    def get_render_tag(self):
+        return self.render_tag
+
+    def get_id_tag(self):
+        return self.id_tag
+
+    def get_x(self):
+        return self.x
+
+    def get_y(self):
+        return self.y
+
+    def get_name(self):
+        return self.name
+
+    def get_is_in_square(self, x_start, x_end, y_start, y_end):
+        if self.get_x() >= x_start and self.get_x() < x_end and self.get_y()>= y_start and self.get_y() < y_end:
+            return True
+        else:
+            return False
+
+    def set_location(self, x, y):
+        self.x = x
+        self.y = y
+
+
 class Tile(Objects):
     def __init__(self, x, y, render_tag = 0, passable = False, blocks_vision = True, id_tag = 0, type = None, walkable = False):
         super().__init__(x, y, id_tag, render_tag, "Tile")
@@ -42,10 +68,13 @@ class Tile(Objects):
 
         self.effect = []
 
-    def is_visible(self):
+    def get_visible(self):
         return self.visible
 
-    def is_seen(self):
+    def set_seen(self, seen):
+        self.seen = seen
+
+    def get_seen(self):
         return self.seen
 
     def is_passable(self):
@@ -83,3 +112,9 @@ class Item(Objects):
         self.equipment_type = None
         self.traits["item"] = True
         self.rarity = "Common"
+
+    def get_string_description(self):
+        description = []
+        description.append(self.get_name())
+        description.append("Equipment Type " + str(self.equipment_type))
+        return description

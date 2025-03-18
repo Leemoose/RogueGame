@@ -28,8 +28,6 @@ class ID():
             raise Exception("You should not be passing a id not in the subjects (id = {}).".format(key))
 
     def remove_subject(self, key):
-        print("Item Dictionary:")
-        print("You are trying to remove key {} from item dictionary".format(key))
         if key in self.subjects:
             return self.subjects.pop(key)
         elif key == -1:

@@ -1,13 +1,12 @@
 
-from loop_workflow import *
 import items
 from dungeon_generation import mapping as M
 import player
 import targets as T
 import tiles as TI
 from navigation_utility import shadowcasting
-from character_implementation.classes import Rogue, Warrior, Mage
-from stars import GreenBuck
+from unused.stars import GreenBuck
+from loop_utility import *
 
 from display_generation import *
 
@@ -26,22 +25,16 @@ class Loops():
     This is the brains of the game and after accepting an input from keyboard, will decide what needs to be done
     """
 
-    def __init__(self, width, height, textSize, tileDict, display, keyboard, ascaii_data, dungeon_data):
+    def __init__(self, textSize, tileDict, display, keyboard, dungeon_data):
         self.display = display
         self.update_screen = True
         self.currentLoop = LoopType.none
 
-        self.width = width
-        self.height = height
         self.textSize = textSize
-        self.items = False
         self.screen_focus = None
-        self.floor_level = 0
-        self.branch = ""
+
         self.memory = Memory()
-        self.tile_map = None
         self.tileDict = tileDict
-        self.ascii_data = ascaii_data
         self.dungeon_data = dungeon_data
         self.keyboard = keyboard
 
@@ -54,14 +47,11 @@ class Loops():
         self.screen_focus = None
         self.current_stat = 0  # index of stat for levelling up
         self.timer = 0
-        self.total_time = 0
-        self.day = "Daytime"
+
         self.taking_stairs = False
         self.npc_focus = None
-        self.class_selection = None
         self.quest_recieved = False
         self.quest_completed = False
-        self.stars = [GreenBuck()]
 
         # variables for npc interaction
         self.next_dialogue = False # if true, give next dialogue box
@@ -70,7 +60,6 @@ class Loops():
 
         # variables for pathing
         self.rest_count = 0 # how many turns have you been resting for
-        self.after_rest = LoopType.action # what loop type to revert to after finishing resting, default action
         self.pathing_count = 0 # how many turns have you been exploring for
         dummy_function = (lambda x: False)
         self.after_pathing = dummy_function
@@ -136,7 +125,6 @@ class Loops():
                                        LoopType.pathing: key_explore,
                                        LoopType.spell: key_spell,
                                        LoopType.binding: key_binding,
-                                       LoopType.classes: key_classes,
                                        LoopType.spell_individual: key_spell_individual,
                                        LoopType.quickcast: key_quickselect
                                        }
@@ -146,13 +134,8 @@ class Loops():
     # Sets the internal loop type, and does the initialization that it needs.
     # Mostly here to cache UI pieces, which shouldn't be remade every frame.
     def change_loop(self, newLoop):
-        loop_type_mapping = {"victory": LoopType.victory,
-                             "action": LoopType.action,
-                             "trade": LoopType.trade,
-                             "inventory":LoopType.inventory,
-                             "enchant": LoopType.enchant}
-        if newLoop in loop_type_mapping:
-            newLoop = loop_type_mapping[newLoop]
+        if newLoop in get_loop_mapping_from_string():
+            newLoop = get_loop_mapping_from_string()[newLoop]
         # self.clear_message()
         self.currentLoop = newLoop
         self.update_screen = True
@@ -167,60 +150,43 @@ class Loops():
         :param keyboard:
         :return: None (will do a keyboard action)
         """
-        action = None
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
             elif event.type == pygame.KEYDOWN or (event.type == pygame_gui.UI_BUTTON_PRESSED and hasattr(event.ui_element, "action")):
-                key = None
                 if event.type == pygame.KEYDOWN:
                     if event.mod == pygame.KMOD_NONE:
-                        key = keyboard.key_string(event.key, False)
+                        keyboard.set_next_key(keyboard.get_key_binding(event.key, False))
                     elif event.mod & pygame.KMOD_SHIFT and event.key:
-                        key = keyboard.key_string(event.key, True)
-                    while keyboard.key_bindings.has_queue():
-                        key = keyboard.key_bindings.next_key()
-                        if self.currentLoop in self.action_options:
-                            if key != None and self.action_options[self.currentLoop](self, key) == False:
-                                return False
-
+                        keyboard.set_next_key(keyboard.get_key_binding(event.key, True))
                 else:
                     if hasattr(event.ui_element, "row"):
                         if event.ui_element.row != None:
                             self.current_stat = event.ui_element.row
-                    key = event.ui_element.action
-
-                if self.currentLoop in self.action_options:
-                  #  print(key)
-                    if key != None and self.action_options[self.currentLoop](self,key) == False:
-                        return False
-
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+                    keyboard.set_next_key(event.ui_element.action)
+            elif event.type == pygame.MOUSEBUTTONUP:
                 x, y = pygame.mouse.get_pos()
                 x_tile, y_tile = display.screen_to_tile(self.player, x, y)
                 if (self.currentLoop == LoopType.action):
-                    keyboard.action_mouse_to_keyboard(self, x_tile, y_tile)
+                    keyboard.set_next_key(keyboard.get_key_from_mouse(self, x_tile, y_tile))
                 elif (self.currentLoop == LoopType.targeting):
                     keyboard.targetting_mouse_to_keyboard(self,x_tile,y_tile)
-
-            elif event.type == pygame.MOUSEBUTTONUP:
-                x, y = pygame.mouse.get_pos()
-                self.update_screen = True
-
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pass
             elif event.type == pygame.VIDEORESIZE:
                 self.display.update_sizes()
                 self.update_screen = True
                 self.change_loop(self.currentLoop)
+            while keyboard.get_has_queue():
+                key = keyboard.get_next_key()
+                if self.currentLoop in self.action_options:
+                    if key != None and self.action_options[self.currentLoop](self, key) == False:
+                        return False
 
             self.update_screen = True
-
             display.uiManager.process_events(event)
 
         if self.currentLoop == LoopType.action:
-            if self.rest_count != 0:
-                # print(f"Rested for {self.rest_count} turns.")
-                self.rest_count = 0
-
             if self.pathing_count != 0:
                 # print(f"Explored for {self.pathing_count} turns.")
                 self.pathing_count = 0
@@ -231,36 +197,20 @@ class Loops():
 
                 # clear path if we go back to action
                 self.player.path = []
-            
-            # if self.stairs_count != 0:
-            #     # print(f"Pathed to stairs for {self.stairs_count} turns")
-            #     self.stairs_count = 0
 
-        # check autoexplore and rest
-        if self.currentLoop == LoopType.resting:
-            self.player.character.rest(self, self.after_rest)
-            self.rest_count += 1
-        if self.currentLoop == LoopType.pathing:
+        elif self.currentLoop == LoopType.resting:
+            self.player.character.rest(self, LoopType.action)
+        elif self.currentLoop == LoopType.pathing:
             self.player.autopath(self)
             self.pathing_count += 1
             self.time_passes(100)
-            # uncomment this to closely follow pathing
-            # import time
-            # time.sleep(0.2)
-        # if self.currentLoop == LoopType.stairs:
-        #     self.player.find_stairs(self)
-        #     self.stairs_count += 1
-            # uncomment this to closely follow pathing
-            # import time
-            # time.sleep(0.2)
-
 
         if self.player.character.energy < 0:
             self.time_passes(-self.player.character.energy)
             self.monster_loop(-self.player.character.energy)
             self.player.character.energy = 0
 
-        if not self.player.character.is_alive() and not self.player.character.invincible and not self.player.invincible:
+        if not self.player.character.is_alive() and not self.player.character.invincible:
             if (self.currentLoop != LoopType.death):
                 self.change_loop(LoopType.death)
 
@@ -268,132 +218,68 @@ class Loops():
         display.update_ui()
         return True
 
-    def get_daytime(self):
-        return self.day
-    def monster_loop(self, energy, stairs = None):
-        
-        for monster in self.generator.monster_map.all_entities():
-            if monster.character.alive:
-                # do status effect stuff
-                if self.generator.tile_map.track_map[monster.x][monster.y].seen:
-                    monster.brain.is_awake = True
-
-                # do action stuff
-                if monster.brain.is_awake and not monster.asleep:
+    def monster_loop(self, energy):
+        for monster in self.generator.monster_map.get_all_entities():
+            if monster.character.is_alive():
+                if monster.get_is_awake():
                     monster.character.energy += energy
                     while monster.character.energy > 0:
                         monster.brain.rank_actions(self)
-
-        if len(self.generator.summoner) > 0:
-            for generation in self.generator.summoner:
-                placement = self.generator.nearest_empty_tile((generation[1], generation[2]))
-                if placement != None:
-                    self.generator.place_monster_at_location(generation[0], placement[0], placement[1])
-                else:
-                    self.add_message("The summoning fizzled.")
-            self.generator.summoner = []
+                elif self.generator.tile_map.get_seen(monster.x, monster.y):
+                    monster.character.status.set_awake(True)
 
     def render_screen(self, display):
         if self.currentLoop in self.update_display_options:
             self.update_display_options[self.currentLoop](self)
         else:
-            if self.currentLoop == LoopType.action:
+            if self.currentLoop == LoopType.action or self.currentLoop == LoopType.resting or self.currentLoop == LoopType.pathing:
                 self.clean_up()
                 shadowcasting.compute_fov(self)
-                display.update_display(self)
                 mos_x, mos_y = pygame.mouse.get_pos()
-                (x, y) = display.screen_to_tile(self.player, mos_x, mos_y)
-                draw_screen_focus = True
-                if self.generator.tile_map.in_map(x, y):
-                    if self.generator.tile_map.track_map[x][y].visible and self.generator.tile_map.get_passable(x,
-                                                                                                                y) and (
-                            (not self.generator.monster_map.get_passable(x, y)) or (
-                    not self.generator.item_map.get_passable(x, y))):
-                        # print(self.generator.monster_map.get_passable(x,y), self.generator.item_map.get_passable(x,y))
-                        display.draw_examine_window((x, y), self)
-                        draw_screen_focus = False
-                if draw_screen_focus:
-                    if self.screen_focus != None:
-                        clear_target = display.draw_examine_window(self.screen_focus, self)
-                        if clear_target:
-                            self.screen_focus = None
+                (x, y) = display.screen_to_tile(self.player, mos_x, mos_y)  # Get the tile the mouse is on
+                self.screen_focus = (x, y)
+                display.update_display(self)
             elif self.currentLoop == LoopType.items:
                 display.update_entity(self)
-            elif (self.currentLoop == LoopType.resting or self.currentLoop == LoopType.pathing):
-                self.clean_up()
-                shadowcasting.compute_fov(self)
-                if self.render_exploration:
-                    display.update_display(self)
             elif self.currentLoop == LoopType.examine or self.currentLoop == LoopType.targeting:
+                self.screen_focus = self.targets.target_current
                 display.update_display(self)
-                mos_x, mos_y = pygame.mouse.get_pos()
-                (x, y) = display.screen_to_tile(self.player, mos_x, mos_y)
-                self.draw_screen_focus = True
-                if self.generator.tile_map.in_map(x, y):
-                    if self.generator.tile_map.track_map[x][y].visible and self.generator.tile_map.get_passable(x, y) and (
-                            (not self.generator.monster_map.get_passable(x, y)) or (
-                    not self.generator.item_map.get_passable(x, y))):
-                        display.draw_examine_window((x, y), self)
-                        self.draw_screen_focus = False
-                if self.draw_screen_focus:
-                    if self.screen_focus != None:
-                        clear_target = display.draw_examine_window(self.screen_focus, self)
-                        if clear_target:
-                            self.screen_focus = None
                 display.update_examine(self.targets.target_current, self)
-
             elif self.currentLoop == LoopType.specific_examine:
                 display.update_entity(self, item_screen=False, create=True)
-
         if self.player.quest_recieved == True:
             display.update_questpopup_screen(self, "{} Recieved".format(self.player.quests[-1].name))
             self.player.quest_recieved = False
 
-        # if self.quest_completed == True:
-        #     for quest in self.player.quests:
-        #         if quest.active and quest.check_
-        #     display.update_questpopup_screen(self, "{} Recieved".format(self.player.quests[-1].name))
-
-    
-
-        tile = self.generator.tile_map.locate(self.player.x, self.player.y)
-        if isinstance(tile, TI.Door):
-            tile.open()
         pygame.display.update()
         self.update_screen = False
 
     def clean_up(self):
         destroyed_items = []
-        item_dict = self.generator.item_map.dict
-        for item in self.generator.item_map.all_entities():
+        for item in self.generator.item_map.get_all_entities():
             if item.destroy:
                 destroyed_items.append(item)
         for item in destroyed_items:
             self.generator.item_map.remove_thing(item)
 
         dead_monsters = []
-        for monster in self.generator.monster_map.all_entities():
+        for monster in self.generator.monster_map.get_all_entities():
             if not monster.character.is_alive():
-                if monster.get_location() == self.screen_focus:  # on kill stop observing a space
-                    self.screen_focus = None
+                if monster.inventory.get_gold() > 0:
+                    gold = items.Gold(monster.inventory.get_gold(), x = monster.get_x(), y= monster.get_y())
+                    self.generator.item_map.place_thing(gold)
                 items_copy = monster.get_inventory()
                 for item in items_copy:
-                    if item.yendorb:
-                        monster.do_drop(item, self.generator.item_map)
-                        break  # only drop yendorb if monster had it
                     if item.equipped:
                         monster.character.unequip(item)
                     monster.do_drop(item, self.generator.item_map)
-                monster_corpse = monster.die()
-                self.generator.monster_map.remove_thing(monster)
-                if isinstance(monster_corpse, items.Corpse):
-                    self.generator.item_map.place_thing(monster_corpse)
-                if monster.gold_value > 0:
-                    gold = items.Gold(monster.gold_value, x = monster.x, y = monster.y)
-                    self.generator.item_map.place_thing(gold)
+                dead_monsters.append(monster)
+        for monster in dead_monsters:
+            self.generator.monster_map.remove_thing(monster)
 
 
-    def change_floor(self, downward):
+
+    def change_floor(self):
         self.taking_stairs = True
         playerx, playery = self.player.get_location()
         if self.player.character.energy < 0:
@@ -401,122 +287,35 @@ class Loops():
             self.monster_loop(-self.player.character.energy)
             self.player.character.energy = 0
 
-        print("The stairs you are taking is {}".format(self.generator.tile_map.track_map[playerx][playery]))
-        current_stairs = self.generator.tile_map.locate(playerx, playery)
-        if isinstance(current_stairs, TI.Stairs):
-            if downward and isinstance(current_stairs, TI.DownStairs):
-                if current_stairs.pair is None:
-                    if current_stairs.downward: #Don't know why it wouldn't be but who knows
-                        for other_stairs in self.memory.generators[self.branch][self.floor_level + 1].tile_map.get_stairs():
-                            if (other_stairs.pair == None and not other_stairs.downward):
-                                current_stairs.pair_stairs(other_stairs)
-                                break
-                self.floor_level += 1
-            elif not downward and isinstance(current_stairs, TI.UpStairs) and self.floor_level != 1:
-                if current_stairs.pair is None:
-                    if not current_stairs.downward: #Don't know why it wouldn't be but who knows
-                        for other_stairs in self.memory.generators[self.branch][self.floor_level - 1].tile_map.get_stairs():
-                            if (other_stairs.pair == None and other_stairs.downward):
-                                current_stairs.pair_stairs(other_stairs)
-                                break
-                self.floor_level -= 1
-            self.player.x, self.player.y = (current_stairs.pair.get_location())
+       # print("The stairs you are taking is {}".format(self.generator.tile_map.track_map[playerx][playery]))
+        current_stairs = self.generator.tile_map.get_entity(playerx, playery)
+        if current_stairs.has_trait("stairs"):
+            print("Taking stairs")
+            new_level = self.get_depth() + current_stairs.get_level_change()
+            new_generator = self.memory.get_saved_floor(self.get_branch(), new_level)
+            if not current_stairs.get_has_paired_stairs():
+                for other_stairs in new_generator.tile_map.get_stairs():
+                    if (not other_stairs.get_has_paired_stairs() and other_stairs.get_level_change() != current_stairs.get_level_change()):
+                        current_stairs.pair_stairs(other_stairs)
+            self.player.x, self.player.y = (current_stairs.get_paired_stairs().get_location())
             self.player.visited_stairs = []
-            self.generator = self.memory.generators[self.branch][self.floor_level]
-
-        if self.branch == "Forest":
-            if self.day == "Nighttime":
-                for monster in self.generator.monster_map.all_entities():
-                    monster.nightify()
-            elif self.day == "Daytime":
-                for monster in self.generator.monster_map.all_entities():
-                    monster.dayify()
+            self.generator = new_generator
 
         self.taking_stairs = False
 
-    def change_branch(self):
-        self.taking_stairs = True
-        playerx, playery = self.player.get_location()
-        if self.player.character.energy < 0:
-            self.time_passes(-self.player.character.energy)
-            self.monster_loop(-self.player.character.energy)
-            self.player.character.energy = 0
-
-        gate = self.generator.tile_map.locate(playerx, playery)
-        branch = gate.outgoing.get_branch()
-        depth = gate.outgoing.get_depth()
-
-        self.floor_level = depth
-        print("The gateway you are taking is {}".format(self.generator.tile_map.track_map[playerx][playery]))
-        self.player.x, self.player.y = (gate.outgoing.get_location())
-        self.player.visited_stairs = []
-        self.branch = branch
-        self.generator = self.memory.generators[branch][self.floor_level]
-        self.memory.floor_level = depth
-        self.memory.branch = branch
-
-        if self.branch == "Forest":
-            if self.day == "Nighttime":
-                for monster in self.generator.monster_map.all_entities():
-                    monster.nightify()
-            elif self.day == "Daytime":
-                for monster in self.generator.monster_map.all_entities():
-                    monster.dayify()
-
-        self.taking_stairs = False
-
-    def init_game(self, display):
+    def init_game(self):
         self.player = player.Player(0, 0)
-        self.memory.player = self.player
-        self.branch = "Throne"
-        self.floor_level = 1
-
-        gateway_data = self.dungeon_data.gateway_data
         dungeon_data = self.dungeon_data
-
-        self.render_exploration = True
-        self.memory.render_exploration = self.render_exploration
-
         for branch in dungeon_data.get_branches():
-            self.memory.generators[branch] = {}
             for level in range(1, dungeon_data.get_depth(branch) + 1):
-                generator = M.DungeonGenerator(level, self.player, branch, gateway_data, dungeon_data)
-                if branch == "Ocean":
-                    monsters = generator.monster_map.all_entities()
-                    for monster in monsters:
-                        print("Ocean monster x is {}, ocean monster y is {}".format(monster.x, monster.y))
-                self.memory.generators[branch][level] = generator
+                generator = M.DungeonGenerator(level, self.player, branch, dungeon_data)
+                self.memory.set_floor("Dungeon",level, generator)
 
-        known_gateways = gateway_data.all_gateways()
-        #for gateway in known_gateways:
-         #   print("This is known {}".format(gateway))
-        for lair in known_gateways:
-            print("Investigating lair: {}".format(lair))
-            gateway1 = -1
-            for gateways in self.memory.generators[lair[0]][lair[1]].tile_map.get_gateway():
-                print("Initial gateway is: {}".format(gateways))
-                gateway1 = gateways
-                if not gateway1.has_outgoing():
-                    for lair2 in gateway_data.paired_gateway(lair):
-                        print("Potential link is {}".format(lair2))
-                        gateway2 = -1
-                        for gateways in self.memory.generators[lair2[0]][lair2[1]].tile_map.get_gateway():
-                            gateway2 = gateways
-                            if not gateway2.has_incoming():
-                                print("Linking {} with {}".format(gateway1, gateway2))
-                                gateway1.pair_gateway(gateway2)
-                                gateway2.pair_gateway(gateway1)
-                                break
-                        break
-
-
-
-        self.memory.floor_level = 1
-        self.memory.explored_levels = 1
-        self.generator = self.memory.generators[self.branch][self.floor_level]
+        self.memory.set_memory(1, 1, "Dungeon", self.player, self.keyboard)
+        self.generator = self.memory.get_current_saved_floor()
 
         for stairs in (self.generator.tile_map.get_stairs()):
-            if not stairs.downward:
+            if stairs.get_level_change() == -1:
                 x, y = stairs.get_location()
         self.player.x = x
         self.player.y = y
@@ -536,11 +335,7 @@ class Loops():
         self.target_to_display = target
 
     def void_target(self):
-        if self.target_to_display == None:
-            return
-        if self.generator.monster_map.get_passable(self.target_to_display[0], self.target_to_display[
-            1]):  # don't void if its a monster, cuz its a good QOL to keep monster health on screen
-            self.target_to_display = None
+        self.target_to_display = None
 
     def start_targetting(self, start_on_player=False):
         self.change_loop(LoopType.targeting)
@@ -549,37 +344,24 @@ class Loops():
             self.add_target(self.player.get_location())
             self.screen_focus = self.player.get_location()
         else:
-            closest_monster = self.player.character.get_closest_monster(self)
+            closest_monster = get_closest_monster(self)
             self.targets.start_target(closest_monster.get_location())
             self.add_target(closest_monster.get_location())
             self.screen_focus = closest_monster.get_location()
 
-    def init_new_game(self):
-        self.display.create_game_ui(self.player)
-
     def load_game(self):
         self.update_screen = False
-        self.floor_level = self.memory.floor_level
-
-        self.generator = self.memory.generators[self.branch][self.floor_level]
-        self.tile_map = self.generator.tile_map
-
+        self.generator = self.memory.get_current_saved_floor()
         self.player = self.memory.player
         self.player.character.energy = 0
         self.change_loop(LoopType.action)
        # self.keyboard = self.memory.keyboard
 
-        self.render_exploration = self.memory.render_exploration
-
     def clear_data(self):
         self.change_loop(LoopType.main)
         self.update_screen = True
-
         self.screen_focus = None
-        self.floor_level = 0
         self.memory = Memory()
-        self.tile_map = None
-
         self.generator = None
         self.messages = []
 
@@ -587,72 +369,45 @@ class Loops():
         self.timer += time
         for i in range(int(self.timer // 100)):
             self.player.statistics.add_turn_details()
-            self.total_time += 1
-            if self.total_time % 50 == 49:
-                self.change_daytime()
             # do status effect stuff
             self.player.character.tick_all_status_effects(self)
             self.player.mage.tick_cooldowns()
-
-            if self.branch != "Forest":
-                self.player.character.tick_regen()
+            self.player.character.tick_regen()
 
             for quest in self.player.quests:
                 quest.check_for_progress(self)
 
-            for star in self.stars:
-                star.take_action(self)
-
-            if self.generator.tile_map.locate(self.player.x,self.player.y).check_if_status_applies(self.player):
-                for status_effect in self.generator.tile_map.locate(self.player.x,self.player.y).get_status_effects():
+            if self.generator.tile_map.get_entity(self.player.x,self.player.y).check_if_status_applies(self.player):
+                for status_effect in self.generator.tile_map.get_entity(self.player.x,self.player.y).get_status_effects():
                     self.player.character.add_status_effect(status_effect)
 
-            for monster in self.generator.monster_map.all_entities():
+            for monster in self.generator.monster_map.get_all_entities():
                 monster.character.tick_all_status_effects(self)
-                # tick skill cooldowns
                 monster.character.tick_cooldowns()
-                # tick regen
                 monster.character.tick_regen()
 
-                if self.generator.tile_map.locate(monster.x, monster.y).check_if_status_applies(monster):
-                    for status_effect in self.generator.tile_map.locate(monster.x,
+                if self.generator.tile_map.get_entity(monster.x, monster.y).check_if_status_applies(monster):
+                    for status_effect in self.generator.tile_map.get_entity(monster.x,
                                                                         monster.y).get_status_effects():
                         monster.character.add_status_effect(status_effect)
 
-            if self.branch == "Ocean":
-                self.generator.water_rises()
-
         self.timer = self.timer % 100
 
-    def change_daytime(self):
-        while self.total_time % 50 != 49:
-            self.total_time += 1
-        if self.day == "Daytime":
-            self.day = "Nighttime"
-            if self.branch == "Forest":
-                for monster in self.generator.monster_map.all_entities():
-                    monster.nightify()
-        elif self.day == "Nighttime":
-            self.day = "Daytime"
-            if self.branch == "Forest":
-                for monster in self.generator.monster_map.all_entities():
-                    monster.dayify()
 
-    def get_available_classes(self):
-        return [Rogue(), Warrior(), Mage()]
+    """
+    These are passthrough functions
+    """
 
-    def implement_class(self):
-        player = self.player
-        chosen_class = self.class_selection
-        endurance, intelligence, dexterity, strength = chosen_class.get_attributes()
-        player.character.endurance += endurance
-        player.character.intelligence += intelligence
-        player.character.dexterity += dexterity
-        player.character.strength += strength
-        for spell in chosen_class.get_spells():
-            player.mage.add_spell(spell(player))
-        for item in chosen_class.get_items():
-            player.inventory.get_item(item, self)
-            player.do_equip(item)
+    def get_branch(self):
+        return self.generator.get_branch()
+
+    def get_depth(self):
+        return self.generator.get_depth()
+
+    def get_width(self):
+        return self.generator.get_width()
+
+    def get_height(self):
+        return self.generator.get_height()
 
 

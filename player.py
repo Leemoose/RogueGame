@@ -14,16 +14,13 @@ from items import MightPotion, BlinkScrorb
 
 class Player(Objects):
     def __init__(self, x, y):
-        super().__init__(x, y, 1, 200, "Player")
+        super().__init__(x, y, 1, 5000, "Player")
         self.character = C.Character(self, mana=50)
         self.mage = Mage(self)
         self.inventory = Inventory(self)
         self.body = Body(self)
         self.fighter = Fighter(self)
-
         self.statistics = statistics.StatTracker()
-
-        self.type = "Player"
 
         self.level = 1
         self.max_level = 20
@@ -31,24 +28,15 @@ class Player(Objects):
         self.experience_to_next_level = 20
 
         self.visited_stairs = []
-
-
         self.stat_points = 0
-        self.stat_decisions = [0, 0, 0, 0]  # used at loop levelling to allocate points
+        self.stat_decisions = [0, 0, 0, 0]  # used at loop levelling to alget_entity points
 
         self.path = []
         self.explore_path = []
-
-        self.invincible = True
-
-        self.type = {
-                     "humanoid": True
-                     }
-
         self.quests = []
         self.quest_recieved = False
 
-        if self.invincible:  # only get the gun if you're invincible at the start
+        if self.character.status.get_invincible():  # only get the gun if you're invincible at the start
             bug_test_spells = [
                 S.Gun(self),  # 1
                 # S.BlinkStrike(self, cooldown=0, cost=10, damage=25, range=10, action_cost=1), # 3
@@ -92,28 +80,28 @@ class Player(Objects):
         self.check_for_levelup()
 
     def attack_move(self, move_x, move_y, loop):
-        if not self.character.can_take_actions:
+        if not self.character.can_take_action():
             self.character.energy -= self.character.action_costs[
                 "move"]  # (self.character.move_cost - int(self.character.dexterity + self.character.round_bonus()))
             loop.add_message("The player is petrified and cannot move.")
-            return
-        x = self.x + move_x
-        y = self.y + move_y
-        if (x >= 0) & (y >= 0) & (x < loop.generator.tile_map.width) & (y < loop.generator.tile_map.height):
-            if loop.generator.get_passable((x, y)) and self.character.can_move:
-                self.move(move_x, move_y, loop)
-            elif not loop.generator.monster_map.get_passable(x, y):
-                defender = loop.generator.monster_map.locate(x,y)
-                self.attack(defender, loop)
-            elif not loop.generator.interact_map.get_passable(x, y):
-                self.do_interact(loop, input_direction=(move_x, move_y))
-            elif not self.character.can_move:
-                loop.add_message("You are currently restricted!")
-            else:
-                loop.add_message("You cannot move there")
+        else:
+            x = self.x + move_x
+            y = self.y + move_y
+            if loop.generator.in_map(x,y):
+                if loop.generator.get_passable((x, y)) and self.character.can_move():
+                    self.move(move_x, move_y, loop)
+                elif loop.generator.monster_map.get_has_entity(x, y):
+                    defender = loop.generator.monster_map.get_entity(x,y)
+                    self.attack(defender, loop)
+                # elif not loop.generator.interact_map.get_passable(x, y):
+                #     self.do_interact(loop, input_direction=(move_x, move_y))
+                elif not self.character.can_move:
+                    loop.add_message("You are currently restricted!")
+                else:
+                    loop.add_message("You cannot move there")
 
     def move(self, move_x, move_y, loop):
-        if loop.generator.get_passable((self.x + move_x, self.y + move_y)) and self.character.can_move and self.character.can_take_actions:
+        if loop.generator.get_passable((self.get_x() + move_x, self.get_y() + move_y)) and self.character.can_move() and self.character.can_take_action():
             self.character.energy -= self.character.action_costs[
                 "move"]  # / (1.02**(self.character.dexterity + self.character.round_bonus())))
             self.y += move_y
@@ -124,14 +112,8 @@ class Player(Objects):
         else:
             loop.add_message("You can't move there")
 
-    def random_move(self, loop):
-        random_move = [(0, 1), (1, 0), (-1, 0), (0, -1)]
-        rand_i = random.randint(0, 3)
-        move_x, move_y = random_move[rand_i]
-        self.move(move_x, move_y, loop)
-
     def attack(self, defender, loop):
-        if self.character.can_take_actions:
+        if self.character.can_take_action():
             self.character.energy -= self.character.action_costs[
                 "attack"]  # / (1.05**(self.character.dexterity + self.character.round_bonus())))
             loop.screen_focus = (defender.x, defender.y)
@@ -142,24 +124,16 @@ class Player(Objects):
             loop.add_message("You cannot currently take actions")
 
     def autopath(self, loop):
-
-        # if loop.branch == "Forest":
-        #     loop.add_message("You cannot autopath in the forest (otherwise we'd have to figure out time).")
-        #     loop.change_loop(LoopType.action)
-        #     return False
-        if loop.branch != "Forest" and self.character.needs_rest(self):
+        if self.character.needs_rest():
             loop.after_rest = LoopType.pathing
             loop.change_loop(LoopType.resting)
             return
         loop.after_rest = LoopType.action # in case we rested need to reset this to default
         tile_map = loop.generator.tile_map
-        for monster in loop.generator.monster_map.all_entities():
+        for monster in loop.generator.monster_map.get_all_entities():
             monster_loc = monster.get_location()
-            if tile_map.track_map[monster_loc[0]][monster_loc[1]].visible and monster.stops_autoexplore:
-                if loop.pathing_count == 0:
-                    loop.add_message("You cannot autopath while enemies are visible.")
-                else:
-                    loop.add_message(f"A {monster.name} interrupted your exploration.")
+            if tile_map.get_visible(monster_loc[0], monster_loc[1]):
+                loop.add_message(f"A {monster.name} interrupted your exploration.")
                 loop.change_loop(LoopType.action)
                 return False
         
@@ -173,10 +147,10 @@ class Player(Objects):
             #self.character.energy = 0 #need to find a way to make time pass as autoexplore happens
 
             # auto pickup gold
-            for item in loop.generator.item_map.all_entities():
-                    if item.has_trait("gold"):
-                        if item.x == self.x and item.y == self.y:
-                            self.do_grab(item, loop)
+            for item in loop.generator.item_map.get_all_entities():
+                if item.has_trait("gold"):
+                    if self.get_distance(item.x, item.y) <= 1:
+                        self.do_grab(item, loop)
 
             self.explore_path.append((x, y))
             loop.update_screen = True
@@ -191,15 +165,13 @@ class Player(Objects):
         return True
 
     def autoexplore(self, loop):
-        all_seen = False
-        
         # auto pickup gold
         good_item_locations = []
         good_item_dict = {}
-        for item in loop.generator.item_map.all_entities():
-                if item.has_trait("gold") or item.has_trait("potion") or item.has_trait("scroll"):
-                    good_item_locations.append((item.x, item.y))
-                    good_item_dict[(item.x, item.y)] = item
+        for item in loop.generator.item_map.get_all_entities():
+            if item.has_trait("gold") or item.has_trait("potion") or item.has_trait("scroll"):
+                good_item_locations.append((item.x, item.y))
+                good_item_dict[(item.x, item.y)] = item
         
         tile_map = loop.generator.tile_map
 
@@ -212,13 +184,11 @@ class Player(Objects):
                 good_item_locations.remove(start)
                             
 
-            all_seen, unseen = loop.generator.all_seen()
+            all_seen, unseen = loop.generator.get_all_seen()
             if all_seen:
                 loop.change_loop(LoopType.action)
                 loop.after_pathing = LoopType.action
                 loop.add_message("Finished exploring this level. Press s to path to stairs")
-                # print(self.explore_path)
-                # print(len(self.explore_path))
                 loop.update_screen = True
                 self.path = []
                 return False
@@ -227,9 +197,9 @@ class Player(Objects):
             # in-line end condition so we can use tile_map
             def autoexplore_condition(position_tuple):
                 return position_tuple in good_item_locations or \
-                       (tile_map.get_passable(position_tuple[0], position_tuple[1]) and \
+                       (tile_map.get_has_no_entity(position_tuple[0], position_tuple[1]) and \
                         not (tile_map.track_map[position_tuple[0]][position_tuple[1]].seen))
-            self.path = pathfinding.conditional_bfs(tile_map.track_map, start, autoexplore_condition, loop.generator.interact_map.dict)
+            self.path = pathfinding.conditional_bfs(tile_map.get_map(), start, autoexplore_condition, loop.generator.interact_map.dict)
             if not self.path:
                 self.path = []
                 loop.change_loop(LoopType.action)
@@ -246,16 +216,10 @@ class Player(Objects):
             all_stairs_seen = []
             to_visit_stairs = []
             for stairs in loop.generator.tile_map.get_stairs():
-                if stairs.downward and stairs.seen:
+                if stairs.get_level_change() == 1 and stairs.get_seen():
                     all_stairs_seen.append(stairs.get_location())
                     if stairs.get_location() not in self.visited_stairs and stairs.get_location() != start:
                         to_visit_stairs.append(stairs.get_location())
-
-            for gateway in loop.generator.tile_map.get_gateway():
-                if gateway.seen:
-                    all_stairs_seen.append(gateway.get_location())
-                    if gateway.get_location() not in self.visited_stairs:
-                        to_visit_stairs.append(gateway.get_location())
 
             if len(all_stairs_seen) == 0:
                 loop.add_message("You have not found the stairs or a portal yet")
@@ -285,7 +249,7 @@ class Player(Objects):
             def stairs_condition(position_tuple):
                 return position_tuple in to_visit_stairs
             
-            self.path = pathfinding.conditional_bfs(tile_map.track_map, start, stairs_condition, loop.generator.interact_map.dict)
+            self.path = pathfinding.conditional_bfs(tile_map.get_map(), start, stairs_condition, loop.generator.interact_map.dict)
             if not self.path: # checks null and empty
                 self.path = []
                 loop.change_loop(LoopType.action)
@@ -300,7 +264,6 @@ class Player(Objects):
     def check_for_levelup(self):
         while self.level != self.max_level and self.experience >= self.experience_to_next_level:
             self.level += 1
-            self.character.level_up_max_health_and_mana()
             self.stat_points += 2
             exp_taken = self.experience_to_next_level
             self.experience_to_next_level += 20 + self.experience_to_next_level // 4
@@ -330,9 +293,9 @@ class Player(Objects):
         distance = 1000
 
         tile_map = loop.generator.tile_map
-        for monster in loop.generator.monster_map.all_entities():
+        for monster in loop.generator.monster_map.get_all_entities():
             monster_x, monster_y = monster.get_location()
-            if tile_map.locate(monster_x, monster_y).visible:
+            if tile_map.get_entity(monster_x, monster_y).visible:
                 new_distance = self.get_distance(monster_x, monster_y)
                 if new_distance < distance:
                     attack_target = monster
@@ -344,7 +307,7 @@ class Player(Objects):
             if distance <= 1.5:
                 self.attack(attack_target, loop)
             else:
-                path = pathfinding.astar(tile_map.track_map, self.get_location(), attack_target.get_location(),
+                path = pathfinding.astar(tile_map.get_map(), self.get_location(), attack_target.get_location(),
                                          loop.generator.monster_map, self)
                 path.pop(0)
                 x, y = path[0]
@@ -352,28 +315,26 @@ class Player(Objects):
                 self.move(x - playerx, y - playery, loop)
 
     def down_stairs(self, loop):
-        if (isinstance(loop.generator.tile_map.track_map[self.x][self.y], T.Stairs)
-                and loop.generator.tile_map.track_map[self.x][self.y].downward and self.character.can_take_actions):
-            self.character.energy -= self.character.action_costs["move"]
-            loop.change_floor(downward = True)
-        elif (isinstance(loop.generator.tile_map.track_map[self.x][self.y], T.Gateway) and self.character.can_take_actions):
-            self.character.energy -= self.character.action_costs["move"]
-            loop.change_branch()
-        elif self.character.can_take_actions:
+        if (loop.generator.tile_map.get_entity(self.x, self.y).has_trait("stairs")
+                and loop.generator.tile_map.get_entity(self.x, self.y).get_level_change() == 1):
+            print("down stairs")
+            self.do_stairs(loop)
+        elif self.character.can_take_action():
             loop.add_message("There are no stairs here!")
-        else:
-            self.character.energy -= self.character.action_costs["move"]
-            loop.add_message("You can't move!")
 
     def up_stairs(self, loop):
-        if (isinstance(loop.generator.tile_map.track_map[self.x][self.y], T.Stairs)
-                and not loop.generator.tile_map.track_map[self.x][self.y].downward and self.character.can_take_actions):
-            self.character.energy -= self.character.action_costs["move"]
-            loop.change_floor(downward = False)
-        elif self.character.can_take_actions:
+        if (loop.generator.tile_map.get_entity(self.x, self.y).has_trait("stairs")
+                and loop.generator.tile_map.get_entity(self.x, self.y).get_level_change() == -1):
+            self.do_stairs(loop)
+        elif self.character.can_take_action():
             loop.add_message("There are no stairs here!")
+
+    def do_stairs(self, loop):
+        self.character.energy -= self.character.action_costs["move"]
+        if self.character.can_take_action():
+            loop.change_floor()
+            print("change floor")
         else:
-            self.character.energy -= self.character.action_costs["move"]
             loop.add_message("You can't move!")
 
     def cast_spell(self, *args):
@@ -410,23 +371,16 @@ class Player(Objects):
             #self.energy -= self.action_costs["unequip"]
 
     def do_interact(self, loop, input_direction=None):
-        interact = False
         if input_direction == None:
             directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1)]
         else:
             directions = [input_direction]
-        location = []
         for x, y in directions:
-            location.append((x + self.x, y + self.y))
-            if loop.generator.interact_map.locate(x + self.x, y + self.y) != -1:
-                loop.generator.interact_map.locate(x + self.x, y + self.y).interact(loop)
-                spoke = True
+            if loop.generator.interact_map.get_has_entity(x + self.get_x(), y + self.get_y()):
+                loop.generator.interact_map.get_entity(x + self.x, y + self.y).interact(loop)
 
-
-        # if spoke == False:
-        #    loop.add_message("You feel lonely.")
-
-
+    """
+    """
 
 
 

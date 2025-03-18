@@ -35,17 +35,17 @@ class Skill():
         return self.basic_requirements()
     
     def basic_requirements(self):
-        if self.ready == 0 and self.parent.character.mana >= self.cost:
+        if self.ready == 0 and self.parent.character.get_mana() >= self.cost:
             return True
         return False
     
     def health_cost_requirements(self):
-        if self.ready == 0 and self.parent.character.health > self.cost:
+        if self.ready == 0 and self.parent.character.get_health() > self.cost:
             return True
         return False
     
     def below_threshold(self):
-        return self.parent.character.health < self.threshold * self.parent.character.max_health
+        return self.parent.character.get_health() < self.threshold * self.parent.character.get_max_health()
     
     def in_range(self, target):
         targetx, targety = target.get_location()
@@ -381,7 +381,7 @@ class Gun(Skill):
         self.render_tag = 903
 
     def activate(self, defender, generator):
-        self.parent.character.mana -= self.cost
+        self.parent.character.change_mana(-self.cost)
         defender.character.take_damage(self.parent, self.damage)
         return True
 
@@ -486,7 +486,7 @@ class Heal(Skill):
 
     def activate(self, target, generator):
         self.parent.character.mana -= self.cost
-        target.character.gain_health(self.heal_amount + self.parent.character.skill_damage_increase())
+        target.character.change_health(self.heal_amount + self.parent.character.skill_damage_increase())
         return True
 
     def castable(self, target):

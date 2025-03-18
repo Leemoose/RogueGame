@@ -1,7 +1,7 @@
 import pygame, pygame_gui
 import random
-from npc import BobBrother
 from copy import deepcopy
+from character_implementation import get_closest_monster
 
 class HealthBar(pygame_gui.elements.UIProgressBar):
     def __init__(self, rect, manager, player):
@@ -11,16 +11,16 @@ class HealthBar(pygame_gui.elements.UIProgressBar):
         self.max_health = -1
 
     def needs_update(self, character):
-        if (self.health != character.health or self.max_health != character.max_health):
-            self.health = character.health
-            self.max_health = character.max_health
+        if (self.health != character.get_health() or self.max_health != character.get_max_health()):
+            self.health = character.get_health()
+            self.max_health = character.get_max_health()
             return True
         return False
 
     def update(self, time_delta: float):
         if (self.needs_update(self.player.character)):
-            self.maximum_progress = max(1.0, self.player.character.max_health)
-            self.current_progress = self.player.character.health
+            self.maximum_progress = max(1.0, self.player.character.get_max_health())
+            self.current_progress = self.player.character.get_health()
             self.percent_full = self.current_progress / self.maximum_progress
 
         return super().update(time_delta)
@@ -33,16 +33,16 @@ class ManaBar(pygame_gui.elements.UIProgressBar):
         self.max_mana = -1
 
     def needs_update(self, character):
-        if (self.mana != character.mana or self.max_mana != character.max_mana):
-            self.mana = character.mana
-            self.max_mana = character.max_mana
+        if (self.mana != character.get_mana() or self.max_mana != character.get_max_mana()):
+            self.mana = character.get_mana()
+            self.max_mana = character.get_max_mana()
             return True
         return False
 
     def update(self, time_delta: float):
         if (self.needs_update(self.player.character)):
-            self.maximum_progress = max(1.0, self.player.character.max_mana)
-            self.current_progress = self.player.character.mana
+            self.maximum_progress = max(1.0, self.player.character.get_max_mana())
+            self.current_progress = self.player.character.get_mana()
             self.percent_full = 100 * self.current_progress / self.maximum_progress
 
         return super().update(time_delta)
@@ -418,24 +418,24 @@ class StatBox(pygame_gui.elements.UITextBox):
 
     def CompareStats(self, entity):
         curr_status_effect_durations = []
-        for effect in entity.character.status_effects:
+        for effect in entity.character.status.get_status_effects():
             curr_status_effect_durations.append(effect.duration)
         return (self.status == self.get_health_status(entity) and
-                self.status_effects == entity.character.status_effects and
+                self.status_effects == entity.character.status.get_status_effects() and
                 self.status_effect_durations == curr_status_effect_durations and
                 self.stat_points == entity.stat_points and
                 self.level == entity.level and
                 self.experience == entity.experience and
                 self.experience_to_next_level == entity.experience_to_next_level and
-                self.strength == entity.character.strength and
-                self.dexterity ==entity.character.dexterity and
-                self.endurance == entity.character.endurance and
-                self.intelligence == entity.character.intelligence and
+                self.strength == entity.character.get_strength() and
+                self.dexterity ==entity.character.get_dexterity() and
+                self.endurance == entity.character.get_endurance() and
+                self.intelligence == entity.character.get_intelligence() and
                 self.armor == entity.fighter.get_armor())
 
     def SetCompareStats(self, entity):
         self.status = self.get_health_status(entity)
-        self.status_effects = entity.character.status_effects
+        self.status_effects = entity.character.status.get_status_effects()
         self.status_effect_durations = []
         for effect in self.status_effects:
             self.status_effect_durations.append(effect.duration)
@@ -443,14 +443,14 @@ class StatBox(pygame_gui.elements.UITextBox):
         self.level = entity.level
         self.experience = entity.experience
         self.experience_to_next_level = entity.experience_to_next_level
-        self.strength = entity.character.strength
-        self.dexterity = entity.character.dexterity
-        self.endurance = entity.character.endurance
-        self.intelligence = entity.character.intelligence
+        self.strength = entity.character.get_strength()
+        self.dexterity = entity.character.get_dexterity()
+        self.endurance = entity.character.get_endurance()
+        self.intelligence = entity.character.get_intelligence()
         self.armor = entity.fighter.get_armor()
 
     def get_health_status(self, entity):
-        if entity.character.health < entity.character.max_health // 3 * 2:
+        if entity.character.get_health() < entity.character.get_max_health() // 3 * 2:
             return 'W'
         else:
             return 'H'
@@ -458,9 +458,9 @@ class StatBox(pygame_gui.elements.UITextBox):
     #HORRIBLE HACK - THIS IS ALSO DEFINED IN DISPLAY.PY - KEEP THEM SYNCED!
     def get_status_text(self, entity):
         status = "Healthy"
-        if entity.character.health < entity.character.max_health // 3 * 2:
+        if entity.character.get_health() < entity.character.get_max_health() // 3 * 2:
             status = "Wounded"
-        effects = entity.character.status_effects
+        effects = entity.character.status.get_status_effects()
         for effect in effects:
             status += ", " + effect.description()
         return status
@@ -477,7 +477,7 @@ class StatBox(pygame_gui.elements.UITextBox):
         return str(stat)
         
     def round_text(self, entity):
-        total_stats = entity.character.strength + entity.character.intelligence + entity.character.dexterity + entity.character.endurance
+        total_stats = entity.character.get_strength() + entity.character.get_intelligence() + entity.character.get_dexterity() + entity.character.get_endurance()
         if total_stats <= 6:
             return "You are weak.<br><br>"
         elif total_stats <= 10:
@@ -496,10 +496,10 @@ class StatBox(pygame_gui.elements.UITextBox):
             self.set_text(html_text=
                             "Health: " + "<br>" +
                             "Mana: " + "<br>" +
-                            "Strength: " + self.stat_text(self.player, self.player.character.strength) + " "
-                            "Dexterity: " + self.stat_text(self.player, self.player.character.dexterity) + "<br>"
-                            "Endurance: " + self.stat_text(self.player, self.player.character.endurance) + " "
-                            "Intelligence: " + self.stat_text(self.player, self.player.character.intelligence) + "<br>" + \
+                            "Strength: " + self.stat_text(self.player, self.player.character.get_strength()) + " "
+                            "Dexterity: " + self.stat_text(self.player, self.player.character.get_dexterity()) + "<br>"
+                            "Endurance: " + self.stat_text(self.player, self.player.character.get_endurance()) + " "
+                            "Intelligence: " + self.stat_text(self.player, self.player.character.get_intelligence()) + "<br>" + \
                             "Armor: " + self.stat_text(self.player, self.player.fighter.get_armor(), False) + "<br>" + \
                             self.round_text(self.player) + \
                             "Gold: " + self.stat_text(self.player, self.player.inventory.get_gold(), False) + "<br>" + \
@@ -527,7 +527,7 @@ class SkillButton(pygame_gui.elements.UIButton):
         skill = self.player.mage.quick_cast_spells[self.index]
         if skill == None:
             return False
-        closest_monster = self.player.character.get_closest_monster(self.loop)
+        closest_monster = get_closest_monster(self.loop)
         if closest_monster == self.player and skill.range != -1:
             castable = False  # no monster to caste ranged skill on
         else:
@@ -587,7 +587,7 @@ class SkillButton(pygame_gui.elements.UIButton):
     def update(self, time_delta: float):
         if (self.needs_change()):
             skill = self.player.mage.quick_cast_spells[self.index]
-            closest_monster = self.player.character.get_closest_monster(self.loop)
+            closest_monster = get_closest_monster(self.loop)
             if closest_monster == self.player and skill.range != -1:
                 castable = False  # no monster to caste ranged skill on
             else:
@@ -684,12 +684,9 @@ class DepthDisplay(pygame_gui.elements.UILabel):
         self.last_branch = ""
 
     def update(self, time_delta: float):
-        if (self.last_depth != self.loop.generator.depth) or self.last_branch != self.loop.generator.branch or self.last_branch == "Forest":
-            if self.loop.branch == "Forest":
-                self.set_text(str(self.loop.generator.branch) + " " + str(self.loop.generator.depth) + " " + str(self.loop.day) + " " + str(self.loop.total_time % 100))
-            else:
-                self.set_text(str(self.loop.generator.branch) + " " + str(self.loop.generator.depth))
-            self.last_depth = self.loop.generator.depth
-            self.last_branch = self.loop.generator.branch
+        if (self.last_depth != self.loop.generator.get_depth()) or self.last_branch != self.loop.generator.get_branch():
+            self.set_text(str(self.loop.generator.get_branch()) + " " + str(self.loop.generator.get_depth()))
+            self.last_depth = self.loop.generator.get_depth()
+            self.last_branch = self.loop.generator.get_branch()
 
         return super().update(time_delta)

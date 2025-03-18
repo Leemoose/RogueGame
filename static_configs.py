@@ -251,15 +251,14 @@ class TileDict():
         tiles[1510] = image.load('assets/monsters/abyssal_leviathon.png')
         tiles[1520] = image.load('assets/monsters/chasm_crawler.png')
 
-        # corpse assets
-        tiles[2000] = image.load('assets/monsters/monster_corpse.png')
-        tiles[2001] = image.load('assets/items/guard_corpse.png')
+        tiles[1900] = image.load('assets/crawl-tiles/dc-mon/brown_ooze.png')
 
-        # interactable assets
-        tiles[2100] = image.load('assets/interactables/campfire.png')
+        #2000-2999 all tiles assets
+        tiles[2000] = image.load('assets/crawl-tiles/dc-dngn/floor/cobble_blood1.png')
+
+        tiles[2100] = image.load('assets/crawl-tiles/dc-dngn/wall/stone_dark1.png')
 
         #3000 -3999 all interactable objects
-
         tiles[3001] = image.load('assets/npc/deactivated_campfire.png')
 
         tiles[3100] = image.load('assets/interactables/forest_hermit.png')
@@ -277,52 +276,19 @@ class TileDict():
 
         tiles[4200] = image.load("assets/items/consumeables/yello_flower_petal.png")
 
+        #Player assets 5000
+        tiles[5000] = image.load('assets/crawl-tiles/player/base/human_m.png')
+        tiles[5100] = image.load('assets/crawl-tiles/player/gloves/glove_black.png')
+        tiles[5200] = image.load('assets/crawl-tiles/player/boots/middle_brown.png')
+        tiles[5300] = image.load('assets/crawl-tiles/player/head/cap_black1.png')
+        tiles[5400] = image.load('assets/crawl-tiles/player/body/aragorn.png')
+        tiles[5500] = image.load('assets/crawl-tiles/player/legs/pants_blue.png')
+
         self.tiles = tiles
 
     def tile_string(self, key):
         return self.tiles[key]
 
-class AscaiiTileDict():
-    def __init__(self):
-        tiles = {}
-        tiles["x"] = T.Wall
-        tiles["."] = T.Floor
-        tiles["w"] = T.Water
-        tiles["dw"] = T.DeepWater
-        tiles[">"] = T.DownStairs
-        tiles["<"] = T.UpStairs
-        tiles["g"] = T.Gateway
-        tiles["K"] = T.KingTile
-        tiles["G"] = T.GuardTile
-        tiles["d"] = T.Door
-        tiles["BB"] = T.BobBrotherTile
-        tiles["S"] = T.SenseiTile
-        tiles["D"] = T.DummyTile
-        tiles["A"] = T.ArchmageTile
-        tiles["GE"] = T.GrabExplainerTile
-        tiles["bs"] = T.BasicShieldTile
-        self.tiles = tiles
+    def get_shaded_tile_string(self, key):
+        return self.tiles[key]
 
-        self.image_mapping = {"Forest":
-                            {
-                                "x": 7,
-                                ".": 13
-                            },
-                        "Dungeon":
-                            {
-                            },
-                        "Ocean":
-                            {
-                                "x": 15,
-                                ".": 9
-                            },
-                        "Hub": {},
-                        "Throne": {}
-                        }
-
-
-    def ascaii_tile(self, ascaii):
-        return self.tiles[ascaii]
-
-    def branchdepth_render(self, branch, ascaii):
-        return self.image_mapping[branch][ascaii]

@@ -92,7 +92,6 @@ def create_trade_screen(display, loop):
         player_offset_left = trading_offset_from_left + trading_screen_width // 15
         player_offset_top = trading_offset_from_top + trading_screen_height // 5 * 4
         player_size = trading_screen_width // 10
-        display.draw_player(loop, player_offset_left, player_offset_top, player_size)
 
         npc = loop.npc_focus
         npc_tile = loop.tileDict.tile_string(npc.render_tag)

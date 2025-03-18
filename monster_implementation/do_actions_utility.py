@@ -11,7 +11,7 @@ def do_flee(ai, loop):
     monster_map = loop.generator.monster_map
     player = loop.player
 
-    if not monster.character.can_take_actions:
+    if not monster.character.can_take_action():
         monster.character.energy -= ai.parent.character.action_costs[
             "move"]  # (monster.character.move_cost - monster.character.dexterity)
         loop.add_message(f"{monster} is petrified and cannot move.")
@@ -23,7 +23,7 @@ def do_flee(ai, loop):
 
     start = (monster.x, monster.y)
     end = (player.x, player.y)
-    moves = pathfinding.astar(tile_map.track_map, start, end, monster_map, loop.player)
+    moves = pathfinding.astar(tile_map.get_map(), start, end, monster_map, loop.player)
     if len(moves) > 1:
         xmove, ymove = moves.pop(1)
         # if one direciton is blocked, still move in the other
@@ -42,14 +42,6 @@ def do_flee(ai, loop):
         loop.add_target((monster.x, monster.y))
         loop.screen_focus = (monster.x, monster.y)
 
-def do_item_pickup(ai, loop):
-    item_map = loop.generator.item_map
-    monster = ai.parent
-    item = item_map.locate(monster.x, monster.y)
-    if monster.do_grab(item, loop):
-        item.destroy = True
-        loop.add_message("The slime gobbled up the {}.".format(item.name))
-
 def do_ungroup(ai, loop):
     tile_map = loop.generator.tile_map
     monster = ai.parent
@@ -57,7 +49,7 @@ def do_ungroup(ai, loop):
     player = loop.player
     x, y = ai.parent.x, ai.parent.y
 
-    if not monster.character.can_take_actions:
+    if not monster.character.can_take_action():
         monster.character.energy -= ai.parent.character.action_costs[
             "move"]  # (monster.character.move_cost - monster.character.dexterity)
         loop.add_message(f"{monster} is petrified and cannot move.")
@@ -78,15 +70,13 @@ def do_ungroup(ai, loop):
 
 def do_item_pickup(ai, loop):
     # print("Picking up item")
-    item_map = loop.generator.item_map
-    monster = ai.parent
-    item = item_map.locate(monster.x, monster.y)
-    monster.inventory.do_grab(item, loop)
+    item = loop.generator.item_map.get_entity(ai.parent.get_x(), ai.parent.get_y())
+    ai.parent.inventory.do_grab(item, loop)
 
 def do_combat(ai, loop):
     # print("Attacking player")
     monster = ai.parent
-    if not monster.character.can_take_actions:
+    if not monster.character.can_take_action():
         monster.character.energy -= ai.parent.character.action_costs[
             "move"]  # (monster.character.move_cost - monster.character.dexterity)
         loop.add_message(f"{monster} is petrified and cannot attack.")
@@ -98,61 +88,14 @@ def do_combat(ai, loop):
     else:
         loop.add_message(f"{monster.name} can find no suitable target to attack.")
 
-def do_skill(ai, loop):
-    monster = ai.parent
-    for i in range(len(monster.character.skills)):
-        # use first castable skill
-        if monster.character.skills[i].castable(loop.player):
-            skill = monster.character.skills[i]
-            skill_cast = monster.character.cast_skill(i, loop.player, loop)
-            message_addition = "" if skill_cast else ". But it failed."
-            loop.add_message(f"{monster} used {skill.name}" + message_addition)
-            # print(f"{monster} used {skill.name}")
-            break
-
-def do_equip(ai, loop): #ALL THESEN EQUIPMENT SLOT CALLS NEED TO BE FIXED
-    # print("Equipping item")
-    monster = ai.parent
-    if monster.inventory.get_inventory_size() != 0:
-        stuff = monster.get_inventory()
-        for i, item in enumerate(stuff):
-            if item.equipable:
-                if item.equipment_type == "Weapon" and monster.character.equipment_slots["hand_slot"][0] == None:
-                    monster.character.equip(item)
-                    loop.add_message(ai.parent.name + " is equipping " + item.name)
-                    return
-                elif item.equipment_type == "Shield" and monster.character.equipment_slots["hand_slot"][1] == None:
-                    monster.character.equip(item)
-                    loop.add_message(ai.parent.name + " is equipping " + item.name)
-                    return
-                elif item.equipment_type == "Body Armor" and monster.character.equipment_slots["body_armor_slot"][
-                    0] == None:
-                    monster.character.equip(item)
-                    loop.add_message(ai.parent.name + " is equipping " + item.name)
-                    return
-                elif item.equipment_type == "Helmet" and monster.character.equipment_slots["helmet_slot"][
-                    0] == None:
-                    monster.character.equip(item)
-                    loop.add_message(ai.parent.name + " is equipping " + item.name)
-                    return
-                elif item.equipment_type == "Boots" and monster.character.equipment_slots["boots_slot"][0] == None:
-                    monster.character.equip(item)
-                    loop.add_message(ai.parent.name + " is equipping " + item.name)
-                    return
-                elif item.equipment_type == "Gloves" and monster.character.equipment_slots["gloves_slot"][
-                    0] == None:
-                    monster.character.equip(item)
-                    loop.add_message(ai.parent.name + " is equipping " + item.name)
-                    return
-
-def do_use_consumeable(ai, loop):
-    # print("Using consumeable")
-    monster = ai.parent
-    if monster.inventory.get_inventory_size() != 0:
-        stuff = monster.get_inventory()
-        for i, item in enumerate(stuff):
-            if item.consumeable and item.equipment_type == "Potiorb":  # monster's can't read so no scrolls
-                item.activate(monster.character)
+# def do_use_consumeable(ai, loop):
+#     # print("Using consumeable")
+#     monster = ai.parent
+#     if monster.inventory.get_inventory_size() != 0:
+#         stuff = monster.get_inventory()
+#         for i, item in enumerate(stuff):
+#             if item.consumeable and item.equipment_type == "Potiorb":  # monster's can't read so no scrolls
+#                 item.activate(monster.character)
 
 def do_move(ai, loop):
     # print("Moving")
@@ -161,7 +104,7 @@ def do_move(ai, loop):
     monster_map = loop.generator.monster_map
     player = loop.player
 
-    if not monster.character.can_take_actions:
+    if not monster.character.can_take_action():
         monster.character.energy -= ai.parent.character.action_costs[
             "move"]  # (monster.character.move_cost - monster.character.dexterity)
         loop.add_message(f"{monster} is petrified and cannot move.")
@@ -176,9 +119,9 @@ def do_move(ai, loop):
         start = (monster.x, monster.y)
     end = (player.x, player.y)
     if player.get_distance(monster.x, monster.y) <= 2.5:
-        moves = pathfinding.astar(tile_map.track_map, start, end, monster_map, loop.player, monster_blocks=True)
+        moves = pathfinding.astar(tile_map.get_map(), start, end, monster_map, loop.player, monster_blocks=True)
     else:
-        moves = pathfinding.astar(tile_map.track_map, start, end, monster_map, loop.player)
+        moves = pathfinding.astar(tile_map.get_map(), start, end, monster_map, loop.player)
     if len(moves) > 1:
         try:
             xmove, ymove = moves.pop(1)
@@ -195,15 +138,12 @@ def do_move(ai, loop):
 
 
 def do_stairs(ai, loop):
-    stairs = loop.generator.tile_map.locate(ai.stairs_location[0], ai.stairs_location[1])
-    if stairs.downward:
-        new_level = loop.floor_level + 1
-    else:
-        new_level = loop.floor_level - 1
+    stairs = loop.generator.tile_map.get_entity(ai.stairs_location[0], ai.stairs_location[1])
+    new_level = loop.generator.get_depth() + stairs.get_level_change()
 
-    new_generator = loop.memory.generators[loop.branch][new_level]
-    new_stairs = stairs.pair
-    empty_tile = new_generator.nearest_empty_tile(new_stairs.get_location(), move=True)
+    new_generator = loop.memory.get_saved_floor(loop.generator.get_branch(), new_level)
+    new_stairs = stairs.get_paired_stairs()
+    empty_tile = new_generator.get_nearest_empty_tile(new_stairs.get_location(), move=True)
     if empty_tile != None:
         loop.generator.monster_map.remove_thing(ai.parent)
         ai.parent.x = empty_tile[0]
@@ -217,16 +157,16 @@ def do_find_item(ai, loop):
     monster = ai.parent
     distance = 1000
     item = None
-    for temp_item in loop.generator.item_map.all_entities():
-        temp_distance = monster.get_distance(temp_item.x, temp_item.y)
+    for temp_item in loop.generator.item_map.get_all_entities():
+        temp_distance = monster.get_distance(temp_item.get_x(), temp_item.get_y())
         if temp_distance < distance:
             distance = temp_distance
             item = temp_item
     if item == None:
         return
     else:
-        moves = pathfinding.astar(loop.generator.tile_map.track_map, monster.get_location(), item.get_location(),
-                                  loop.generator.monster_map.track_map, loop.player)
+        moves = pathfinding.astar(loop.generator.tile_map.get_map(), monster.get_location(), item.get_location(),
+                                  loop.generator.monster_map.entity_map, loop.player)
         if len(moves) > 1:
             xmove, ymove = moves.pop(1)
             monster.move(xmove - monster.x, ymove - monster.y, loop)
