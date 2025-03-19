@@ -1,4 +1,5 @@
-from monsters import monster as M
+from monsters import Ooze, Goblin
+
 from .spawn_params import MonsterSpawnParams
 
 MonsterSpawns = []
@@ -7,10 +8,10 @@ MonsterSpawns = []
 # MonsterSpawns.append(MonsterSpawnParams(M.Slime(), group="slime", minFloor=1, maxFloor=4))
 
 # early floors dungeon only
-MonsterSpawns.append(MonsterSpawnParams(M.Ooze(-1, -1), minFloor=1, maxFloor=10))
+MonsterSpawns.append(MonsterSpawnParams(Ooze(-1, -1), minFloor=1, maxFloor=10))
 
 # goblin type monsters dungeon only
-# MonsterSpawns.append(MonsterSpawnParams(M.Goblin(-1, -1), group="goblin", minFloor=1, maxFloor=4))
+MonsterSpawns.append(MonsterSpawnParams(Goblin(-1, -1), group="goblin", minFloor=2, maxFloor=10))
 # MonsterSpawns.append(MonsterSpawnParams(M.Hobgoblin(-1, -1), minFloor=1, maxFloor=4, rarity="Rare", group="goblin"))
 # MonsterSpawns.append(MonsterSpawnParams(M.Looter(), group="goblin", minFloor=1, maxFloor=4))
 # #MonsterSpawns.append(MonsterSpawnParams(M.GoblinShaman(-1, -1), group="goblin"))

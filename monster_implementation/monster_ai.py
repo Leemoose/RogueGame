@@ -55,20 +55,7 @@ class Monster_AI():
         average, spread = self.tendencies[action]
         return max(-1, random.randint(average - spread, average + spread))
 
-class Goblin_AI(Monster_AI):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.tendencies = {"combat": (60, 10),
-                           "pickup": (100, 5),
-                           "find_item": (80, 10),
-                           "equip": (-1, 0),
-                           "consume": (-1, 0),
-                           "move": (40, 20),
-                           "ungroup": (60, 20),
-                           "skill": (80, 10),
-                           "flee": (105, 10),
-                           "stairs": (-1, 0)
-                           }
+
 class Stumpy_AI(Monster_AI):
     def __init__(self, parent):
         super().__init__(parent)
@@ -102,21 +89,6 @@ class Dummy_AI(Monster_AI):
     def do_move(self, loop):
         return
 
-class Ooze_AI(Monster_AI):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.tendencies = {"combat": (80, 10),
-                           "pickup": (100, 0),
-                           "find_item": (-1, 0),
-                           "equip": (-1, 0),
-                           "destroy_items": (110, 0),
-                           "move": (40, 20),
-                           "ungroup": (-1, 0),
-                           "skill": (-1, 0),
-                           "flee": (-1, 0),
-                           "stairs": (-1, 0)
-                           }
-        self.options["destroy_items"] = (rank_destroy_items_in_inventory, do_destroy_items_in_inventory)
 class Insect_Nest_AI(Monster_AI):
     def __init__(self, parent):
         super().__init__(parent)

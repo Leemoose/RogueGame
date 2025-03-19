@@ -216,42 +216,8 @@ class TileDict():
         # dungeon monsters (10xx)
         # 1000-1999 monster assets
 
-        tiles[1000] = image.load('assets/monsters/goblin.png')
-        tiles[1001] = image.load('assets/monsters/gorblin_shaman.png')
-        tiles[1002] = image.load('assets/monsters/hobgoblin.png')
-        tiles[1009] = image.load('assets/monsters/Looter.png')
-
-        tiles[1010] = image.load('assets/monsters/kobold.png')
-        tiles[1020] = image.load('assets/monsters/gargoyle.png')
-        tiles[1030] = image.load('assets/monsters/velociraptor.png')
-        tiles[1040] = image.load('assets/monsters/minotaur.png')
-        tiles[1050] = image.load('assets/monsters/tormentorb.png')
-        tiles[1060] = image.load('assets/monsters/yendorb.png')
-        tiles[1070] = image.load("assets/monsters/orc.png")
-        tiles[1079] = image.load("assets/monsters/Bobby.png")
-        tiles[1080] = image.load('assets/monsters/golem.png')
-        tiles[1090] = image.load('assets/monsters/slime.png')
-        tiles[161] = image.load('assets/monsters/yendorb_deactivated.png')
-
-        # forest monsters (11xx)
-        tiles[1100] = image.load('assets/monsters/stumpy.png')
-        tiles[1110] = image.load('assets/monsters/spider.png')
-        tiles[1120] = image.load('assets/monsters/treant.png')
-
-        tiles[1200] = image.load('assets/monsters/treant.png')
-        tiles[1210] = image.load('assets/monsters/spider.png')
-        tiles[1220] = image.load('assets/monsters/insect_nest.png')
-        tiles[1230] = image.load('assets/monsters/vinecrasher.png')
-        tiles[1240] = image.load('assets/monsters/twiggy.png')
-        tiles[1250] = image.load('assets/monsters/wasp.png')
-        # ocean monsters (15xx)
-
-
-        tiles[1500] = image.load('assets/monsters/squid.png')
-        tiles[1510] = image.load('assets/monsters/abyssal_leviathon.png')
-        tiles[1520] = image.load('assets/monsters/chasm_crawler.png')
-
-        tiles[1900] = image.load('assets/crawl-tiles/dc-mon/brown_ooze.png')
+        tiles[1000] = image.load('assets/crawl-tiles/dc-mon/brown_ooze.png')
+        tiles[1010] = image.load('assets/crawl-tiles/dc-mon/goblin.png')
 
         #2000-2999 all tiles assets
         tiles[2000] = image.load('assets/crawl-tiles/dc-dngn/floor/cobble_blood1.png')

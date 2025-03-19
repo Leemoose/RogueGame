@@ -140,27 +140,6 @@ class Monster(O.Objects):
 #         self.character.armor = 12
 #         self.traits["chasm_crawler"] = True
 #
-class Ooze(Monster):
-    def __init__(self, x=-1, y=-1, render_tag=1900, name="Ooze"):
-        super().__init__(x=x, y=y, render_tag = render_tag, name = name, experience_given=5, brain = monster_ai.Ooze_AI, health=5)
-        self.description = "These amorphous blobs of translucent, gelatinous matter emerge from the depths of the rifts. Their bodies pulse with a sickly green glow, fueled by the chaotic energies of their environment. Rift Slimes mindlessly dissolve anything they touch with acidic secretions, leaving behind only a faint, acrid odor. They show no preference or intelligence, simply drawn to any items they encounter, which they swiftly corrode beyond recognition.."
-        self.character.action_costs["grab"] = 0
-        self.character.action_costs["move"] = 300
-        self.character.attributes.experience_given = 10
-        self.traits["ooze"] = True
-
-    def do_defend(self, attacker, loop):
-        chance_to_destroy_weapon = random.randint(1, 100)
-        if chance_to_destroy_weapon <= 5:
-            weapon = attacker.body.get_weapon()
-            if weapon is not None:
-                weapon.set_destroy(True)
-                attacker.body.unequip(weapon)
-                attacker.inventory.remove_item(weapon)
-                loop.add_message("The ooze destroys the weapon of the attacker!")
-            else:
-                attacker.character.take_damage(self, 1)
-        return self.fighter.do_defend()
 
 
 """
@@ -168,25 +147,7 @@ GOBLIN
 + Finds and pickups items
 - Melee combat
 """
-# class Goblin(Monster):
-#     def __init__(self, x=-1, y=-1, render_tag=1000, name="Goblin", experience_given=10, health=10, min_damage=3, max_damage=5, rarity = "Common", brain = monster_ai.Goblin_AI):
-#         super().__init__(x=x, y=y, render_tag = render_tag, name = name, experience_given=experience_given, health=health, min_damage=min_damage, max_damage=max_damage, rarity = rarity, brain = brain)
-#         self.character.skills.append(S.Escape(self, cooldown=100,
-#                                               cost=0, self_fear=True,
-#                                               dex_buff=20, str_debuff=20, int_debuff=20, haste_duration=-100,
-#                                               activation_threshold=.2,
-#                                               action_cost=1))
-#         self.character.action_costs["move"] = 50
-#         self.character.action_costs["grab"] = 20
-#
-#         self.description = "These mischievous creatures are smaller and wiry compared to their larger counterparts. Their green skin is mottled and rough, often adorned with patches of scavenged armor and trinkets. With quick, darting eyes that gleam with greed, Goblins are driven by an insatiable desire for shiny objects and valuables. They scurry through the rift-ridden landscapes with nimble steps, their clawed hands eagerly snatching up any glittering loot they come across."
-#
-#         self.strength = 1
-#         self.dexterity = 1
-#         self.endurance = 0
-#         self.intelligence = 0
-#
-#         self.traits["goblin"] = True
+
 #
 #     def die(self):
 #         corpse = I.Corpse(self.x, self.y, -1, 2000, self.name + " Monster Corpse")
