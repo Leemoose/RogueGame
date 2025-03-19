@@ -9,25 +9,12 @@ class Monster_AI():
         self.stairs_location = None
 
         # first number is average, second is spread
-        self.tendencies = {"combat": (90, 10),
-                           "pickup": (30, 5),
-                           "find_item": (20, 10),
-                           "equip": (40, 5),
-                           "consume": (40, 5),
-                           "move": (40, 20),
-                           "ungroup": (60, 20),
-                           "skill": (-1, 0),
-                           "flee": (100, 20),
-                           "stairs": (100, 10)
+        self.tendencies = {"combat": (80, 10),
+                           "move": (40, 20)
                            }
         #what it can actually do
         self.options = {"combat": (rank_combat, do_combat),
-                        "pickup": (rank_pickup, do_item_pickup),
-                        "find_item": (rank_find_item, do_find_item),
                         "move": (rank_move, do_move),
-                        "ungroup": (rank_ungroup, do_ungroup),
-                        "flee": (rank_flee, do_flee),
-                       # "stairs": (rank_stairs, do_stairs),
                         }
 
     """
@@ -115,20 +102,21 @@ class Dummy_AI(Monster_AI):
     def do_move(self, loop):
         return
 
-class Slime_AI(Monster_AI):
+class Ooze_AI(Monster_AI):
     def __init__(self, parent):
         super().__init__(parent)
         self.tendencies = {"combat": (80, 10),
                            "pickup": (100, 0),
                            "find_item": (-1, 0),
                            "equip": (-1, 0),
-                           "consume": (-1, 0),
+                           "destroy_items": (110, 0),
                            "move": (40, 20),
                            "ungroup": (-1, 0),
                            "skill": (-1, 0),
                            "flee": (-1, 0),
                            "stairs": (-1, 0)
                            }
+        self.options["destroy_items"] = (rank_destroy_items_in_inventory, do_destroy_items_in_inventory)
 class Insect_Nest_AI(Monster_AI):
     def __init__(self, parent):
         super().__init__(parent)

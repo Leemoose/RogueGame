@@ -12,7 +12,7 @@ from items import MightPotion, BlinkScrorb
 class Player(Objects):
     def __init__(self, x, y):
         super().__init__(x, y, 1, 5000, "Player")
-        self.character = C.Character(self, mana=50)
+        self.character = C.Character(self, mana=5, health = 10)
         self.mage = Mage(self)
         self.inventory = Inventory(self)
         self.body = Body(self)
@@ -375,6 +375,9 @@ class Player(Objects):
         for x, y in directions:
             if loop.generator.interact_map.get_has_entity(x + self.get_x(), y + self.get_y()):
                 loop.generator.interact_map.get_entity(x + self.x, y + self.y).interact(loop)
+
+    def do_defend(self, attacker, loop):
+        return self.fighter.do_defend()
 
     """
     """

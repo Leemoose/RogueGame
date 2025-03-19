@@ -3,7 +3,6 @@ import random
 class Fighter():
     def __init__(self, parent, min_damage = 2, max_damage = 3, armor = 0, on_hit = [], on_damage_effect = []):
         self.parent = parent
-
         self.on_hit = on_hit
         self.on_damage_effect = on_damage_effect
         self.base_damage = 0
@@ -68,7 +67,7 @@ class Fighter():
             defender.character.add_status_effect(effect)
 
         damage, effect = self.get_damage()
-        defense = defender.fighter.do_defend() - self.get_armor_piercing()
+        defense = defender.do_defend(self.parent, loop) - self.get_armor_piercing()
 
         effectiveness = 0
         weapon = self.parent.body.get_weapon()

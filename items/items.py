@@ -28,6 +28,10 @@ class Item(Objects):
         description.append("Equipment Type " + str(self.equipment_type))
         return description
 
+    def set_destroy(self, destroy):
+        self.destroy = destroy
+
+
 
 class Gold(Item):
     def __init__(self, amount, x=-1, y=-1, id_tag = -1, render_tag = 210, name = "Gold"):

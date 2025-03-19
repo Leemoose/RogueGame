@@ -13,7 +13,6 @@ class MonsterSpawner():
 
         # useful for debugging specific monsters, separate from generator
         self.forceSpawn = None
-        # self.forceSpawn = ("Slime", 1)
         # self.forceSpawn = ("Hobgorblin", 5) 
         
     def generate_encounter_numbers(self, target_difficulty, distribution):

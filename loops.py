@@ -42,7 +42,6 @@ class Loops():
         self.current_stat = 0  # index of stat for levelling up
         self.timer = 0
 
-        self.npc_focus = None
         self.quest_recieved = False
         self.quest_completed = False
 
@@ -203,7 +202,7 @@ class Loops():
             self.monster_loop(-self.player.character.energy)
             self.player.character.energy = 0
 
-        if not self.player.character.is_alive() and not self.player.character.invincible:
+        if not self.player.character.is_alive() and not self.player.character.status.get_invincible():
             if (self.currentLoop != LoopType.death):
                 self.change_loop(LoopType.death)
 
@@ -230,6 +229,7 @@ class Loops():
                 shadowcasting.compute_fov(self)
                 mos_x, mos_y = pygame.mouse.get_pos()
                 (x, y) = display.screen_to_tile(self.player, mos_x, mos_y)  # Get the tile the mouse is on
+                self.targets.set_target((x, y))
                 display.update_display(self)
             elif self.currentLoop == LoopType.items:
                 display.update_entity(self)
@@ -300,15 +300,14 @@ class Loops():
                 generator = M.DungeonGenerator(level, self.player, branch, dungeon_data)
                 self.memory.set_floor("Dungeon",level, generator)
 
-        self.memory.set_memory(1, 1, "Dungeon", self.player, self.keyboard)
+        self.memory.set_memory(1, "Dungeon", self.player, self.keyboard)
         self.generator = self.memory.get_current_saved_floor()
 
         for stairs in (self.generator.tile_map.get_stairs()):
             if stairs.get_level_change() == -1:
                 x, y = stairs.get_location()
-        self.player.x = x
-        self.player.y = y
-
+                self.player.x = x
+                self.player.y = y
 
 
     def start_targetting(self, start_on_player=False):
@@ -320,6 +319,7 @@ class Loops():
         self.targets.set_target(target.get_location())
 
     def load_game(self):
+        self.memory.load_objects()
         self.update_screen = False
         self.generator = self.memory.get_current_saved_floor()
         self.player = self.memory.player

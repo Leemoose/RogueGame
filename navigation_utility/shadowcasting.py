@@ -8,6 +8,7 @@ def compute_fov(loop):
         for y in range(len(tile_map[0])):
             tile_map[x][y].visible = False
     x1,y1 = origin
+
     tile_map[x1][y1].seen = True
     tile_map[x1][y1].visible = True
 

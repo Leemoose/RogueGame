@@ -5,7 +5,6 @@ class Memory():
     Used to save the game
     """
     def __init__(self):
-        self.explored_levels = 0
         self.floor_level = 0
         self.branch = ""
         self.generators = {}
@@ -23,15 +22,19 @@ class Memory():
             self.generators[branch] = {}
         self.generators[branch][depth] = generator
 
-    def set_memory(self, explored_levels, floor_level, branch, player, keyboard):
-        self.explored_levels = explored_levels
+    def set_memory(self, floor_level, branch, player, keyboard):
         self.floor_level = floor_level
         self.branch= branch
         self.player = player
         self.keyboard = keyboard
 
+    def update_memory(self, floor_level, branch):
+        self.floor_level = floor_level
+        self.branch = branch
+        self.save_objects()
+
     def save_objects(self):
-        save = [self.explored_levels, self.floor_level, self.generators, self.player, self.branch, self.keyboard]
+        save = [self.floor_level, self.generators, self.player, self.branch, self.keyboard]
         try:
             with open("data.dill", "wb") as f:
                 print("Saved the game")
@@ -44,9 +47,9 @@ class Memory():
             # Call load method to deserialze
             print("Loaded the game")
             save = dill.load(f)
-        self.explored_levels = save[0]
-        self.floor_level = save[1]
-        self.generators = save[2]
-        self.player = save[3]
-        self.branch = save[4]
-        self.keyboard = save[5]
+        self.floor_level = save[0]
+        self.generators = save[1]
+        self.player = save[2]
+        self.branch = save[3]
+        self.keyboard = save[4]
+        print("Floor: {}, Branch: {}".format( self.floor_level, self.branch))

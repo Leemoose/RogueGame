@@ -27,7 +27,8 @@ class Target:
                     self.target_current = self.parent.generator.tile_map.get_entity(x, y)
                 self.target_coordinates = target
 
-    def set_item_target(self, item):
+    #Used for when the entity is not on the map
+    def set_entity_target(self, item):
         self.target_current = item
 
 

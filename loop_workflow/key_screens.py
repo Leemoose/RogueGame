@@ -5,28 +5,20 @@ def key_targeting_screen(loop, key):
     targets = loop.targets
     if key == "up":
         targets.adjust(0, -1)
-        
     elif key == "left":
         targets.adjust(-1, 0)
-        
     elif key == "down":
         targets.adjust(0, 1)
-        
     elif key == "right":
         targets.adjust(1, 0)
-        
     elif key == "y":
         targets.adjust(-1, -1)
-        
     elif key == "u":
         targets.adjust(1, -1)
-        
     elif key == "b":
         targets.adjust(-1, 1)
-        
     elif key == "n":
         targets.adjust(1, 1)
-        
     elif key == "esc":
         targets.void_skill()
         loop.set_target(None)
@@ -63,7 +55,6 @@ def key_examine_screen(loop, key):
     elif key == "return":
         loop.change_loop(LoopType.specific_examine)
 
-
 def key_specific_examine(loop, key):
     if key == "esc":
         loop.change_loop(LoopType.examine)
@@ -88,12 +79,7 @@ def key_death(loop, key):
 # Any actions done in the battle screen
 def key_action(loop, key):
     player = loop.player
-    item_ID = loop.generator.item_map.dict
-    generated_maps = loop.generator
-    memory = loop.memory
-    if key == -1:
-        return
-    elif key == "up":
+    if key == "up":
         player.attack_move(0, -1, loop)
     elif key == "left":
         player.attack_move(-1, 0, loop)
@@ -156,8 +142,6 @@ def key_action(loop, key):
         loop.set_target(loop.player.get_location())
         loop.update_screen = True
     elif key == "o":
-        print(loop.generator.tile_map)
-        # loop.player.autoexplore(loop)
         loop.player.autoexplore(loop)
         if loop.player.path:
             loop.change_loop(LoopType.pathing)
@@ -204,13 +188,10 @@ def key_inventory(loop, key):
     elif key in["6"]:
         loop.player.inventory.change_active_inventory("orb")
         loop.change_loop("inventory")
-
     for i in range(len(player.inventory.get_limit_inventory())):
         if chr(ord("a") + i) == key:
-            loop.targets.set_item_target(player.get_inventory()[i])
+            loop.targets.set_entity_target(player.get_inventory()[i])
             loop.change_loop(LoopType.items)
-
-
 
 def key_rest(loop, key):
     loop.add_message("Input detected. Ending rest early.")
@@ -329,7 +310,6 @@ def key_main_screen(loop, key):
     if key == "esc":
         return False
     elif key == "l":
-        loop.memory.load_objects()
         loop.load_game()
     elif key == "h":
         loop.change_loop(LoopType.help)
@@ -388,7 +368,7 @@ def key_paused(loop, key):
         loop.clear_data()
         loop.init_game()
     elif key == 's':
-        loop.memory.keyboard =  loop.keyboard
+        loop.memory.update_memory(loop.get_depth(), loop.get_branch())
         loop.memory.save_objects()
     elif key == "q":
         return False

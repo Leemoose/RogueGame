@@ -121,7 +121,7 @@ class Body():
         item.dropable = True
         item.equipped = False
         if item.attached_skill_exists:
-            self.parent.character.remove_skill(item.attached_skill(self.parentg))
+            self.parent.character.remove_skill(item.attached_skill(self.parent))
         item.deactivate(self.parent)
 
     def get_weapon(self):

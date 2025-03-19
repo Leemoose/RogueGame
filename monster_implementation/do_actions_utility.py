@@ -1,5 +1,5 @@
 from navigation_utility import pathfinding
-
+import random
 def do_nothing(ai, loop):
     # print("doing nothing")
     pass
@@ -159,3 +159,9 @@ def do_find_item(ai, loop):
         if len(moves) > 1:
             xmove, ymove = moves.pop(1)
             monster.move(xmove - monster.x, ymove - monster.y, loop)
+
+def do_destroy_items_in_inventory(ai, loop):
+    for item in ai.parent.get_inventory():
+        item.set_destroy(True)
+        ai.parent.inventory.do_drop(item, loop.generator.item_map)
+        loop.add_message(f"{item.name} consumed by {ai.parent.name}")
