@@ -1,3 +1,5 @@
+import copy
+
 from .maps import Maps
 from .map_utility import *
 
@@ -130,6 +132,8 @@ class TileMap(Maps):
             startx = random.randint(0, self.width - 1)
             starty = random.randint(0, self.height - 1)
         return startx, starty
+
+
 
 
 

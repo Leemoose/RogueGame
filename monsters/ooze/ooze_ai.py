@@ -1,5 +1,6 @@
 from monster_implementation import Monster_AI
-from monster_implementation import rank_destroy_items_in_inventory, do_destroy_items_in_inventory, rank_pickup, do_item_pickup
+from .ooze_utility import rank_destroy_items_in_inventory, do_destroy_items_in_inventory
+from monster_implementation import rank_pickup, do_item_pickup
 
 class Ooze_AI(Monster_AI):
     def __init__(self, parent):

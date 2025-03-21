@@ -2,6 +2,10 @@ from monsters.monster import Monster
 from .ooze_ai import Ooze_AI
 import random
 
+"""
+Oozes are slow moving monsters that will destroy any item they touch. Sometimes they destroy the attackers weapon.
+"""
+
 class Ooze(Monster):
     def __init__(self, x=-1, y=-1, render_tag=1000, name="Ooze"):
         super().__init__(x=x, y=y, render_tag = render_tag, name = name, experience_given=5, brain = Ooze_AI, health=5)

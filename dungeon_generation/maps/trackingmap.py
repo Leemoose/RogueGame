@@ -32,6 +32,16 @@ class TrackingMap(Maps):
     def get_all_entities(self):
         return self.dict.all_entities()
 
+    def get_nearest_entity(self, x, y):
+        lowest_distance = 10000
+        closest_entity = None
+        for entity in self.get_all_entities():
+            if entity.get_distance(x, y) < lowest_distance:
+                lowest_distance = entity.get_distance(x,y)
+                closest_entity = entity
+        return closest_entity
+
+
     def __str__(self):
         allrows = ""
         for x in range(self.width):

@@ -4,6 +4,7 @@ from .bindings import Bindings
 from .keyboard_utility import *
 from navigation_utility import pathfinding
 from loop_workflow import LoopType
+import time
 
 class Keyboard():
     """
@@ -17,6 +18,7 @@ class Keyboard():
         set_key_bindings(self.key_bindings)
         self.key_player_bindings = Bindings(self)
         self.key_queue = []
+        self.last_action_time = pygame.time.get_ticks()
     
 
     def get_key_has_binding(self, key):
@@ -55,6 +57,21 @@ class Keyboard():
                 (-1,0): "left",
                 (-1,-1): "y"}
         return options[(xdiff, ydiff)]
+
+    def get_has_waited_sufficiently(self):
+        return time.time() - self.last_action_time > 0.2
+
+    def set_continous_movement_keys(self, keys):
+        if self.get_has_waited_sufficiently():
+            if keys[pygame.K_UP] == True:
+                self.set_next_key(self.get_key_binding(pygame.K_UP, False))
+            elif keys[pygame.K_DOWN] == True:
+                self.set_next_key(self.get_key_binding(pygame.K_DOWN, False))
+            elif keys[pygame.K_LEFT] == True:
+                self.set_next_key(self.get_key_binding(pygame.K_LEFT, False))
+            elif keys[pygame.K_RIGHT] == True:
+                self.set_next_key(self.get_key_binding(pygame.K_RIGHT, False))
+
 
     def move_nonadjacent(self, loop, x_tile, y_tile):
         player = loop.player
@@ -124,4 +141,5 @@ class Keyboard():
             raise Exception("You tried to get next key in sequence but it doesn't exist")
 
     def set_next_key(self, key):
+        self.last_action_time = time.time()
         self.key_queue.append(key)

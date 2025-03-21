@@ -103,8 +103,4 @@ def rank_find_item(ai, loop):
 def rank_nothing(ai, loop):
     return ai.randomize_action("nothing")
 
-def rank_destroy_items_in_inventory(ai, loop):
-    if ai.parent.inventory.get_inventory_size() > 0:
-        return ai.randomize_action("destroy_items")
-    else:
-        return -1
+

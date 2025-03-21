@@ -13,4 +13,3 @@ class Goblin_AI(Monster_AI):
         self.options["find_item"] = (rank_find_item, do_find_item)
         self.options[ "pickup"] =  (rank_pickup, do_item_pickup)
         self.options[ "flee"] = (rank_flee, do_flee)
-                        

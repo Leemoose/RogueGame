@@ -1,6 +1,10 @@
 from monsters.monster import Monster
 from .goblin_ai import Goblin_AI
 
+"""
+Goblins deal a fair amount of damage but will not seek out enemies until they have cleared the floor of items. Attacks
+they do will steal gold.
+"""
 
 class Goblin(Monster):
     def __init__(self, x=-1, y=-1, render_tag=1010, name="Goblin", experience_given=10, health=10, min_damage=3, max_damage=5, rarity = "Common", brain = Goblin_AI):
@@ -16,3 +20,13 @@ class Goblin(Monster):
         self.intelligence = 0
 
         self.traits["goblin"] = True
+
+    def do_attack(self, target, loop):
+        #Make sure to add energy cost here
+        damage = self.fighter.do_attack(target, loop)
+        if damage > 0:
+            gold_taken = target.inventory.get_gold() // 2
+            self.inventory.change_gold_amount(gold_taken)
+            target.inventory.change_gold_amount(-gold_taken)
+            loop.add_message("The goblin takes gold away from the defender!")
+        return damage

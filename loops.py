@@ -1,4 +1,4 @@
-
+import time
 import items
 from dungeon_generation import mapping as M
 import player
@@ -142,41 +142,46 @@ class Loops():
         :param keyboard:
         :return: None (will do a keyboard action)
         """
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return False
-            elif event.type == pygame.KEYDOWN or (event.type == pygame_gui.UI_BUTTON_PRESSED and hasattr(event.ui_element, "action")):
-                if event.type == pygame.KEYDOWN:
-                    if event.mod == pygame.KMOD_NONE:
-                        keyboard.set_next_key(keyboard.get_key_binding(event.key, False))
-                    elif event.mod & pygame.KMOD_SHIFT and event.key:
-                        keyboard.set_next_key(keyboard.get_key_binding(event.key, True))
-                else:
-                    if hasattr(event.ui_element, "row"):
-                        if event.ui_element.row != None:
-                            self.current_stat = event.ui_element.row
-                    keyboard.set_next_key(event.ui_element.action)
-            elif event.type == pygame.MOUSEBUTTONUP:
-                x, y = pygame.mouse.get_pos()
-                x_tile, y_tile = display.screen_to_tile(self.player, x, y)
-                if (self.currentLoop == LoopType.action):
-                    keyboard.set_next_key(keyboard.get_key_from_mouse(self, x_tile, y_tile))
-                elif (self.currentLoop == LoopType.targeting):
-                    keyboard.targetting_mouse_to_keyboard(self,x_tile,y_tile)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pass
-            elif event.type == pygame.VIDEORESIZE:
-                self.display.update_sizes()
-                self.update_screen = True
-                self.change_loop(self.currentLoop)
-            while keyboard.get_has_queue():
-                key = keyboard.get_next_key()
-                if self.currentLoop in self.action_options:
-                    if key != None and self.action_options[self.currentLoop](self, key) == False:
-                        return False
+        events = pygame.event.get()
+        if events:
+            for event in events:
+                if event.type == pygame.QUIT:
+                    return False
+                elif event.type == pygame.KEYDOWN or (event.type == pygame_gui.UI_BUTTON_PRESSED and hasattr(event.ui_element, "action")):
+                    if event.type == pygame.KEYDOWN:
+                        if event.mod == pygame.KMOD_NONE:
+                            keyboard.set_next_key(keyboard.get_key_binding(event.key, False))
+                        elif event.mod & pygame.KMOD_SHIFT and event.key:
+                            keyboard.set_next_key(keyboard.get_key_binding(event.key, True))
+                    else:
+                        if hasattr(event.ui_element, "row"):
+                            if event.ui_element.row != None:
+                                self.current_stat = event.ui_element.row
+                        keyboard.set_next_key(event.ui_element.action)
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    x, y = pygame.mouse.get_pos()
+                    x_tile, y_tile = display.screen_to_tile(self.player, x, y)
+                    if (self.currentLoop == LoopType.action):
+                        keyboard.set_next_key(keyboard.get_key_from_mouse(self, x_tile, y_tile))
+                    elif (self.currentLoop == LoopType.targeting):
+                        keyboard.targetting_mouse_to_keyboard(self,x_tile,y_tile)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    pass
+                elif event.type == pygame.VIDEORESIZE:
+                    self.display.update_sizes()
+                    self.update_screen = True
+                    self.change_loop(self.currentLoop)
+                display.uiManager.process_events(event)
+        else:
+            keys = pygame.key.get_pressed()
+            keyboard.set_continous_movement_keys(keys)
 
+        while keyboard.get_has_queue():
+            key = keyboard.get_next_key()
+            if self.currentLoop in self.action_options:
+                if key != None and self.action_options[self.currentLoop](self, key) == False:
+                    return False
             self.update_screen = True
-            display.uiManager.process_events(event)
 
         if self.currentLoop == LoopType.action:
             if self.pathing_count != 0:

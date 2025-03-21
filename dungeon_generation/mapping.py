@@ -194,6 +194,44 @@ class DungeonGenerator():
                     min_passable = min(min_passable, self.count_passable_neighbors(adj_x, adj_y))
             return min_passable < 3
 
+    def get_passible_map_copy(self):
+        tile_map = []
+        for x in range(self.get_width()):
+            new_row = []
+            for y in range(self.get_height()):
+                if self.get_passable((x, y)):
+                    new_row.append(0)
+                else:
+                    new_row.append(-1)
+            tile_map.append(new_row)
+        return tile_map
+
+    # def get_nearest_item(self, x, y):
+    #     if self.item_map.get_has_entity(x, y):
+    #         return (self.item_map.get_entity(x,y), x, y)
+    #     else:
+    #         queue = [(1,0),(-1,0),(0,1),(0,-1),(1,1),(-1,1),(1,-1),(-1,-1)]
+    #         flood_map = self.get_passible_map_copy()
+    #         return self.get_nearest_item_helper_function(x, y, queue, flood_map)
+
+
+    # def get_nearest_item_helper_function(self, x, y, queue, flood_map):
+    #     for direction in queue:
+    #         xdelta, ydelta = direction
+    #         if self.in_map(x + xdelta, y + ydelta) and flood_map[x + xdelta][y + ydelta] == 0:
+    #             if self.item_map.get_has_entity(x + xdelta, y + ydelta):
+    #                 return (self.item_map.get_entity(x + xdelta, y + ydelta), x, y)
+    #             else:
+    #                 flood_map[x + xdelta][y + ydelta] = -1
+    #                 queue_additions = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]
+    #                 for direction in queue_additions:
+    #                     if self.in_map(x + xdelta, y + ydelta) and flood_map[x + xdelta][y + ydelta] == 0:
+    #                         queue.append(direction)
+    #     return (None, -1, -1)
+
+
+
+
 
 
 

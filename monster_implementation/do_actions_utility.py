@@ -144,24 +144,12 @@ def do_stairs(ai, loop):
 
 def do_find_item(ai, loop):
     monster = ai.parent
-    distance = 1000
-    item = None
-    for temp_item in loop.generator.item_map.get_all_entities():
-        temp_distance = monster.get_distance(temp_item.get_x(), temp_item.get_y())
-        if temp_distance < distance:
-            distance = temp_distance
-            item = temp_item
-    if item == None:
-        return
-    else:
-        moves = pathfinding.astar(loop.generator.tile_map.get_map(), monster.get_location(), item.get_location(),
-                                  loop.generator.monster_map.entity_map, loop.player)
-        if len(moves) > 1:
-            xmove, ymove = moves.pop(1)
-            monster.move(xmove - monster.x, ymove - monster.y, loop)
+    if loop.generator.item_map.get_num_entities() > 0:
+        item = loop.generator.item_map.get_nearest_entity(monster.get_x(), monster.get_y())
+        if item is not None:
+            moves = pathfinding.astar(loop.generator.tile_map.get_map(), monster.get_location(), item.get_location(),
+                                      loop.generator.monster_map.entity_map, loop.player)
+            if len(moves) > 1:
+                xmove, ymove = moves.pop(1)
+                monster.move(xmove - monster.x, ymove - monster.y, loop)
 
-def do_destroy_items_in_inventory(ai, loop):
-    for item in ai.parent.get_inventory():
-        item.set_destroy(True)
-        ai.parent.inventory.do_drop(item, loop.generator.item_map)
-        loop.add_message(f"{item.name} consumed by {ai.parent.name}")

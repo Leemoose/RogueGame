@@ -33,6 +33,8 @@ class Player(Objects):
         self.quests = []
         self.quest_recieved = False
 
+        self.character.status.invincible = True
+
         if self.character.status.get_invincible():  # only get the gun if you're invincible at the start
             bug_test_spells = [
                 S.Gun(self),  # 1
@@ -116,7 +118,7 @@ class Player(Objects):
             #Set target to the defender
             damage = self.fighter.do_attack(defender, loop)
             self.statistics.add_attack_details(damage)
-            loop.add_message(f"The player attacked for {damage} damage")
+            loop.add_message(f"The player attacked for {damage} damage", (220,20,60))
         else:
             loop.add_message("You cannot currently take actions")
 
@@ -298,7 +300,7 @@ class Player(Objects):
                     attack_target = monster
                     distance = new_distance
                 elif new_distance == distance:
-                    if attack_target.character.health > monster.character.health:
+                    if attack_target.character.get_health() > monster.character.get_health():
                         attack_target = monster
         if attack_target != None:
             if distance <= 1.5:
