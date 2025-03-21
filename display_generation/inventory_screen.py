@@ -71,7 +71,7 @@ def create_inventory(display, loop):
              selection_offset_from_top + selection_offset_from_each_other +
              (selection_button_height + selection_offset_from_each_other) * button_num,
              selection_button_width, selection_button_height)),
-        text="1. All items",
+        text="1. All item_implementation",
         manager=display.uiManager,
         starting_height=1)  # Important! Need this to be high so it's above the panel.
     items.action = "1"

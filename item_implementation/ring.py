@@ -112,7 +112,7 @@ class RingOfTeleportation(Ring):
         self.name = "Ring of Teleportation"
         self.action_description = "Gain the teleport skill."
 
-        self.wearer = None  # items with stat buffs need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs need to keep track of owner for level ups
 
         self.skill_cooldown = 40
         self.skill_cost = 30

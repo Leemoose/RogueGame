@@ -1,6 +1,6 @@
 import random
 from .room import Room
-from tiles import UpStairs, DownStairs, Floor, Wall
+from dungeon_generation.tiles import UpStairs, DownStairs, Floor, Wall
 def place_room(tilemap, rWidth, rHeight, circularity):
     MaxTries = 100
     startX = random.randint(1, tilemap.get_width() - rWidth - 1)

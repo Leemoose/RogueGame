@@ -2,7 +2,7 @@
 WEAPONS
 """
 from .equipment import Equipment
-from skills import MagicMissile
+# from skills import MagicMissile
 import random
 
 class Weapon(Equipment):
@@ -86,7 +86,7 @@ class SlicingAx(Ax):
         self.on_hit = (lambda inflictor: Bleed(3, 4, inflictor))
         self.on_hit_description = f"The target starts to bleed."
 
-        self.wearer = None  # items with stat buffs or skills need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs or skills need to keep track of owner for level ups
         self.rarity = "Rare"
 
     def attack(self):
@@ -166,7 +166,7 @@ class ScreamingDagger(Dagger):
         self.on_hit = (lambda inflictor: Tormented(5))
         self.on_hit_description = f"Torments the target for half health damage over."
 
-        self.wearer = None  # items with stat buffs or skills need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs or skills need to keep track of owner for level ups
         self.rarity = "Legendary"
 
     def attack(self):
@@ -253,7 +253,7 @@ class SleepingSword(Sword):
         self.change_to_hit = 25
         self.on_hit_description = f"The target is sleeping."
 
-        self.wearer = None  # items with stat buffs or skills need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs or skills need to keep track of owner for level ups
         self.rarity = "Legendary"
 
     def attack(self):
@@ -299,7 +299,7 @@ class FlamingSword(Weapon):
         self.skill_range = 4
         self.attached_skill_exists = True
 
-        self.wearer = None  # items with stat buffs or skills need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs or skills need to keep track of owner for level ups
         self.rarity = "Legendary"
 
     def attached_skill(self, owner):
@@ -353,7 +353,7 @@ class CrushingHammer(Hammer):
         self.on_hit = (lambda inflictor: ArmorShredding(5))
         self.on_hit_description = f"Shreds the targets armor."
 
-        self.wearer = None  # items with stat buffs or skills need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs or skills need to keep track of owner for level ups
         self.rarity = "Rare"
 
     def attack(self):
@@ -374,7 +374,7 @@ class MagicWand(Weapon):
         self.magic_missile_cooldown = 3
         self.attached_skill_exists = True
 
-        self.wearer = None  # items with stat buffs or skills need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs or skills need to keep track of owner for level ups
         self.rarity = "Common"
 
         self.attached_skill_exists = True

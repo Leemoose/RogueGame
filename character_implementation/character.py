@@ -10,7 +10,6 @@ class Character():
         self.parent = parent
         self.attributes = Attributes(self, endurance, intelligence, dexterity, strength, health, mana, health_regen, mana_regen)
         self.status = Status(self, invincible)
-        self.level = 1
         self.energy = 0
 
         self.main_weapon = None
@@ -74,8 +73,8 @@ class Character():
         self.change_energy(-self.action_costs["move"])
 
     def level_up(self, strength_up=1, dexterity_up=1, endurance_up=1, intelligence_up=1):
-        self.level += 1 # separate from player level which is stored in player object
-        self.level_up_stats(strength_up, dexterity_up, endurance_up, intelligence_up)
+        self.attributes.level_up()
+
 
     def level_up_stats(self, strength_up=1, dexterity_up=1, endurance_up=1, intelligence_up=1):
         self.attributes.change_endurance(endurance_up)
@@ -83,18 +82,14 @@ class Character():
         self.attributes.change_dexterity(dexterity_up)
         self.attributes.change_strength(strength_up)
 
-        self.attributes.change_max_health(endurance_up * 10)
-        self.attributes.change_max_mana(intelligence_up * 2)
 
     def tick_all_status_effects(self, loop):
-        for effect in self.status.get_status_effects():
-            effect.tick(self)
-            status_messages = [self.parent.name + " " + mes for mes in self.status_messages()] #Still need to fix
-            for message in status_messages:
-                loop.add_message(message)
-        for effect in self.status.get_status_effects():
-            if not effect.active:
-                self.status.remove_status_effect(effect)
+        status_messages = [self.parent.name + " " + mes for mes in
+                           self.status.get_status_messages()]  # Still need to fix
+        for message in status_messages:
+            loop.add_message(message)
+        self.status.tick_all_status_effects()
+
               #  loop.add_message(message)
 
     def quaff(self, potion, item_dict, item_map):
@@ -149,8 +144,6 @@ class Character():
                 return True
         return self.attributes.get_health() < self.attributes.get_max_health() or self.attributes.get_mana() < self.attributes.get_max_mana()
 
-    def get_level(self):
-        return self.level
     
     def rest(self, loop, returnLoop):
         # print("in_rest")

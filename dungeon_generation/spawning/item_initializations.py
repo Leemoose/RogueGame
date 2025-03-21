@@ -1,4 +1,4 @@
-from items import *
+from item_implementation import *
 from .spawn_params import ItemSpawnParams
 
 #Spawn lists!
@@ -85,16 +85,16 @@ ItemSpawns.append(ItemSpawnParams( PermanentStrengthPotion(404) ))
 ItemSpawns.append(ItemSpawnParams( PermanentDexterityPotion(405) ))
 
 # Scrorbs
-ItemSpawns.append(ItemSpawnParams( EnchantScrorb(4300) ))
-ItemSpawns.append(ItemSpawnParams( BurningAttackScrorb(4300) ))
-#ItemSpawns.append(ItemSpawnParams( TeleportScroll(4300), ))
-ItemSpawns.append(ItemSpawnParams( MassTormentScroll(4300) ))
-ItemSpawns.append(ItemSpawnParams( InvincibilityScroll(4300) ))
-ItemSpawns.append(ItemSpawnParams( CallingScroll(4300) ))
-#ItemSpawns.append(ItemSpawnParams( SleepScroll(4300),      1,               10,          1,              5))
-#ItemSpawns.append(ItemSpawnParams( ExperienceScroll(4300),      1,               10,          5,              5))
-ItemSpawns.append(ItemSpawnParams( BlinkScrorb(4300) ))
-ItemSpawns.append(ItemSpawnParams( MassHealScrorb(4300) ))
+# ItemSpawns.append(ItemSpawnParams( EnchantScrorb(4300) ))
+# ItemSpawns.append(ItemSpawnParams( BurningAttackScrorb(4300) ))
+# #ItemSpawns.append(ItemSpawnParams( TeleportScroll(4300), ))
+# ItemSpawns.append(ItemSpawnParams( MassTormentScroll(4300) ))
+# ItemSpawns.append(ItemSpawnParams( InvincibilityScroll(4300) ))
+# ItemSpawns.append(ItemSpawnParams( CallingScroll(4300) ))
+# #ItemSpawns.append(ItemSpawnParams( SleepScroll(4300),      1,               10,          1,              5))
+# #ItemSpawns.append(ItemSpawnParams( ExperienceScroll(4300),      1,               10,          5,              5))
+# ItemSpawns.append(ItemSpawnParams( BlinkScrorb(4300) ))
+# ItemSpawns.append(ItemSpawnParams( MassHealScrorb(4300) ))
 
 # Books
 #ItemSpawns.append(ItemSpawnParams( BookofMassTorment,      1,               10,          1,              5))

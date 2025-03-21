@@ -67,8 +67,16 @@ class Status():
                         x.change_duration(effect.get_duration()) #add more duration
                     else:
                         x.change_duration(effect.get_duration() - x.get_duration()) #reset duration
-    def status_messages(self):
+
+    def get_status_messages(self):
         messages = []
         for effect in self.status_effects:
             messages.append(effect.message)
         return messages
+
+    def tick_all_status_effects(self):
+        for effect in self.get_status_effects():
+            effect.tick(self.parent)
+        for effect in self.get_status_effects():
+            if not effect.active:
+                self.remove_status_effect(effect)

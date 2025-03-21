@@ -1,4 +1,4 @@
-import items as I
+import item_implementation as I
 from monsters import monster as M
 import copy
 import random
@@ -156,7 +156,7 @@ class ItemSpawner():
         self.legendaryScrorbs = [i for i in self.ItemSpawns if i.item.rarity == "Legendary" and i.item.equipment_type == "Scrorb"]
         self.ExtraCommon = [i for i in self.ItemSpawns if i.item.rarity == "Extra Common"]
 
-        # useful for debugging specific items, separate from generator
+        # useful for debugging specific item_implementation, separate from generator
         self.forceSpawn = []
 
 
@@ -224,7 +224,7 @@ class ItemSpawner():
             rareEquipAtDepth = commonEquipAtDepth
         legendaryEquipAtDepth = [i for i in self.legendaryEquip if i.AllowedAtDepth(depth)]
         legendaryScrorbsAtDepth = [i for i in self.legendaryScrorbs if i.AllowedAtDepth(depth)]
-        if legendaryEquipAtDepth == []: # downgrade if no legendary items available
+        if legendaryEquipAtDepth == []: # downgrade if no legendary item_implementation available
             if rareEquipAtDepth == []:
                 legendaryEquipAtDepth = commonEquipAtDepth
             else:
@@ -291,21 +291,21 @@ class ItemSpawner():
         #         if item.can_be_levelled:
         #             for _ in range(self.random_level(depth)):
         #                 item.level_up()
-        #         items.append(item)
+        #         item_implementation.append(item)
         #     elif rarity < Floor_Distributions[depth-1][0] + Floor_Distributions[depth-1][1]:
         #         item_spawn = random.choice(rareAtDepth)
         #         item = item_spawn.GetFreshCopy()
         #         if item.can_be_levelled:
         #             for _ in range(self.random_level(depth)):
         #                 item.level_up()
-        #         items.append(item)
+        #         item_implementation.append(item)
         #     else:
         #         item_spawn = random.choice(legendaryAtDepth)
         #         item = item_spawn.GetFreshCopy()
         #         if item.can_be_levelled:
         #             for _ in range(self.random_level(depth)):
         #                 item.level_up()
-        #         items.append(item)
+        #         item_implementation.append(item)
         return items
     
 item_spawner = ItemSpawner(ItemSpawns)
@@ -387,7 +387,7 @@ class MonsterSpawner():
         self.normalMonsters = [i for i in self.MonsterSpawns if i.monster.orb == False]
         self.orbMonsters = [i for i in self.MonsterSpawns if i.monster.orb == True]
 
-        # useful for debugging specific items, separate from generator
+        # useful for debugging specific item_implementation, separate from generator
         #self.forceSpawn = None
         self.forceSpawn = ("Slime", 1)
         # self.forceSpawn = ("Hobgorblin", 5) 

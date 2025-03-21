@@ -2,7 +2,7 @@ from monsters.monster import Monster
 from .goblin_ai import Goblin_AI
 
 """
-Goblins deal a fair amount of damage but will not seek out enemies until they have cleared the floor of items. Attacks
+Goblins deal a fair amount of damage but will not seek out enemies until they have cleared the floor of item_implementation. Attacks
 they do will steal gold.
 """
 

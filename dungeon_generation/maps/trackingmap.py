@@ -1,7 +1,7 @@
 from .id import ID
 from .maps import Maps
 """
-This map will either track items or monsters.
+This map will either track item_implementation or monsters.
 """
 class TrackingMap(Maps):
     def __init__(self, width, height):

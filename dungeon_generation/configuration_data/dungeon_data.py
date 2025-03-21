@@ -9,8 +9,8 @@ class DungeonData():
         #self.master_map_data["Hub"] = {1: MapData(10, 10, 4, 5, 1.0, 1)}
         self.master_map_data["Dungeon"] = {
             1: MapData(20, 30, 4, 5, 1.0, 1),
-            2: MapData(60, 60, 15, 10, .05, 1),
-            3: MapData(60, 60, 15, 10, .1, 0),
+            2: MapData(20, 30, 4, 5, 1.0, 1),
+            3: MapData(20, 30, 4, 5, 1.0, 1),
             4: MapData(30, 30, 6, 5, 0.0, 0),  # Square floor!
             5: MapData(35, 35, 7, 6, 0.2, 0),
             6: MapData(35, 35, 8, 7, 0.3, 0),

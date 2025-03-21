@@ -1,15 +1,9 @@
-import random
-
-from dungeon_generation import *
 from .spawning import branch_params, item_spawner, monster_spawner, interactable_spawner
 from .maps import TileMap, TrackingMap
 from .mapping_utility import *
 
-from interactables import Campfire
-
-
 """
-Theme: Mapping is responsible for creating all maps at the start of the level, placing monsters, placing items,
+Theme: Mapping is responsible for creating all maps at the start of the level, placing monsters, placing item_implementation,
  as well as providing basic information about those maps.
 Classes:
     TileDict --> Maps a render tag to the actual image (makes it easy to switch out the image)

@@ -92,4 +92,8 @@ class Attributes():
         self.max_mana += change
         self.change_mana(change)
 
+    def level_up(self):
+        self.change_max_mana(5)
+        self.change_max_health(10)
+
 

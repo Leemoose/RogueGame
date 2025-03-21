@@ -1,6 +1,5 @@
 from pygame import image
 import pygame
-import tiles as T
 
 
 class TileDict():
@@ -218,6 +217,7 @@ class TileDict():
 
         tiles[1000] = image.load('assets/crawl-tiles/dc-mon/brown_ooze.png')
         tiles[1010] = image.load('assets/crawl-tiles/dc-mon/goblin.png')
+        tiles[1020] = image.load('assets/crawl-tiles/dc-mon/kobold.png')
 
         #2000-2999 all tiles assets
         tiles[2000] = image.load('assets/crawl-tiles/dc-dngn/floor/cobble_blood1.png')

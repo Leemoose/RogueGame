@@ -67,7 +67,7 @@ class Display:
         player_pixel_x, player_pixel_y = self.get_pixel_location_from_entity_location(player)
         #Draw base character depending on armor state
         self.win.blit(tileDict.tile_string(player.get_render_tag()), (player_pixel_x, player_pixel_y)) # DONG MODE ENGAGED
-        #Draw items on top
+        #Draw item_implementation on top
         if player.body.get_num_free_equipment_slots("boots_slot") == 0:
             self.win.blit(tileDict.tile_string(5200), (player_pixel_x, player_pixel_y))
         if player.body.get_num_free_equipment_slots("gloves_slot") == 0:
@@ -121,10 +121,10 @@ class Display:
         self.depth_label.update(1)
 
     def draw_single_entity(self, loop, entity):
-        if entity.get_is_in_square(self.x_start, self.x_end, self.x_start, self.y_end):
+        if entity.get_is_in_square(self.x_start, self.x_end, self.y_start, self.y_end):
             if loop.generator.tile_map.get_visible(entity.get_x(), entity.get_y()):
-                item_tile = loop.tileDict.tile_string(entity.get_render_tag())
-                self.win.blit(item_tile,self.get_pixel_location_from_entity_location(entity))
+                entity_tile = loop.tileDict.tile_string(entity.get_render_tag())
+                self.win.blit(entity_tile,self.get_pixel_location_from_entity_location(entity))
 
     #HORRIBLE HACK - THIS IS ALSO DEFINED IN UI.PY - KEEP THEM SYNCED!
     def update_mini_map(self, loop, left_offset, top_offset, width, height, num_tiles_wide, num_tiles_height):

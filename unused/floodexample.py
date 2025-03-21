@@ -1,6 +1,6 @@
-from dungeon_generation import mapping
+from dungeon_generation import mapping, tiles as T
 import random
-import tiles as T
+
 
 class FloodMap(mapping.Maps):
     def __init__(self, map, width, height):

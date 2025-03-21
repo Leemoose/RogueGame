@@ -71,13 +71,13 @@ class Fighter():
 
         effectiveness = 0
         weapon = self.parent.body.get_weapon()
-        if weapon is not None:
-            for types in weapon.effective:
-                if types in defender.attributes:
-                    if defender.attributes[types] == True:
-                        effectiveness += 1
-                        loop.add_message(
-                            "The attack is effective against {} as it is a {} type.".format(defender.name, types))
+        # if weapon is not None:
+        #     for types in weapon.effective:
+        #         if types in defender.attributes:
+        #             if defender.attributes[types] == True:
+        #                 effectiveness += 1
+        #                 loop.add_message(
+        #                     "The attack is effective against {} as it is a {} type.".format(defender.name, types))
 
         finalDamage = max(0, (int((damage + self.base_damage) * damage_shave) - defense) * (max(1, 1.5 * effectiveness)))
         if finalDamage > 0:

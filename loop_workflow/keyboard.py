@@ -71,6 +71,8 @@ class Keyboard():
                 self.set_next_key(self.get_key_binding(pygame.K_LEFT, False))
             elif keys[pygame.K_RIGHT] == True:
                 self.set_next_key(self.get_key_binding(pygame.K_RIGHT, False))
+            elif keys[pygame.K_TAB] == True:
+                self.set_next_key(self.get_key_binding(pygame.K_TAB, False))
 
 
     def move_nonadjacent(self, loop, x_tile, y_tile):

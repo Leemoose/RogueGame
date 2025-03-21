@@ -1,6 +1,6 @@
 from objects import Objects
-from items.orb import *
-from items.items import YellowFlowerPetal
+from item_implementation.orb import *
+from item_implementation.items import YellowFlowerPetal
 
 class Interactable(Objects):
     def __init__(self, render_tag = 0, x=-1, y=-1, name="Interactable"):

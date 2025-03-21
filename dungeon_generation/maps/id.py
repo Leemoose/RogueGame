@@ -1,6 +1,6 @@
 class ID():
     """
-    All unique entities (monsters and items) are tagged with an ID and put into dictionary.
+    All unique entities (monsters and item_implementation) are tagged with an ID and put into dictionary.
     IDs are generally used in arrays and other places and then the ID can be used to get actual object
     """
 

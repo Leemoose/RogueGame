@@ -1,22 +1,22 @@
-import random
-
 from monster_implementation import monster_ai
 import objects as O
 from character_implementation import character as C
-from character_implementation import Inventory, Body, Fighter
-import items as I
-import skills as S
+from character_implementation import Inventory, Body, Fighter, Mage
+import item_implementation as I
+from unused import skills as S
 
-from spell_implementation import Poison, Rooted, Slow, Paralyze
 
 class Monster(O.Objects):
-    def __init__(self, x=-1, y = -1, render_tag = -1, name="Unknown monster", experience_given = 0, brain = monster_ai.Monster_AI, rarity ="Common", health = 10, min_damage = 2, max_damage=3):
+    def __init__(self, x=-1, y = -1, render_tag = -1, name="Unknown monster", experience_given = 0, brain = monster_ai.Monster_AI, rarity ="Common", health = 10, min_damage = 2, max_damage=3, mana = 0):
         super().__init__(x=x, y=y, render_tag=render_tag, name=name)
-        self.character = C.Character(self, health = health)
+        self.character = C.Character(self, health = health, mana = mana)
         self.brain = brain(self)
         self.inventory = Inventory(self, gold = 1)
         self.body = Body(self)
         self.fighter = Fighter(self, min_damage=min_damage, max_damage = max_damage)
+        self.mage = Mage(self)
+        self.level = 1
+
         self.traits["monster"] = True
         self.skills = []
         self.rarity = rarity
@@ -32,10 +32,13 @@ class Monster(O.Objects):
     def get_description(self):
         return self.description
 
+    def get_level(self):
+        return self.level
+
     def get_string_description(self):
         description = []
         description.append(self.get_name())
-        description.append("Level: " + str(self.character.get_level()))
+        description.append("Level: " + str(self.get_level()))
         description.append("Health: " + str(self.character.get_health()) + "/" + str(self.character.get_max_health()))
         effects = self.character.get_status_effects()
         status = ""
@@ -144,7 +147,7 @@ class Monster(O.Objects):
 
 """
 GOBLIN
-+ Finds and pickups items
++ Finds and pickups item_implementation
 - Melee combat
 """
 

@@ -32,7 +32,7 @@ class Spell():
             self.ready -= 1
 
     def castable(self, target):
-        if self.ready == 0 and self.parent.character.mana >= self.cost:
+        if self.ready == 0 and self.parent.character.get_mana() >= self.cost:
             return True
         return False
 

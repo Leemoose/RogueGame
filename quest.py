@@ -1,4 +1,4 @@
-import items as I
+import item_implementation as I
 from monsters import monster as M
 
 

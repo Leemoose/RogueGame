@@ -1,11 +1,10 @@
-import time
-import items
+
+import item_implementation
 from dungeon_generation import mapping as M
 import player
-import targets as T
 from navigation_utility import shadowcasting
-from loop_utility import *
-from loop_workflow import MessageHandler
+from loop_workflow.loop_utility import *
+from loop_workflow import MessageHandler, targets as T
 
 from display_generation import *
 
@@ -262,7 +261,7 @@ class Loops():
         for monster in self.generator.monster_map.get_all_entities():
             if not monster.character.is_alive():
                 if monster.inventory.get_gold() > 0:
-                    gold = items.Gold(monster.inventory.get_gold(), x = monster.get_x(), y= monster.get_y())
+                    gold = item_implementation.Gold(monster.inventory.get_gold(), x = monster.get_x(), y= monster.get_y())
                     self.generator.item_map.place_thing(gold)
                 items_copy = monster.get_inventory()
                 for item in items_copy:

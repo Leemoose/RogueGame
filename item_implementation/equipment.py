@@ -1,5 +1,5 @@
 """
-All detailed items are initialized here.
+All detailed item_implementation are initialized here.
 """
 from .items import Item
 from .statupgrade import statUpgrades

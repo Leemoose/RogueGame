@@ -34,7 +34,7 @@ class Inventory():
         enchantable = []
         for item in self.inventory:
             if item.can_be_levelled:
-                if item.level < 6: # items can be levelled upto +5
+                if item.level < 6: # item_implementation can be levelled upto +5
                     enchantable.append(item)
         return enchantable
 

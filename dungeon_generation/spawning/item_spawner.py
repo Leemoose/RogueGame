@@ -17,7 +17,7 @@ class ItemSpawner():
         self.ExtraCommon = [i for i in self.ItemSpawns if i.item.rarity == "Extra Common"]
         self.commonCorpse = [i for i in self.ItemSpawns if i.item.has_trait("corpse")]
 
-        # useful for debugging specific items, separate from generator
+        # useful for debugging specific item_implementation, separate from generator
         self.forceSpawn = []
 
         # rings = [i for i in self.ItemSpawns if i.item.has_trait("ring")]
@@ -73,7 +73,7 @@ class ItemSpawner():
             rareEquipAtDepth = commonEquipAtDepth
         legendaryEquipAtDepth = [i for i in self.legendaryEquip if i.AllowedAtDepth(depth, branch)]
         legendaryScrorbsAtDepth = [i for i in self.legendaryScrorbs if i.AllowedAtDepth(depth, branch)]
-        if legendaryEquipAtDepth == []: # downgrade if no legendary items available
+        if legendaryEquipAtDepth == []: # downgrade if no legendary item_implementation available
             if rareEquipAtDepth == []:
                 legendaryEquipAtDepth = commonEquipAtDepth
             else:
@@ -112,24 +112,24 @@ class ItemSpawner():
                 item_spawn = random.choice(rarePotiorbsAtDepth)
                 item = item_spawn.GetFreshCopy()
                 items.append(item)
-        for i in range(distribution.countScrorbs(depth)):
-            rarity = random.random()
-            if rarity < distribution.scrorbs[depth-1][0]:
-                item_spawn = random.choice(commonScrorbsAtDepth)
-                item = item_spawn.GetFreshCopy()
-                items.append(item)
-            elif rarity < distribution.scrorbs[depth-1][0] + distribution.scrorbs[depth-1][1]:
-                item_spawn = random.choice(rareScrorbsAtDepth)
-                item = item_spawn.GetFreshCopy()
-                items.append(item)
-            else:
-                item_spawn = random.choice(legendaryScrorbsAtDepth)
-                item = item_spawn.GetFreshCopy()
-                items.append(item)
-        for i in range(distribution.countExtraCommon(depth)):
-            item_spawn = random.choice(self.ExtraCommon)
-            item = item_spawn.GetFreshCopy()
-            items.append(item)
+        # for i in range(distribution.countScrorbs(depth)):
+        #     rarity = random.random()
+        #     if rarity < distribution.scrorbs[depth-1][0]:
+        #         item_spawn = random.choice(commonScrorbsAtDepth)
+        #         item = item_spawn.GetFreshCopy()
+        #         item_implementation.append(item)
+        #     elif rarity < distribution.scrorbs[depth-1][0] + distribution.scrorbs[depth-1][1]:
+        #         item_spawn = random.choice(rareScrorbsAtDepth)
+        #         item = item_spawn.GetFreshCopy()
+        #         item_implementation.append(item)
+        #     else:
+        #         item_spawn = random.choice(legendaryScrorbsAtDepth)
+        #         item = item_spawn.GetFreshCopy()
+        #         item_implementation.append(item)
+        # for i in range(distribution.countExtraCommon(depth)):
+        #     item_spawn = random.choice(self.ExtraCommon)
+        #     item = item_spawn.GetFreshCopy()
+        #     item_implementation.append(item)
 
         for i in range(distribution.countCorpses(depth)):
             rarity = random.random()

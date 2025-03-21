@@ -1,12 +1,8 @@
 from objects import Objects
-from character_implementation import character as C, statistics, Body, Fighter
+from character_implementation import character as C, statistics, Body, Fighter, Mage
 from navigation_utility import pathfinding
-import skills as S
-from spell_implementation import Mage
 from loop_workflow import LoopType
 from character_implementation import Inventory
-from items import MightPotion, BlinkScrorb
-
 
 
 class Player(Objects):
@@ -37,7 +33,7 @@ class Player(Objects):
 
         if self.character.status.get_invincible():  # only get the gun if you're invincible at the start
             bug_test_spells = [
-                S.Gun(self),  # 1
+                # S.Gun(self),  # 1
                 # S.BlinkStrike(self, cooldown=0, cost=10, damage=25, range=10, action_cost=1), # 3
                 #spell.SummonGargoyle(self), # 2
                 # S.BurningAttack(self, cooldown=10, cost=10, damage=20, burn_damage=10, burn_duration=10, range=10),  # 2
@@ -51,8 +47,8 @@ class Player(Objects):
             for spell in bug_test_spells:
                 self.mage.add_spell(spell)
             self.stat_points = 20 # free stat points for debugging
-            self.inventory.get_item(MightPotion())
-            self.inventory.get_item(BlinkScrorb())
+            # self.inventory.get_item(MightPotion())
+            # self.inventory.get_item(BlinkScrorb())
 
     def get_attribute(self, attribute):
         attribute = attribute.lower()
@@ -181,7 +177,6 @@ class Player(Objects):
             if start in good_item_locations:
                 self.do_grab(good_item_dict[start], loop)
                 good_item_locations.remove(start)
-                            
 
             all_seen, unseen = loop.generator.get_all_seen()
             if all_seen:
@@ -267,6 +262,7 @@ class Player(Objects):
             exp_taken = self.experience_to_next_level
             self.experience_to_next_level += 20 + self.experience_to_next_level // 4
             self.experience -= exp_taken
+            self.character.level_up()
 
     def modify_stat_decisions(self, i, increase=True):  # 0 = strength, 1 = dexterity, 2 = endurance, 3 = intelligence
         if increase:

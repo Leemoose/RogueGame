@@ -34,7 +34,7 @@ class LeatherArmor(BodyArmor):
     def __init__(self, render_tag):
         super().__init__(render_tag, "Leather Armor")
         self.description = "A comfortable piece of armor, that helps you feel lighter on your feet. "
-        self.wearer = None  # items with stat buffs need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs need to keep track of owner for level ups
         self.stats = statUpgrades(base_dex=1, max_dex=4, base_arm=1, max_arm=4)
 
     def level_up(self):
@@ -100,7 +100,7 @@ class WarlordArmor(BodyArmor):
         self.required_strength = 1
         self.strength_buff = 2
 
-        self.wearer = None  # items with stat buffs need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs need to keep track of owner for level ups
 
         self.skill_cooldown = 12
         self.skill_cost = 10
@@ -159,7 +159,7 @@ class BloodstainedArmor(BodyArmor):
         self.description = "A maligment aura surronds this armor."
         self.required_strength = 3
         self.cursed = True
-        self.wearer = None  # items with stat buffs need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs need to keep track of owner for level ups
         self.rarity = "Legendary"
         self.stats = statUpgrades(base_str=2, max_str=6,
                                   base_dex=-2, max_dex=0,
@@ -191,7 +191,7 @@ class WizardRobe(BodyArmor):
         self.mana_regen_buff = 3
         self.intelligence_buff = 5
 
-        self.wearer = None  # items with stat buffs need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs need to keep track of owner for level ups
 
         self.rarity = "Rare"
         self.stats = statUpgrades(base_str=-2, max_str=0,
@@ -229,7 +229,7 @@ class KarateGi(BodyArmor):
         self.damage_boost_min = 2
         self.damage_boost_max = 4
 
-        self.wearer = None  # items with stat buffs need to keep track of owner for level ups
+        self.wearer = None  # item_implementation with stat buffs need to keep track of owner for level ups
 
         self.rarity = "Rare"
 
