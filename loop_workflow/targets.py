@@ -2,8 +2,12 @@
 class Target:
     def __init__(self, parent):
         self.parent = parent
+
         self.target_coordinates = (0, 0)
         self.target_current = None
+
+        self.origin_range_coordinates = (0, 0)
+        self.range = None
 
         self.index_to_cast = None
         self.skill_to_cast = None
@@ -11,6 +15,18 @@ class Target:
         self.temp_cast = None
         self.quick_cast = False
 
+        self.queued_action = None #working on this
+
+
+    def set_queued_action(self, action):
+        self.queued_action = action
+
+    def get_has_queued_action(self):
+        return self.queued_action is not None
+
+    def use_queued_action(self, loop):
+        if self.queued_action is not None:
+            self.queued_action(self.get_target(), loop)
 
     def set_target(self, target):
         if target is None:
@@ -27,10 +43,16 @@ class Target:
                     self.target_current = self.parent.generator.tile_map.get_entity(x, y)
                 self.target_coordinates = target
 
-    #Used for when the entity is not on the map
-    def set_entity_target(self, item):
-        self.target_current = item
+    def set_target_range(self, origin, range):
+        self.origin_range_coordinates = origin
+        self.range = range
 
+    def get_range(self):
+        return self.range
+
+    #Used for when the entity is not on the map
+    def set_entity_target(self, entity):
+        self.target_current = entity
 
     def get_target(self):
         return self.target_current
@@ -38,11 +60,14 @@ class Target:
     def get_target_coordinates(self):
         return self.target_coordinates
 
+    def get_origin_range_coordinates(self):
+        return self.origin_range_coordinates
+
     def adjust(self, xdelta, ydelta):
         x, y = self.get_target_coordinates()
         tile_map = self.parent.generator.tile_map
-        if (tile_map.get_passable(x + xdelta, y + ydelta) and
-            tile_map.get_seen(x + xdelta,y + ydelta)):
+        if (tile_map.get_passable(x + xdelta, y + ydelta) and tile_map.get_seen(x + xdelta,y + ydelta)
+                and tile_map.get_distance(x + xdelta,self.origin_range_coordinates[0], y + ydelta, self.origin_range_coordinates[1]) <= self.range):
             self.set_target((x+xdelta, y + ydelta))
 
 
@@ -60,6 +85,7 @@ class Target:
         self.skill_to_cast = None
         self.caster = None
         self.temp_cast = False
+        self.set_queued_action(None)
 
     def cast_on_target(self, loop):
         x, y = self.target_current

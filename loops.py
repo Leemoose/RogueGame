@@ -316,8 +316,9 @@ class Loops():
 
     def start_targetting(self, start_on_player=False):
         self.change_loop(LoopType.targeting)
-        if start_on_player:
-            target = player
+        if start_on_player or (self.targets.get_range() is not None and get_closest_monster(self).get_distance(self.targets.get_origin_range_coordinates()[0],
+                                                                                                               self.targets.get_origin_range_coordinates()[1]) > self.targets.get_range()):
+            target = self.player
         else:
             target = get_closest_monster(self)
         self.targets.set_target(target.get_location())

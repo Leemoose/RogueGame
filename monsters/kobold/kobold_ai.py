@@ -5,10 +5,10 @@ from monster_implementation import do_combat
 class Kobold_AI(Monster_AI):
     def __init__(self, parent):
         super().__init__(parent)
-        self.tendencies = {"combat": (50, 10),
+        self.tendencies = {"combat": (80, 10),
                            "move": (40, 20),
-                           "reposition": (100, 30),
-                           "burning_hands": (60,10)
+                           "reposition": (100, 15),
+                           "burning_hands": (10,0)
                            }
         #reposition
         self.options["burning_hands"] = (rank_burning_hands, do_burning_hands)

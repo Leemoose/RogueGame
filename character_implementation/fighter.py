@@ -20,6 +20,12 @@ class Fighter():
         if attribute == "armor":
             return self.get_armor()
 
+    def get_range(self):
+        if self.parent.body.get_weapon() is None:
+            return 1.5
+        else:
+            return self.parent.body.get_weapon().get_range()
+
     def change_attribute(self, attribute, change):
         if attribute == "armor":
             self.armor += change

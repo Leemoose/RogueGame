@@ -82,6 +82,17 @@ class Monster(O.Objects):
             monster_map.move_entity(self.x, self.y, self.x + move_x, self.y + move_y)
             self.set_location(self.x + move_x, self.y + move_y)
 
+    def do_unequip(self, item):
+        if item is not None and self.body.can_unequip(item) and item.can_be_unequipped(self):
+            self.body.unequip(item)
+
+    def change_attribute(self, attribute, change):
+        attribute = attribute.lower()
+        if attribute in ["strength", 'intelligence','endurance',"dexterity"]:
+            return self.character.change_attribute(attribute, change)
+        elif attribute in ['armor']:
+            return self.fighter.change_attribute(attribute, change)
+
     def __str__(self):
         return self.name
 

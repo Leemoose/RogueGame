@@ -1,6 +1,7 @@
 from .ui import *
 import pygame
 import pygame_gui
+from loop_workflow.loop_utility import LoopType
 
 class Display:
     """
@@ -521,18 +522,22 @@ class Display:
         text = font.render(message, True, (255, 255, 255))
         self.win.blit(text, (25, 25))
 
+    #First draws the tiles, then darkens the ones that are out of range
     def draw_single_tile(self, loop, tile):
         if tile.get_visible() or tile.get_seen():
             tag = loop.tileDict.tile_string(tile.get_render_tag())
-            self.win.blit(tag, (
-            self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)))
-        if tile.get_seen() and not tile.get_visible():
+            self.win.blit(tag, (self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)))
+        if tile.get_seen() and not tile.get_visible() or (loop.currentLoop == LoopType.targeting and
+                                                                loop.targets.get_range() is not None and
+                                                                tile.get_distance(
+                                                                    loop.targets.get_origin_range_coordinates()[0],
+                                                                    loop.targets.get_origin_range_coordinates()[
+                                                                        1]) > loop.targets.get_range()):
             black_img = pygame.Surface((32, 32))
             black_img.fill([int(100)] * 3)
             self.win.blit(black_img, (
             self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)),
                           special_flags=pygame.BLEND_RGB_MULT)
-
 
     def update_examine(self, target, loop):
         x, y = target

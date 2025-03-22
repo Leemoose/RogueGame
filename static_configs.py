@@ -243,6 +243,8 @@ class TileDict():
         tiles[4200] = image.load("assets/items/consumeables/yello_flower_petal.png")
         tiles[4300] = image.load('assets/crawl-tiles/item/scroll/scroll.png')
 
+        tiles[4500] = image.load('assets/crawl-tiles/item/weapon/spear2.png')
+
         #Player assets 5000
         tiles[5000] = image.load('assets/crawl-tiles/player/base/human_m.png')
         tiles[5100] = image.load('assets/crawl-tiles/player/gloves/glove_black.png')

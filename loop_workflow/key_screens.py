@@ -25,7 +25,10 @@ def key_targeting_screen(loop, key):
         loop.player.inventory.ready_scroll = None
         loop.change_loop(LoopType.action)
     elif key == "return":
-        targets.cast_on_target(loop)
+        #targets.cast_on_target(loop)
+        if targets.get_has_queued_action() is not None:
+            targets.use_queued_action(loop)
+        targets.void_skill()
         loop.change_loop(LoopType.action)
         loop.set_target(None)
 
@@ -101,11 +104,11 @@ def key_action(loop, key):
                 player.do_grab(item, loop)
                 break
     elif key == "f":
-        for weapon in player.body.get_items_in_equipment_slot("hand_slot"):
-            if weapon.has_trait("ranged_weapon"):
-               # loop.start_targetting(start_on_player=True)
-               # player.character.melee(loop.targets.target_current, loop)
-                pass #change to targeting screen
+        loop.targets.set_target_range(loop.player.get_location(), loop.player.fighter.get_range())
+        loop.targets.set_queued_action(loop.player.attack)
+        loop.start_targetting()
+       # player.character.melee(loop.targets.target_current, loop)
+        pass #change to targeting screen
     elif key == "i":
         loop.player.inventory.change_active_inventory("main")
         loop.change_loop(LoopType.inventory)

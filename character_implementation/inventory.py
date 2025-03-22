@@ -99,7 +99,7 @@ class Inventory():
     def do_drop(self, item, item_map):
         if len(self.inventory) != 0: #Seems unnecessary? Good to be safe...
             if item.equipable and item.equipped:
-                self.parent.unequip(item)
+                self.parent.do_unequip(item)
             item.set_location(self.parent.get_x(), self.parent.get_y())
             item_map.place_thing(item)
             self.remove_item(item)
@@ -115,10 +115,12 @@ class Inventory():
                 self.orb_inventory.pop(i)
                 return True
         elif len(self.inventory) > 0:
+            print(self.inventory)
+            print(item)
             i = 0
-            while (self.inventory[i] != item) and i < len(self.inventory):
+            while (self.inventory[i] != item) and i < len(self.inventory) - 1:
                 i += 1
-            if i < len(self.inventory):
+            if i < len(self.inventory) - 1 and self.inventory[i] == item:
                 self.inventory.pop(i)
                 return True
         return False

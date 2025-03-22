@@ -62,8 +62,7 @@ def rank_ungroup(ai, loop):
 def rank_combat(ai, loop):
     ai.target = None
     player = loop.player
-    monster_map = loop.generator.monster_map
-    if ai.parent.get_distance(player.get_x(), player.get_y()) < 1.5:
+    if ai.parent.get_distance(player.get_x(), player.get_y()) <= ai.parent.fighter.get_range():
         ai.target = player
         return ai.randomize_action("combat")
     else:
@@ -78,7 +77,10 @@ def rank_pickup(ai, loop):
         return -1
 
 def rank_move(ai, loop):
-    return ai.randomize_action("move")
+    if ai.parent.get_distance(loop.player.get_x(), loop.player.get_y()) > 1.5:
+        return ai.randomize_action("move")
+    else:
+        return -1
 
 # def rank_stairs(ai, loop):
 #     if loop.taking_stairs == True:

@@ -1,7 +1,7 @@
 """
 WEAPONS
 """
-from .equipment import Equipment
+from item_implementation.equipment import Equipment
 # from skills import MagicMissile
 import random
 
@@ -18,6 +18,7 @@ class Weapon(Equipment):
         self.effective = []
         self.attack_cost = attack_cost
         self.diff_action_cost = 0
+        self.range = 1
         self.traits["weapon"] = True
         self.slot = "hand_slot"
 
@@ -32,6 +33,9 @@ class Weapon(Equipment):
 
     def get_damage_max(self):
         return self.damage_max
+
+    def get_range(self):
+        return self.range
 
     def attack(self):
         damage = random.randint(self.damage_min, self.damage_max)

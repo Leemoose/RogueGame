@@ -70,13 +70,13 @@ def do_combat(ai, loop):
         monster.character.energy -= ai.parent.character.action_costs[
             "move"]  # (monster.character.move_cost - monster.character.dexterity)
         loop.add_message(f"{monster} is petrified and cannot attack.")
-        return
-    monster.character.energy -= ai.parent.character.action_costs["attack"]
-    if ai.target != None:
-        damage = monster.do_attack(ai.target, loop)
-        loop.add_message(f"{monster} attacked {ai.target.name} for {damage} damage")
-    else:
-        loop.add_message(f"{monster.name} can find no suitable target to attack.")
+    elif ai.parent.get_distance(loop.player.get_x(), loop.player.get_y()) <= ai.parent.fighter.get_range():
+        monster.character.energy -= ai.parent.character.action_costs["attack"]
+        if ai.target != None:
+            damage = monster.do_attack(ai.target, loop)
+            loop.add_message(f"{monster} attacked {ai.target.name} for {damage} damage")
+        else:
+            loop.add_message(f"{monster.name} can find no suitable target to attack.")
 
 # def do_use_consumeable(ai, loop):
 #     # print("Using consumeable")

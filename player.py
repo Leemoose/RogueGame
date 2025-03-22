@@ -4,6 +4,8 @@ from navigation_utility import pathfinding
 from loop_workflow import LoopType
 from character_implementation import Inventory
 
+from item_implementation.weapons import Spear
+
 
 class Player(Objects):
     def __init__(self, x, y):
@@ -14,6 +16,9 @@ class Player(Objects):
         self.body = Body(self)
         self.fighter = Fighter(self)
         self.statistics = statistics.StatTracker()
+        self.traits["player"] = True
+
+        self.inventory.get_item(Spear())
 
         self.level = 1
         self.max_level = 20
@@ -108,15 +113,16 @@ class Player(Objects):
             loop.add_message("You can't move there")
 
     def attack(self, defender, loop):
-        if self.character.can_take_action():
-            self.character.energy -= self.character.action_costs[
-                "attack"]  # / (1.05**(self.character.dexterity + self.character.round_bonus())))
-            #Set target to the defender
-            damage = self.fighter.do_attack(defender, loop)
-            self.statistics.add_attack_details(damage)
-            loop.add_message(f"The player attacked for {damage} damage", (220,20,60))
-        else:
-            loop.add_message("You cannot currently take actions")
+        if defender.has_trait("monster"):
+            if self.character.can_take_action() and self.get_distance(defender.get_x(), defender.get_y()) <= self.fighter.get_range():
+                self.character.energy -= self.character.action_costs[
+                    "attack"]  # / (1.05**(self.character.dexterity + self.character.round_bonus())))
+                #Set target to the defender
+                damage = self.fighter.do_attack(defender, loop)
+                self.statistics.add_attack_details(damage)
+                loop.add_message(f"The player attacked for {damage} damage", (220,20,60))
+            else:
+                loop.add_message("You cannot currently take actions")
 
     def autopath(self, loop):
         if self.character.needs_rest():

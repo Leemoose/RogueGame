@@ -92,7 +92,7 @@ class Body():
             item.dropable = False
             if item.attached_skill_exists:
                 self.parent.character.add_skill(item.attached_skill(self.parent))
-            item.activate(self.parent)
+            # item.activate(self.parent)
 
 
     def unequip_current(self, item):
