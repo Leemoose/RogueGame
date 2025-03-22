@@ -1,3 +1,4 @@
+import pygame
 
 from .key_screens import key_targeting_screen, key_action, key_explore
 from .bindings import Bindings
@@ -73,6 +74,8 @@ class Keyboard():
                 self.set_next_key(self.get_key_binding(pygame.K_RIGHT, False))
             elif keys[pygame.K_TAB] == True:
                 self.set_next_key(self.get_key_binding(pygame.K_TAB, False))
+            elif keys[pygame.K_PERIOD] == True:
+                self.set_next_key(self.get_key_binding(pygame.K_PERIOD, False))
 
 
     def move_nonadjacent(self, loop, x_tile, y_tile):

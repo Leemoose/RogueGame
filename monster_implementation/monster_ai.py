@@ -35,7 +35,7 @@ class Monster_AI():
 
         # print(max_utility)
         self.parent.character.energy -= 1
-        print(f"{self.parent} is doing {called_function} with utility {max_utility}")
+        # print(f"{self.parent} is doing {called_function} with utility {max_utility}")
         self.options[called_function][1](self,loop)
 
     def change_tendency(self, type, new_value):

@@ -284,13 +284,13 @@ class Loops():
        # print("The stairs you are taking is {}".format(self.generator.tile_map.track_map[playerx][playery]))
         current_stairs = self.generator.tile_map.get_entity(playerx, playery)
         if current_stairs.has_trait("stairs"):
-            print("Taking stairs")
             new_level = self.get_depth() + current_stairs.get_level_change()
             new_generator = self.memory.get_saved_floor(self.get_branch(), new_level)
             if not current_stairs.get_has_paired_stairs():
                 for other_stairs in new_generator.tile_map.get_stairs():
                     if (not other_stairs.get_has_paired_stairs() and other_stairs.get_level_change() != current_stairs.get_level_change()):
                         current_stairs.pair_stairs(other_stairs)
+                        break
             self.player.x, self.player.y = (current_stairs.get_paired_stairs().get_location())
             self.player.visited_stairs = []
             self.generator = new_generator

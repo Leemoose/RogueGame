@@ -118,9 +118,9 @@ class Inventory():
             print(self.inventory)
             print(item)
             i = 0
-            while (self.inventory[i] != item) and i < len(self.inventory) - 1:
+            while (self.inventory[i] != item) and i < len(self.inventory):
                 i += 1
-            if i < len(self.inventory) - 1 and self.inventory[i] == item:
+            if i < len(self.inventory) and self.inventory[i] == item:
                 self.inventory.pop(i)
                 return True
         return False

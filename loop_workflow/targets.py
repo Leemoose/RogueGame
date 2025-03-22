@@ -67,7 +67,7 @@ class Target:
         x, y = self.get_target_coordinates()
         tile_map = self.parent.generator.tile_map
         if (tile_map.get_passable(x + xdelta, y + ydelta) and tile_map.get_seen(x + xdelta,y + ydelta)
-                and tile_map.get_distance(x + xdelta,self.origin_range_coordinates[0], y + ydelta, self.origin_range_coordinates[1]) <= self.range):
+                and (self.get_range() is None or tile_map.get_distance(x + xdelta,self.origin_range_coordinates[0], y + ydelta, self.origin_range_coordinates[1]) <= self.range)):
             self.set_target((x+xdelta, y + ydelta))
 
 

@@ -8,11 +8,11 @@ MonsterSpawns = []
 # MonsterSpawns.append(MonsterSpawnParams(M.Slime(), group="slime", minFloor=1, maxFloor=4))
 
 # early floors dungeon only
-MonsterSpawns.append(MonsterSpawnParams(Ooze(-1, -1), minFloor=2, maxFloor=10))
+MonsterSpawns.append(MonsterSpawnParams(Ooze(-1, -1), minFloor=1, maxFloor=10))
 
 # goblin type monsters dungeon only
 MonsterSpawns.append(MonsterSpawnParams(Goblin(-1, -1), group="goblin", minFloor=2, maxFloor=10))
-MonsterSpawns.append(MonsterSpawnParams(Kobold(-1, -1), group="kobold", minFloor=1, maxFloor=10))
+MonsterSpawns.append(MonsterSpawnParams(Kobold(-1, -1), group="kobold", minFloor=3, maxFloor=10))
 # MonsterSpawns.append(MonsterSpawnParams(M.Hobgoblin(-1, -1), minFloor=1, maxFloor=4, rarity="Rare", group="goblin"))
 # MonsterSpawns.append(MonsterSpawnParams(M.Looter(), group="goblin", minFloor=1, maxFloor=4))
 # #MonsterSpawns.append(MonsterSpawnParams(M.GoblinShaman(-1, -1), group="goblin"))

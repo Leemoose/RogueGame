@@ -4,8 +4,6 @@ from navigation_utility import pathfinding
 from loop_workflow import LoopType
 from character_implementation import Inventory
 
-from item_implementation.weapons import Spear
-
 
 class Player(Objects):
     def __init__(self, x, y):
@@ -17,8 +15,6 @@ class Player(Objects):
         self.fighter = Fighter(self)
         self.statistics = statistics.StatTracker()
         self.traits["player"] = True
-
-        self.inventory.get_item(Spear())
 
         self.level = 1
         self.max_level = 20

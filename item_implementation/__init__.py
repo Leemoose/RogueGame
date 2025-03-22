@@ -4,7 +4,7 @@ from .boots import *
 from .gloves import *
 from .helmet import *
 from .bodyarmor import *
-from item_implementation.weapons.weapons import *
+from item_implementation.weapons import *
 from .ring import *
 from .pants import *
 from .shield import *

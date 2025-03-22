@@ -245,6 +245,15 @@ class TileDict():
 
         tiles[4500] = image.load('assets/crawl-tiles/item/weapon/spear2.png')
 
+        tiles[4600] = image.load('assets/crawl-tiles/item/weapon/war_axe1.png')
+
+        tiles[4700] = image.load('assets/crawl-tiles/item/weapon/hammer1.png')
+
+        tiles[4800] = image.load('assets/crawl-tiles/item/weapon/long_sword1.png')
+
+        tiles[4900] = image.load('assets/crawl-tiles/item/weapon/dagger.png')
+
+
         #Player assets 5000
         tiles[5000] = image.load('assets/crawl-tiles/player/base/human_m.png')
         tiles[5100] = image.load('assets/crawl-tiles/player/gloves/glove_black.png')

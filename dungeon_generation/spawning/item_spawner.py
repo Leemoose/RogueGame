@@ -80,38 +80,40 @@ class ItemSpawner():
                 legendaryEquipAtDepth = rareEquipAtDepth
 
         for i in range(distribution.countEquipment(depth)):
-            rarity = random.random()
-            if rarity < distribution.equipment[depth-1][0]:
-                item_spawn = random.choice(commonEquipAtDepth)
-                item = item_spawn.GetFreshCopy()
-                if item.can_be_levelled:
-                    for _ in range(self.random_level(depth)):
-                        item.level_up()
-                items.append(item)
-            elif rarity < distribution.equipment[depth-1][0] + distribution.equipment[depth-1][1]:
-                item_spawn = random.choice(rareEquipAtDepth)
-                item = item_spawn.GetFreshCopy()
-                if item.can_be_levelled:
-                    for _ in range(self.random_level(depth)):
-                        item.level_up()
-                items.append(item)     
-            else:
-                item_spawn = random.choice(legendaryEquipAtDepth)
-                item = item_spawn.GetFreshCopy()
-                if item.can_be_levelled:
-                    for _ in range(self.random_level(depth)):
-                        item.level_up()
-                items.append(item)
-        for i in range(distribution.countPotiorbs(depth)):
-            rarity = random.random()
-            if rarity < distribution.potiorbs[depth-1][0]:
-                item_spawn = random.choice(commonPotiorbsAtDepth)
-                item = item_spawn.GetFreshCopy()
-                items.append(item)
-            else:
-                item_spawn = random.choice(rarePotiorbsAtDepth)
-                item = item_spawn.GetFreshCopy()
-                items.append(item)
+            if distribution.countEquipment(depth) > 0:
+                rarity = random.random()
+                if rarity < distribution.equipment[depth-1][0]:
+                    item_spawn = random.choice(commonEquipAtDepth)
+                    item = item_spawn.GetFreshCopy()
+                    if item.can_be_levelled:
+                        for _ in range(self.random_level(depth)):
+                            item.level_up()
+                    items.append(item)
+                elif rarity < distribution.equipment[depth-1][0] + distribution.equipment[depth-1][1]:
+                    item_spawn = random.choice(rareEquipAtDepth)
+                    item = item_spawn.GetFreshCopy()
+                    if item.can_be_levelled:
+                        for _ in range(self.random_level(depth)):
+                            item.level_up()
+                    items.append(item)
+                else:
+                    item_spawn = random.choice(legendaryEquipAtDepth)
+                    item = item_spawn.GetFreshCopy()
+                    if item.can_be_levelled:
+                        for _ in range(self.random_level(depth)):
+                            item.level_up()
+                    items.append(item)
+        if len(commonPotiorbsAtDepth) > 0:
+            for i in range(distribution.countPotiorbs(depth)):
+                rarity = random.random()
+                if rarity < distribution.potiorbs[depth-1][0]:
+                    item_spawn = random.choice(commonPotiorbsAtDepth)
+                    item = item_spawn.GetFreshCopy()
+                    items.append(item)
+                else:
+                    item_spawn = random.choice(rarePotiorbsAtDepth)
+                    item = item_spawn.GetFreshCopy()
+                    items.append(item)
         # for i in range(distribution.countScrorbs(depth)):
         #     rarity = random.random()
         #     if rarity < distribution.scrorbs[depth-1][0]:
