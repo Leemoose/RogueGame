@@ -7,7 +7,7 @@ import random
 
 class Weapon(Equipment):
     def __init__(self, x=-1, y=-1, id_tag=-1, render_tag=-1, name="Unknown weapon", damage_min=0, damage_max=0,
-                 armor_piercing=0, attack_cost=80):
+                 armor_piercing=0, attack_cost=80, range = 1):
         super().__init__(x=x, y=y, id_tag=id_tag, render_tag=render_tag, name=name)
         self.damage_min = damage_min
         self.damage_max = damage_max
@@ -18,7 +18,7 @@ class Weapon(Equipment):
         self.effective = []
         self.attack_cost = attack_cost
         self.diff_action_cost = 0
-        self.range = 1
+        self.range = range
         self.traits["weapon"] = True
         self.slot = "hand_slot"
 
@@ -41,22 +41,6 @@ class Weapon(Equipment):
         damage = random.randint(self.damage_min, self.damage_max)
         return damage
 
-
-class RangedWeapon(Weapon):  # Still working
-    def __init__(self, render_tag=351):
-        super().__init__(-1, -1, 0, render_tag=render_tag, name="Ranged Weapon")
-        self.melee = True
-        self.name = "Ranged Weapon"
-        self.description = "A ranged weapon"
-        self.damage_min = 4
-        self.damage_max = 7
-        self.effective.append("wood")
-        self.traits["ranged_weapon"] = True
-
-    def level_up(self):
-        self.enchant()
-        self.damage_min += 1
-        self.damage_max += 2
 
 
 

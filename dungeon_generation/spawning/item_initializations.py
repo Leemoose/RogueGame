@@ -6,6 +6,9 @@ ItemSpawns = []
 
 # Can specify min_floor, max_floor, branch allowed - by default can spawn anywhere
 # Weapons
+#Bows
+ItemSpawns.append(ItemSpawnParams(Bow(), minFloor=1, maxFloor=10) )
+
 # Spears
 ItemSpawns.append(ItemSpawnParams(Spear(), minFloor=1, maxFloor=10) )
 
@@ -42,7 +45,7 @@ ItemSpawns.append(ItemSpawnParams( BroadSword(), minFloor=2, maxFloor=10  ))
 #
 # # Body Armor
 # ItemSpawns.append(ItemSpawnParams( Chestarmor(600) ))
-# ItemSpawns.append(ItemSpawnParams( LeatherArmor(601) ))
+ItemSpawns.append(ItemSpawnParams( LeatherArmor(), minFloor=1, maxFloor=10 ))
 # ItemSpawns.append(ItemSpawnParams( GildedArmor(602) ))
 # ItemSpawns.append(ItemSpawnParams( WarlordArmor(603) ))
 # ItemSpawns.append(ItemSpawnParams( WizardRobe(604) ))
@@ -83,8 +86,8 @@ ItemSpawns.append(ItemSpawnParams( BroadSword(), minFloor=2, maxFloor=10  ))
 # # Amulets
 # ItemSpawns.append(ItemSpawnParams( Amulet(550) ))
 #
-# # Potiorbs
-# ItemSpawns.append(ItemSpawnParams( HealthPotion(401) ))
+# # Potions
+ItemSpawns.append(ItemSpawnParams( HealthPotion(401), minFloor=1, maxFloor=10 ))
 # ItemSpawns.append(ItemSpawnParams( ManaPotion(402) ))
 # ItemSpawns.append(ItemSpawnParams( CurePotion(403) ))
 # ItemSpawns.append(ItemSpawnParams( MightPotion(404) ))

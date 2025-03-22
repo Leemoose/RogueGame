@@ -224,17 +224,8 @@ class TileDict():
 
         tiles[2100] = image.load('assets/crawl-tiles/dc-dngn/wall/stone_dark1.png')
 
-        #3000 -3999 all interactable objects
-        tiles[3001] = image.load('assets/npc/deactivated_campfire.png')
-
-        tiles[3100] = image.load('assets/interactables/forest_hermit.png')
-
-        tiles[3800] = image.load("assets/interactables/yellow_plant.png")
-
-        tiles[3900] = image.load('assets/interactables/forest_orb_pedastool.png')
-        tiles[3901] = image.load('assets/interactables/forest_orb_pedastool_deactivated.png')
-        tiles[3910] = image.load('assets/interactables/ocean_orb_pedastool.png')
-        tiles[3911] = image.load('assets/interactables/ocean_orb_pedastool_deactivated.png')
+        #3000 -4999 all items assets
+        tiles[3000] = image.load('assets/crawl-tiles/item/armour/leather_armour1.png')
 
         #Items 4000+
         tiles[4000] = image.load("assets/items/orbs/forest_orb.png")
@@ -242,6 +233,8 @@ class TileDict():
 
         tiles[4200] = image.load("assets/items/consumeables/yello_flower_petal.png")
         tiles[4300] = image.load('assets/crawl-tiles/item/scroll/scroll.png')
+
+        tiles[4400] = image.load('assets/items/weapons/bow.png')
 
         tiles[4500] = image.load('assets/crawl-tiles/item/weapon/spear2.png')
 

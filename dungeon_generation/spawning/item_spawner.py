@@ -19,6 +19,7 @@ class ItemSpawner():
 
         # useful for debugging specific item_implementation, separate from generator
         self.forceSpawn = []
+        self.forceSpawn.append(("Health Potion", 1))
 
         # rings = [i for i in self.ItemSpawns if i.item.has_trait("ring")]
         # for ring in rings:
@@ -110,10 +111,10 @@ class ItemSpawner():
                     item_spawn = random.choice(commonPotiorbsAtDepth)
                     item = item_spawn.GetFreshCopy()
                     items.append(item)
-                else:
-                    item_spawn = random.choice(rarePotiorbsAtDepth)
-                    item = item_spawn.GetFreshCopy()
-                    items.append(item)
+                # else:
+                #     item_spawn = random.choice(rarePotiorbsAtDepth)
+                #     item = item_spawn.GetFreshCopy()
+                #     items.append(item)
         # for i in range(distribution.countScrorbs(depth)):
         #     rarity = random.random()
         #     if rarity < distribution.scrorbs[depth-1][0]:

@@ -2,7 +2,7 @@
 ARMORS
 SHIELDS
 """
-from .equipment import Equipment
+from item_implementation.equipment import Equipment
 class Armor(Equipment):
     def __init__(self, x,y, id_tag, render_tag, name):
         super().__init__(-1, -1, 0, render_tag, "Armor")

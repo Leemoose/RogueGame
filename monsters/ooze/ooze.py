@@ -19,7 +19,7 @@ class Ooze(Monster):
         chance_to_destroy_weapon = random.randint(1, 100)
         if chance_to_destroy_weapon <= 5:
             weapon = attacker.body.get_weapon()
-            if weapon is not None:
+            if weapon is not None and weapon.get_range() <= 1.5:
                 weapon.set_destroy(True)
                 attacker.body.unequip(weapon)
                 attacker.inventory.remove_item(weapon)

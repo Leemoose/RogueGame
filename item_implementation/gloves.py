@@ -1,4 +1,4 @@
-from .armor import Armor
+from item_implementation.armor.armor import Armor
 from .statupgrade import statUpgrades
 
 class Gloves(Armor):
