@@ -69,3 +69,6 @@ class Equipment(Item):
             return self.attached_skill(None).description() # temporarily attach skill to nothing to get name
         else:
             return None
+
+    def level_up(self):
+        pass

@@ -1,9 +1,9 @@
 from item_implementation.armor.armor import Armor
-from .statupgrade import statUpgrades
+from item_implementation.statupgrade import statUpgrades
 
 class Pants(Armor):
-    def __init__(self, render_tag):
-        super().__init__(-1,-1, 0, render_tag, "Pants")
+    def __init__(self, render_tag = 3300, name = "Pants"):
+        super().__init__(-1,-1, 0, render_tag, name = name)
         self.equipment_type = "Pants"
         self.name = "Pants"
         self.description = "A pair of pants. Why would you ever take them off?"

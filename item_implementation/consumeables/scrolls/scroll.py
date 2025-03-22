@@ -1,16 +1,16 @@
-from .items import Item
+from item_implementation.items import Item
 
 class Scroll(Item):
     def __init__(self, render_tag, name):
         super().__init__(-1, -1, 0, render_tag, name)
-        self.equipment_type = "Scrorb"
+        self.equipment_type = "Scroll"
         self.consumeable = True
         self.stackable = True
         self.equipable = False
         self.can_be_levelled = False
         self.stacks = 1
         self.attached_skill_exists = False
-        self.description = "A scrorb that does something."
+        self.description = "A scroll that does something."
         self.yendorb = False
         self.traits["scroll"] = True
 
@@ -34,19 +34,6 @@ class Scroll(Item):
         if self.stacks == 0:
             self.destroy = True
             entity.inventory.remove_item(self)
-
-# class TeleportScroll(Scroll):
-#     def __init__(self, render_tag):
-#         super().__init__(render_tag, "Teleport Scrorb")
-#         self.description = "Let's go for a ride."
-#         self.rarity = "Common"
-#         self.skill = Teleport(None, None, None)
-#
-#     def activate_once(self, entity, loop):
-#         self.skill.parent = entity
-#         self.skill.activate(entity, loop.generator, bypass = True)
-#         self.consume_scroll(entity)
-#         loop.change_loop("inventory")
 #
 # class MassTormentScroll(Scroll):
 #     def __init__(self, render_tag):

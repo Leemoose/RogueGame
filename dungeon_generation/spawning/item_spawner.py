@@ -19,7 +19,7 @@ class ItemSpawner():
 
         # useful for debugging specific item_implementation, separate from generator
         self.forceSpawn = []
-        self.forceSpawn.append(("Health Potion", 1))
+        self.forceSpawn.append(("Ring", 1))
 
         # rings = [i for i in self.ItemSpawns if i.item.has_trait("ring")]
         # for ring in rings:

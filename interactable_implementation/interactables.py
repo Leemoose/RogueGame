@@ -1,5 +1,5 @@
 from objects import Objects
-from item_implementation.orb import *
+from item_implementation.talismans.orbs.orb import *
 from item_implementation.items import YellowFlowerPetal
 
 class Interactable(Objects):

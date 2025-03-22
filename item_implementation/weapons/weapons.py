@@ -7,7 +7,7 @@ import random
 
 class Weapon(Equipment):
     def __init__(self, x=-1, y=-1, id_tag=-1, render_tag=-1, name="Unknown weapon", damage_min=0, damage_max=0,
-                 armor_piercing=0, attack_cost=80, range = 1):
+                 armor_piercing=0, attack_cost=80, range = 1.5):
         super().__init__(x=x, y=y, id_tag=id_tag, render_tag=render_tag, name=name)
         self.damage_min = damage_min
         self.damage_max = damage_max

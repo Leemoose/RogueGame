@@ -227,11 +227,27 @@ class TileDict():
         #3000 -4999 all items assets
         tiles[3000] = image.load('assets/crawl-tiles/item/armour/leather_armour1.png')
 
+        tiles[3100] = image.load('assets/crawl-tiles/item/armour/glove1.png')
+
+        tiles[3200] = image.load('assets/crawl-tiles/item/armour/headgear/helmet3.png')
+
+        tiles[3300] = image.load('assets/items/armor/pants.png')
+
+        tiles[3400] = image.load('assets/crawl-tiles/item/armour/shields/buckler1.png')
+
+        tiles[3500] = image.load('assets/crawl-tiles/item/ring/gold_red.png')
+
+        tiles[3600] = image.load('assets/crawl-tiles/item/amulet/bone_gray.png')
+
+
+
+
         #Items 4000+
         tiles[4000] = image.load("assets/items/orbs/forest_orb.png")
         tiles[4010] = image.load("assets/items/orbs/ocean_orb.png")
 
         tiles[4200] = image.load("assets/items/consumeables/yello_flower_petal.png")
+
         tiles[4300] = image.load('assets/crawl-tiles/item/scroll/scroll.png')
 
         tiles[4400] = image.load('assets/items/weapons/bow.png')

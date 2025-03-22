@@ -1,4 +1,4 @@
-from .items import Item
+from item_implementation.items import Item
 
 class OrbOfYendorb(Item):
     def __init__(self):

@@ -106,7 +106,7 @@ class Body():
             if weapon and weapon.slots_taken > 1: # two handed weapon must be unequipped for a shield
                 self.unequip(weapon)
         elif item.has_trait("ring"):
-            if self.num_free_equipment_slots("ring_slot") == 0:
+            if self.get_num_free_equipment_slots("ring_slot") == 0:
                 self.unequip(self.get_items_in_equipment_slot("ring_slot")[0])
                 for slot in range(self.num_total_equipment_slots("ring_slot") - 1):
                     self.equipment_slots["ring_slot"][slot] = self.equipment_slots["ring_slot"][slot + 1]

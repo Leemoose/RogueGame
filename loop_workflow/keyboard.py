@@ -60,7 +60,7 @@ class Keyboard():
         return options[(xdiff, ydiff)]
 
     def get_has_waited_sufficiently(self):
-        return time.time() - self.last_action_time > 0.2
+        return time.time() - self.last_action_time > 0.1
 
     def set_continous_movement_keys(self, keys):
         if self.get_has_waited_sufficiently():

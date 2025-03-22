@@ -38,7 +38,7 @@ ItemSpawns.append(ItemSpawnParams( BroadSword(), minFloor=2, maxFloor=10  ))
 # # ItemSpawns.append(ItemSpawnParams( SlicingAx(303) ))
 #
 # # Shields
-# ItemSpawns.append(ItemSpawnParams( BasicShield(311) ))
+ItemSpawns.append(ItemSpawnParams(Shield(3400) ))
 # ItemSpawns.append(ItemSpawnParams( Aegis(312) ))
 # ItemSpawns.append(ItemSpawnParams( TowerShield(313) ))
 # ItemSpawns.append(ItemSpawnParams( MagicFocus(314) ))
@@ -59,23 +59,24 @@ ItemSpawns.append(ItemSpawnParams( LeatherArmor(), minFloor=1, maxFloor=10 ))
 # ItemSpawns.append(ItemSpawnParams( AssassinBoots(703) ))
 #
 # # Helmets
-# ItemSpawns.append(ItemSpawnParams( Helmet(770) ))
+ItemSpawns.append(ItemSpawnParams( Helmet(), minFloor=1, maxFloor=10 ))
 # ItemSpawns.append(ItemSpawnParams( VikingHelmet(771) ))
 # ItemSpawns.append(ItemSpawnParams( SpartanHelmet(772) ))
 # ItemSpawns.append(ItemSpawnParams( ThiefHood(774) ))
 # ItemSpawns.append(ItemSpawnParams( WizardHat(775) ))
 #
 # # Gloves
-# ItemSpawns.append(ItemSpawnParams( Gloves(750) ))
+ItemSpawns.append(ItemSpawnParams( Gloves(), minFloor=1, maxFloor=10 ))
 # ItemSpawns.append(ItemSpawnParams( Gauntlets(751) ))
 # ItemSpawns.append(ItemSpawnParams( BoxingGloves(752) ))
 # ItemSpawns.append(ItemSpawnParams( HealingGloves(753) ))
 # ItemSpawns.append(ItemSpawnParams( LichHand(754) ))
 #
 # # Pants
-# ItemSpawns.append(ItemSpawnParams( Pants(100), minFloor=5, maxFloor=10))
+ItemSpawns.append(ItemSpawnParams( Pants(), minFloor=1, maxFloor=10))
 #
 # # Rings
+ItemSpawns.append(ItemSpawnParams( Ring(), minFloor=1, maxFloor=10 ))
 # ItemSpawns.append(ItemSpawnParams( RingOfSwiftness(500) ))
 # # ItemSpawns.append(ItemSpawnParams( RingOfTeleportation(505) ))
 # ItemSpawns.append(ItemSpawnParams( BloodRing(501) ))
@@ -84,7 +85,7 @@ ItemSpawns.append(ItemSpawnParams( LeatherArmor(), minFloor=1, maxFloor=10 ))
 # ItemSpawns.append(ItemSpawnParams( BoneRing(504) ))
 #
 # # Amulets
-# ItemSpawns.append(ItemSpawnParams( Amulet(550) ))
+ItemSpawns.append(ItemSpawnParams( Amulet(), minFloor=1, maxFloor=10) )
 #
 # # Potions
 ItemSpawns.append(ItemSpawnParams( HealthPotion(401), minFloor=1, maxFloor=10 ))
