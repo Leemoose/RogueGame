@@ -2,6 +2,9 @@ from .ui import *
 import pygame
 import pygame_gui
 from loop_workflow.loop_utility import LoopType
+from pygame import image
+import warnings
+
 
 class Display:
     """
@@ -87,7 +90,7 @@ class Display:
         item_map = loop.generator.item_map
         player = loop.player
 
-        action_screen_width = self.screen_width * 3 // 4
+        action_screen_width = self.screen_width * 4 // 5
         action_screen_height = self.screen_height * 5 // 6
         num_tiles_wide = action_screen_width // self.textSize
         num_tiles_height = action_screen_height // self.textSize
@@ -115,11 +118,27 @@ class Display:
             self.draw_single_entity(loop, item)
         for monster in monster_map.get_all_entities():
             self.draw_single_entity(loop, monster)
+
         self.draw_player(loop)
         self.uiManager.draw_ui(self.win)
         self.update_mini_map(loop, mini_map_left_offset, mini_map_top_offset, mini_map_width, mini_map_height, num_tiles_wide, num_tiles_height)
         self.draw_examine_window(loop, loop.targets.get_target_coordinates())
+        self.draw_health_and_mana_orbs(loop)
+
         self.depth_label.update(1)
+
+    def draw_health_and_mana_orbs(self, loop):
+        health_orb_size = 128
+        health_orb_x = self.screen_width // 3
+        health_orb_y = self.screen_height - health_orb_size * 2
+        entity_image = pygame.transform.scale(image.load("assets/status_orbs/health_full.png"),(health_orb_size, health_orb_size))
+        self.win.blit(entity_image, (health_orb_x, health_orb_y))
+        entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_highlight.png"),(health_orb_size, health_orb_size))
+        self.win.blit(entity_image, (health_orb_x, health_orb_y))
+        entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_shadow.png"),
+                                              (health_orb_size, health_orb_size))
+        self.win.blit(entity_image, (health_orb_x, health_orb_y))
+
 
     def draw_single_entity(self, loop, entity):
         if entity.get_is_in_square(self.x_start, self.x_end, self.y_start, self.y_end):

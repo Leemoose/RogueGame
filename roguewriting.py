@@ -6,7 +6,7 @@ import static_configs
 
 
 import warnings
-warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore", category=UserWarning, module = "PIL.PNGImagePlugin")
 
 #..random.seed(420)
 pygame.init()

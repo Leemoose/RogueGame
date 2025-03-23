@@ -83,7 +83,7 @@ def create_display(display, loop):
 
     player = loop.player
 
-    action_screen_width = display.screen_width * 3 // 4
+    action_screen_width = display.screen_width * 4 // 5
     action_screen_height = display.screen_height * 5 // 6
     num_tiles_wide = action_screen_width // display.textSize
     num_tiles_height = action_screen_height // display.textSize
@@ -232,7 +232,7 @@ def create_display(display, loop):
     #    if clear_target:
     #        target_to_display = None
 
-    create_skill_bar(display, loop)
+    # create_skill_bar(display, loop)
 
     healthBar = HealthBar(
         pygame.Rect((stats_offset_from_left + 70, stats_offset_from_top + 12), (stats_width // 3, stats_height // 12)),
