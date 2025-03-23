@@ -193,7 +193,7 @@ def key_inventory(loop, key):
         loop.change_loop("inventory")
     for i in range(len(player.inventory.get_limit_inventory())):
         if chr(ord("a") + i) == key:
-            loop.targets.set_entity_target(player.get_inventory()[i])
+            loop.targets.set_entity_target(player.inventory.get_limit_inventory()[i])
             loop.change_loop(LoopType.items)
 
 def key_rest(loop, key):
