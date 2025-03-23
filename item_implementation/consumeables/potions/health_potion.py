@@ -1,7 +1,7 @@
 from .potion import Potion
 class HealthPotion(Potion):
-    def __init__(self, render_tag):
-        super().__init__(render_tag, "Health Potion")
+    def __init__(self, render_tag = 3700):
+        super().__init__(render_tag = render_tag,name = "Health Potion")
         self.description = "A potiorb that heals you."
         self.action_description = "Heal by 20 + 10% max health."
         self.rarity = "Common"

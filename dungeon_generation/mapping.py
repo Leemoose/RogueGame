@@ -73,7 +73,7 @@ class DungeonGenerator():
         in_sight = []
         for monster in self.monster_map.get_all_entities():
             monster_x, monster_y = monster.get_location()
-            if self.tile_map.get_entity(monster_x, monster_y).get_is_visible():
+            if self.tile_map.get_entity(monster_x, monster_y).get_visible():
                 in_sight.append(monster)
         return in_sight
 

@@ -7,11 +7,11 @@ from unused import skills as S
 
 
 class Monster(O.Objects):
-    def __init__(self, x=-1, y = -1, render_tag = -1, name="Unknown monster", experience_given = 0, brain = monster_ai.Monster_AI, rarity ="Common", health = 10, min_damage = 2, max_damage=3, mana = 0):
+    def __init__(self, x=-1, y = -1, render_tag = -1, name="Unknown monster", experience_given = 0, brain = monster_ai.Monster_AI, rarity ="Common", health = 10, min_damage = 2, max_damage=3, mana = 0, gold = 0):
         super().__init__(x=x, y=y, render_tag=render_tag, name=name)
-        self.character = C.Character(self, health = health, mana = mana)
+        self.character = C.Character(self, health = health, mana = mana, experience_given = experience_given)
         self.brain = brain(self)
-        self.inventory = Inventory(self, gold = 1)
+        self.inventory = Inventory(self, gold = gold)
         self.body = Body(self)
         self.fighter = Fighter(self, min_damage=min_damage, max_damage = max_damage)
         self.mage = Mage(self)

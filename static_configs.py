@@ -239,6 +239,8 @@ class TileDict():
 
         tiles[3600] = image.load('assets/crawl-tiles/item/amulet/bone_gray.png')
 
+        tiles[3700] = image.load('assets/crawl-tiles/item/potion/ruby.png')
+
 
 
 

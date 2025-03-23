@@ -121,24 +121,24 @@ class Player(Objects):
                 loop.add_message("You cannot currently take actions")
 
     def autopath(self, loop):
+        print("Beginning autopath")
         if self.character.needs_rest():
             loop.after_rest = LoopType.pathing
             loop.change_loop(LoopType.resting)
             return
         loop.after_rest = LoopType.action # in case we rested need to reset this to default
-        tile_map = loop.generator.tile_map
-        for monster in loop.generator.monster_map.get_all_entities():
-            monster_loc = monster.get_location()
-            if tile_map.get_visible(monster_loc[0], monster_loc[1]):
-                loop.add_message(f"A {monster.name} interrupted your exploration.")
+
+        if len(loop.generator.get_monsters_in_sight()) > 0:
+                loop.add_message("A monster interrupted your exploration.")
                 loop.change_loop(LoopType.action)
                 return False
         
         if self.path:
             x, y = self.path.pop(0)
-            if (x == self.x and y == self.y):
-                # Pathfinding messed up - pop this just in case
-                x, y = self.path.pop(0)
+            print("Moving to", x, y)
+            # if (x == self.x and y == self.y):
+            #     # Pathfinding messed up - pop this just in case
+            #     x, y = self.path.pop(0)
             self.move(x - self.x, y - self.y, loop)
             #loop.time_passes(self.character.energy)
             #self.character.energy = 0 #need to find a way to make time pass as autoexplore happens
@@ -162,6 +162,8 @@ class Player(Objects):
         return True
 
     def autoexplore(self, loop):
+        print("Beginning autoexplore")
+
         # auto pickup gold
         good_item_locations = []
         good_item_dict = {}
@@ -169,8 +171,14 @@ class Player(Objects):
             if item.has_trait("gold") or item.has_trait("potion") or item.has_trait("scroll"):
                 good_item_locations.append((item.x, item.y))
                 good_item_dict[(item.x, item.y)] = item
-        
-        tile_map = loop.generator.tile_map
+
+        all_seen, unseen = loop.generator.get_all_seen()
+        if all_seen and len(good_item_dict) == 0:
+            loop.change_loop(LoopType.action)
+            loop.add_message("Finished exploring this level. Press s to path to stairs")
+            loop.update_screen = True
+            self.path = []
+            return False
 
         if len(self.path) <= 1:
             start = (self.x, self.y)
@@ -180,29 +188,24 @@ class Player(Objects):
                 self.do_grab(good_item_dict[start], loop)
                 good_item_locations.remove(start)
 
-            all_seen, unseen = loop.generator.get_all_seen()
-            if all_seen:
-                loop.change_loop(LoopType.action)
-                loop.after_pathing = LoopType.action
-                loop.add_message("Finished exploring this level. Press s to path to stairs")
-                loop.update_screen = True
-                self.path = []
-                return False
 
             # Attempt to redo autoexplore with simpler BFS
             # in-line end condition so we can use tile_map
             def autoexplore_condition(position_tuple):
                 return position_tuple in good_item_locations or \
-                       (tile_map.get_has_no_entity(position_tuple[0], position_tuple[1]) and \
-                        not (tile_map.track_map[position_tuple[0]][position_tuple[1]].seen))
-            self.path = pathfinding.conditional_bfs(tile_map.get_map(), start, autoexplore_condition, loop.generator.interact_map.dict)
+                       (loop.generator.get_passable((position_tuple[0], position_tuple[1])) and \
+                        not loop.generator.tile_map.get_seen(position_tuple[0],position_tuple[1]))
+
+            self.path = pathfinding.conditional_bfs(loop.generator.tile_map.get_map(), start, autoexplore_condition, loop.generator.interact_map.dict)
+            print("The autoexplore path is", self.path)
+
             if not self.path:
                 self.path = []
                 loop.change_loop(LoopType.action)
                 return False
             else:
                 loop.after_pathing = self.autoexplore
-        
+
         return True
 
     def find_stairs(self, loop):

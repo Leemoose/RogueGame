@@ -111,9 +111,9 @@ def create_display(display, loop):
     num_map_tiles_wide = map_width // map_tile_size
     num_map_tiles_height = map_height // map_tile_size
 
-    message_offset_from_left = 0
+    message_offset_from_left = action_screen_width // 3
     message_offset_from_top = action_screen_height
-    message_width = action_screen_width * 5 // 12 - 2 * message_offset_from_left
+    message_width = action_screen_width // 3
     message_height = display.screen_height - action_screen_height
 
     # views_num_buttons_height = 2

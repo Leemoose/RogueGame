@@ -6,9 +6,9 @@ from .status import Status
 Character is the meat of 
 """
 class Character():
-    def __init__(self, parent, endurance = 0, intelligence = 0, dexterity = 0, strength = 0, health = 100, mana = 0, health_regen=0.2, mana_regen=0.2, invincible=False):
+    def __init__(self, parent, endurance = 0, intelligence = 0, dexterity = 0, strength = 0, health = 100, mana = 0, health_regen=0.2, mana_regen=0.2, invincible=False, experience_given = 0):
         self.parent = parent
-        self.attributes = Attributes(self, endurance, intelligence, dexterity, strength, health, mana, health_regen, mana_regen)
+        self.attributes = Attributes(self, endurance, intelligence, dexterity, strength, health, mana, health_regen, mana_regen, experience_given = experience_given)
         self.status = Status(self, invincible)
         self.energy = 0
 
@@ -146,49 +146,43 @@ class Character():
 
     
     def rest(self, loop, returnLoop):
-        # print("in_rest")
+        print("You begin to rest")
         if not self.status.get_safe_rest():
             loop.add_message("Your ring is draining your health, it is not safe to rest now.")
             loop.change_loop("action")
-            return
-        
-        if not self.needs_rest(): # and returnLoop == L.LoopType.action: <- Don't think we need this?
+        elif not self.needs_rest(): # and returnLoop == L.LoopType.action: <- Don't think we need this?
             loop.add_message("No point in resting right now.")
             loop.change_loop(returnLoop)
-            return
+        else:
+            tile_map = loop.generator.tile_map
+            no_monster_active = True
+            for monster in loop.generator.monster_map.get_all_entities():
+                if monster.get_is_awake():
+                    no_monster_active = False
+                    break
+            if no_monster_active: # if you've rested peacefully for 50 turns, your probably not getting hunted, if we dont put this check, rest sometimes seems laggy
+                # can freely rest to full health
+                if self.needs_rest():
+                    self.attributes.change_health(self.attributes.get_max_health())
+                    self.attributes.change_mana(self.attributes.get_max_mana())
 
-        tile_map = loop.generator.tile_map
-        no_monster_active = True
-        for monster in loop.generator.monster_map.get_all_entities():
-            if monster.get_is_awake():
-                no_monster_active = False
-                break
-        if no_monster_active: # if you've rested peacefully for 50 turns, your probably not getting hunted, if we dont put this check, rest sometimes seems laggy
-            # can freely rest to full health
-            if self.needs_rest():
-                self.attributes.change_health_override(self.attributes.get_max_health())
-                self.attributes.change_mana_override(self.attributes.get_max_mana())
-
-            for skill in loop.player.mage.known_spells:
-                skill.ready = 0
-            for effect in self.status.get_status_effects():
-                if effect.duration != -100: # remove any non-permanent effects
-                    self.status.remove_status_effect(effect)
-            loop.add_message("You rest for a while")
-            loop.change_loop(returnLoop)
-            return
-
-        for monster in loop.generator.monster_map.get_all_entities():
-            monster_loc = monster.get_location()
-            if tile_map.get_entity(monster_loc[0],monster_loc[1]).get_visible():
+                for skill in loop.player.mage.known_spells:
+                    skill.ready = 0
+                for effect in self.status.get_status_effects():
+                    if effect.duration > 0: # remove any non-permanent effects
+                        self.status.remove_status_effect(effect)
+                loop.add_message("You rest for a while")
+                loop.change_loop(returnLoop)
+            else:
                 loop.add_message("You cannot rest while enemies are nearby.")
                 loop.change_loop("action")
-                return
+                # for monster in loop.generator.monster_map.get_all_entities():
+                #     monster_loc = monster.get_location()
+                #     if tile_map.get_entity(monster_loc[0],monster_loc[1]).get_visible():
+                #         loop.add_message("You cannot rest while enemies are nearby.")
+                #         loop.change_loop("action")
+                #         return
 
-        self.wait()
-        if not self.needs_rest():
-            loop.add_message("You rest for a while")
-            loop.change_loop(returnLoop)
         
     def add_skill(self, new_skill):
         for skill in self.parent.mage.known_spells:

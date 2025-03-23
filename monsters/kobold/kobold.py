@@ -25,7 +25,7 @@ class Kobold(Monster):
         inventory (Inventory): The inventory containing the Kobold's items.
         description (str): A description of the Kobold.
         """
-        super().__init__(x=x, y=y, render_tag = render_tag, name = name, experience_given=10,health=20, mana = 10)
+        super().__init__(x=x, y=y, render_tag = render_tag, name = name, experience_given=10,health=20, mana = 10, gold = 5)
         self.skills = []
         self.mage.add_spell(BurningAttack(self, cooldown=10, cost=0, damage=10, burn_damage=4, burn_duration=5, range=1.5))
         self.brain = Kobold_AI(self)

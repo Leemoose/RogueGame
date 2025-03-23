@@ -123,21 +123,61 @@ class Display:
         self.uiManager.draw_ui(self.win)
         self.update_mini_map(loop, mini_map_left_offset, mini_map_top_offset, mini_map_width, mini_map_height, num_tiles_wide, num_tiles_height)
         self.draw_examine_window(loop, loop.targets.get_target_coordinates())
-        self.draw_health_and_mana_orbs(loop)
+        self.draw_health_and_mana_orbs(loop, action_screen_width)
 
         self.depth_label.update(1)
 
-    def draw_health_and_mana_orbs(self, loop):
-        health_orb_size = 128
-        health_orb_x = self.screen_width // 3
-        health_orb_y = self.screen_height - health_orb_size * 2
-        entity_image = pygame.transform.scale(image.load("assets/status_orbs/health_full.png"),(health_orb_size, health_orb_size))
+    def draw_health_and_mana_orbs(self, loop, action_screen_width):
+        orb_size = 180
+        health_orb_x = action_screen_width // 3 - orb_size
+        health_orb_y = self.screen_height - orb_size
+        mana_orb_x = action_screen_width * 2 // 3
+        mana_orb_y = self.screen_height - orb_size
+
+        if loop.player.character.get_health() / loop.player.character.get_max_health() >= .85:
+            health_orb = image.load("assets/status_orbs/health_full.png")
+        elif loop.player.character.get_health() / loop.player.character.get_max_health() >= .65:
+            health_orb = image.load("assets/status_orbs/health_75.png")
+        elif loop.player.character.get_health() / loop.player.character.get_max_health() >= .35:
+            health_orb = image.load("assets/status_orbs/health_50.png")
+        elif loop.player.character.get_health() / loop.player.character.get_max_health() >= .10:
+            health_orb = image.load("assets/status_orbs/health_25.png")
+        else:
+            health_orb = image.load("assets/status_orbs/itsmars_orb_border.png")
+
+        if loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .85:
+            mana_orb = image.load("assets/status_orbs/mana_full.png")
+        elif loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .65:
+            mana_orb = image.load("assets/status_orbs/mana_75.png")
+        elif loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .35:
+            mana_orb = image.load("assets/status_orbs/mana_50.png")
+        elif loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .10:
+            mana_orb = image.load("assets/status_orbs/mana_25.png")
+        else:
+            mana_orb = image.load("assets/status_orbs/itsmars_orb_border.png")
+        
+        entity_image = pygame.transform.scale(health_orb,(orb_size, orb_size))
         self.win.blit(entity_image, (health_orb_x, health_orb_y))
-        entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_highlight.png"),(health_orb_size, health_orb_size))
+        entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_highlight.png"),(orb_size, orb_size))
         self.win.blit(entity_image, (health_orb_x, health_orb_y))
         entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_shadow.png"),
-                                              (health_orb_size, health_orb_size))
+                                              (orb_size, orb_size))
         self.win.blit(entity_image, (health_orb_x, health_orb_y))
+        entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_back1.png"),
+                                              (orb_size, orb_size // 2))
+        self.win.blit(entity_image, (health_orb_x, health_orb_y + orb_size // 2))
+        
+        entity_image = pygame.transform.scale(mana_orb,(orb_size, orb_size))
+        self.win.blit(entity_image, (mana_orb_x, mana_orb_y))
+        entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_highlight.png"),(orb_size, orb_size))
+        self.win.blit(entity_image, (mana_orb_x, mana_orb_y))
+        entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_shadow.png"),
+                                              (orb_size, orb_size))
+        self.win.blit(entity_image, (mana_orb_x, mana_orb_y))
+        entity_image = pygame.transform.scale(image.load("assets/status_orbs/itsmars_orb_back1.png"),
+                                              (orb_size, orb_size // 2))
+        self.win.blit(entity_image, (mana_orb_x, mana_orb_y + orb_size // 2))
+
 
 
     def draw_single_entity(self, loop, entity):

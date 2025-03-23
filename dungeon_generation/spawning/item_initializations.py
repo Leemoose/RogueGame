@@ -88,7 +88,7 @@ ItemSpawns.append(ItemSpawnParams( Ring(), minFloor=1, maxFloor=10 ))
 ItemSpawns.append(ItemSpawnParams( Amulet(), minFloor=1, maxFloor=10) )
 #
 # # Potions
-ItemSpawns.append(ItemSpawnParams( HealthPotion(401), minFloor=1, maxFloor=10 ))
+ItemSpawns.append(ItemSpawnParams( HealthPotion(), minFloor=1, maxFloor=10 ))
 # ItemSpawns.append(ItemSpawnParams( ManaPotion(402) ))
 # ItemSpawns.append(ItemSpawnParams( CurePotion(403) ))
 # ItemSpawns.append(ItemSpawnParams( MightPotion(404) ))

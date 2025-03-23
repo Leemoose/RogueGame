@@ -1,6 +1,6 @@
 # In progress
 class Attributes():
-    def __init__(self, parent, endurance=0, intelligence=0, dexterity=0, strength=0, health=100, mana=0, health_regen=0.2, mana_regen=0.2):
+    def __init__(self, parent, endurance=0, intelligence=0, dexterity=0, strength=0, health=100, mana=0, health_regen=0.2, mana_regen=0.2, experience_given=0):
         self.endurance = endurance
         self.intelligence = intelligence
         self.dexterity = dexterity
@@ -15,23 +15,23 @@ class Attributes():
 
         self.parent = parent
 
-        self.experience_given = 0  # monsters will overwrite this attribute, it just makes some class stuff easier if its stored in character
+        self.experience_given = experience_given  # monsters will overwrite this attribute, it just makes some class stuff easier if its stored in character
         self.experience = 0
 
     def get_health(self):
-        return self.health
+        return int(self.health)
 
     def get_max_health(self):
-        return self.max_health
+        return int(self.max_health)
 
     def get_health_regen(self):
         return self.health_regen
 
     def get_mana(self):
-        return self.mana
+        return int(self.mana)
 
     def get_max_mana(self):
-        return self.max_mana
+        return int(self.max_mana)
 
     def get_mana_regen(self):
         return self.mana_regen
@@ -65,12 +65,7 @@ class Attributes():
 
     def change_health(self, change):
         self.health += change
-        self.health = int(self.health)
-        if self.health > self.max_health:
-            self.health = self.max_health
-
-    def change_health_override(self, new_health):
-        self.health = new_health
+        #self.health = int(self.health)
         if self.health > self.max_health:
             self.health = self.max_health
 
