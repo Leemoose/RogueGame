@@ -97,13 +97,13 @@ def create_display(display, loop):
     display.y_end = player.y + r_y
 
     stats_offset_from_left = action_screen_width
-    stats_offset_from_top = 0
+    stats_offset_from_top = display.screen_height * 2 // 3
     stats_width = display.screen_width - stats_offset_from_left
     stats_height = display.screen_height // 3
 
     map_tile_size = 10
     map_offset_from_left = action_screen_width
-    map_offset_from_top = stats_height
+    map_offset_from_top = 0
     map_width = display.screen_width - action_screen_width
     map_message_width = stats_width
     map_height = display.screen_height // 3
@@ -111,9 +111,9 @@ def create_display(display, loop):
     num_map_tiles_wide = map_width // map_tile_size
     num_map_tiles_height = map_height // map_tile_size
 
-    message_offset_from_left = action_screen_width // 3
+    message_offset_from_left = display.screen_width * 2 // 5
     message_offset_from_top = action_screen_height
-    message_width = action_screen_width // 3
+    message_width = display.screen_width // 5
     message_height = display.screen_height - action_screen_height
 
     # views_num_buttons_height = 2

@@ -222,7 +222,7 @@
 #             # loop.add_message(self.name + "'What's this? Another failure! I can't believe we spent so much to summon you from another dimension.'")
 #             # self.talking_queue.append("Guards! Prepare another summoning! We can't fail again else we'll be overrun by the rift monsters. They are nearly at the palace portals!")
 #             # self.talking_queue.append(
-#             #     "Why are you still here?!? Move along to the portal room and we'll be sorted out. Maybe you'll even manage to kill a goblin or two.")
+#             #     "Why are you still here?!? Move along to the portal room and we'll be sorted out. Maybe you'll even manage to kill a goblins or two.")
 #             loop.player.add_quest(quest.KingdomQuest())
 #             self.gave_quest = True
 #             self.has_stuff_to_say = False
@@ -327,7 +327,7 @@
 #             # loop.add_message("'These beasts just keep coming through the rifts, don't they? I've managed to take care of this wave, but I can't be everywhere at once.'")
 #             # self.talking_queue.append(
 #             #     "'Listen, I know you might just be an unfortunate soul pulled from another world. I wish I could offer more assistance, but our resources are stretched thin.'")
-#             # self.talking_queue.append("'Prove your worth to me, and I can provide you with better support. Bring me back five goblin corpses, and we'll see what we can do for you.'")
+#             # self.talking_queue.append("'Prove your worth to me, and I can provide you with better support. Bring me back five goblins corpses, and we'll see what we can do for you.'")
 #             loop.player.add_quest(quest.GoblinQuest())
 #             self.gave_quest = True
 #             self.has_stuff_to_say = False

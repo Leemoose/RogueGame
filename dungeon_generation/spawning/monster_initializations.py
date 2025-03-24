@@ -1,4 +1,4 @@
-from monsters import Ooze, Goblin, Kobold
+from monsters import Ooze, Goblin, Kobold, Orc
 
 from .spawn_params import MonsterSpawnParams
 
@@ -8,20 +8,20 @@ MonsterSpawns = []
 # MonsterSpawns.append(MonsterSpawnParams(M.Slime(), group="slime", minFloor=1, maxFloor=4))
 
 # early floors dungeon only
-MonsterSpawns.append(MonsterSpawnParams(Ooze(-1, -1), minFloor=1, maxFloor=10))
+MonsterSpawns.append(MonsterSpawnParams(Ooze(-1, -1), minFloor=1, maxFloor=5))
 
-# goblin type monsters dungeon only
-MonsterSpawns.append(MonsterSpawnParams(Goblin(-1, -1), group="goblin", minFloor=2, maxFloor=10))
-MonsterSpawns.append(MonsterSpawnParams(Kobold(-1, -1), group="kobold", minFloor=3, maxFloor=10))
-# MonsterSpawns.append(MonsterSpawnParams(M.Hobgoblin(-1, -1), minFloor=1, maxFloor=4, rarity="Rare", group="goblin"))
-# MonsterSpawns.append(MonsterSpawnParams(M.Looter(), group="goblin", minFloor=1, maxFloor=4))
-# #MonsterSpawns.append(MonsterSpawnParams(M.GoblinShaman(-1, -1), group="goblin"))
+# goblins type monsters dungeon only
+MonsterSpawns.append(MonsterSpawnParams(Goblin(-1, -1), group="goblins", minFloor=2, maxFloor=6))
+MonsterSpawns.append(MonsterSpawnParams(Kobold(-1, -1), group="kobolds", minFloor=3, maxFloor=7))
+# MonsterSpawns.append(MonsterSpawnParams(M.Hobgoblin(-1, -1), minFloor=1, maxFloor=4, rarity="Rare", group="goblins"))
+# MonsterSpawns.append(MonsterSpawnParams(M.Looter(), group="goblins", minFloor=1, maxFloor=4))
+# #MonsterSpawns.append(MonsterSpawnParams(M.GoblinShaman(-1, -1), group="goblins"))
 #
 #
 # # middle floors
 # MonsterSpawns.append(MonsterSpawnParams(M.Gargoyle(-1, -1), group="gargoyle", minFloor=5, maxFloor=7))
 # MonsterSpawns.append(MonsterSpawnParams(M.Minotaur(-1, -1), minFloor=5, maxFloor=7))
-# MonsterSpawns.append(MonsterSpawnParams(M.Orc(-1, -1), group="orc", minFloor=5, maxFloor=7))
+MonsterSpawns.append(MonsterSpawnParams(Orc(-1, -1), group="orc", minFloor=1, maxFloor=8))
 # MonsterSpawns.append(MonsterSpawnParams(M.Bobby(), group="orc", rarity="rare", minFloor=5, maxFloor=7))
 #
 # # forest branch

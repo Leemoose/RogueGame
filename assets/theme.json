@@ -135,7 +135,25 @@
 
         "misc":
         {
-            "tool_tip_delay": "1.5"
+            "tool_tip_delay": "1.5",
+            "border_width": "0",
+            "shadow width": "0"
+        },
+
+        "images":
+        {
+            "normal_image" : {
+                "path": "assets/UI/buttonStock1d.png"
+            },
+            "hovered_image" : {
+                "path": "assets/UI/buttonStock1d.png"
+            },
+            "disabled_image" : {
+                "path": "assets/UI/buttonStock1d.png"
+            },
+            "selected_image" : {
+                "path": "assets/UI/buttonStock1d.png"
+            }
         }
     },
 

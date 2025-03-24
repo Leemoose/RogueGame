@@ -1,3 +1,4 @@
-from .ooze import Ooze
-from .goblin import Goblin
-from .kobold import Kobold
+from .oozes import Ooze
+from .goblins import Goblin
+from .kobolds import Kobold
+from .orcs import Orc

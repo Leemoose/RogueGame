@@ -96,21 +96,6 @@ class Monster(O.Objects):
     def __str__(self):
         return self.name
 
-# class Kobold(Monster):
-#     def __init__(self, x=-1, y=-1, render_tag=1010, name="Kobold"):
-#         super().__init__(x=x, y=y, render_tag = render_tag, name = name, experience_given=10,health=20)
-#         self.skills = []
-#         #self.character.skills.append(S.BurningAttack(self, cooldown=10, cost=0, damage=10, burn_damage=4, burn_duration=5, range=1.5))
-#         self.character.health = 10
-#         self.character.max_health = 10
-#         self.endurance = 0
-#         self.strength = 0
-#         self.dexterity = 4
-#         self.intelligence = 4
-#
-#         self.description = "Covered in reddish-brown scales that radiate heat, Infernal Kobolds possess razor-sharp claws and teeth. They worship a distant star whose fiery essence imbues them with a burning touch, capable of igniting flammable materials. Despite their small size, they are cunning ambushers, using their fiery abilities to deadly effect in battle. Their eyes glow with reverence and cunning, reflecting their devotion to the star's fiery power."
-#
-#         self.traits["kobold"] = True
 
 # class Squid(Monster):
 #     def __init__(self, x=-1, y=-1, render_tag=1500, name="Squid"):
@@ -416,18 +401,6 @@ Forest Monsters: Generally wood or animal like. Grow stronger at night. Uses poi
 Abilities: Ground Stomp
 """
 
-# class Spider(Monster):
-#     def __init__(self, x=-1, y=-1, render_tag=1110, name="Spider"): #1210 is also working render tag
-#         super().__init__(x=x, y=y, render_tag=render_tag, name=name)
-#         self.brain = monster_ai.Monster_AI(self)
-#         self.character.experience_given = 10
-#         self.description = "These black and white spiders, each the size of a small dog, are swift and deadly predators of the forest. With their distinctive striped patterns, they move with alarming speed, darting through the underbrush and leaping onto unsuspecting prey. Their agile legs and sharp mandibles allow them to navigate any terrain, while their ability to weave intricate webs on tiles makes them formidable hunters and trappers. A single bite from a Rift Spider delivers potent poison, weakening and paralyzing its victims. Beware their sudden, silent approach and the venomous sting that follows, for these spiders are relentless and deadly in their pursuit."
-#         self.character.health = 10
-#         self.character.max_health = 10
-#         self.traits["spider"] = True
-#         self.character.change_action_cost("move", 30)
-#
-#         self.fighter = Fighter(self, min_damage=3, max_damage=5, on_hit=[Slow])
 """
 Abilities: Create web on tile
 """

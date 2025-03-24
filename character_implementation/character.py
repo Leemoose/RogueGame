@@ -30,8 +30,17 @@ class Character():
 
 
 
-    def change_action_cost(self, action, newcost):
+    def set_action_cost(self, action, newcost):
         self.action_costs[action] = newcost
+
+    def get_action_cost(self, action):
+        return self.action_costs[action]
+
+    def change_action_cost(self, action, change):
+        self.action_costs[action] += change
+
+    def get_all_action_costs(self):
+        return self.action_costs
 
     def change_energy(self, energy):
         self.energy += energy
@@ -200,6 +209,8 @@ class Character():
                 break
 
 
+
+
     """
     This section is for pass along calls for attributes, make any changes in the child function, not here
     """
@@ -214,9 +225,6 @@ class Character():
 
     def get_max_mana(self):
         return self.attributes.get_max_mana()
-
-    def get_action_cost(self, action):
-        return self.action_costs[action]
 
     def get_attribute(self, attribute):
         attribute = attribute.lower()
@@ -241,6 +249,9 @@ class Character():
             self.attributes.change_dexterity(change)
         else:
             raise Exception("You tried to change an attribute but it doesn't exist")
+
+    def change_strength(self, change):
+        self.attributes.change_strength(change)
 
     def change_health(self, change):
         self.attributes.change_health(change)

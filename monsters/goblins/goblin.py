@@ -19,7 +19,7 @@ class Goblin(Monster):
         self.endurance = 0
         self.intelligence = 0
 
-        self.traits["goblin"] = True
+        self.traits["goblins"] = True
 
     def do_attack(self, target, loop):
         #Make sure to add energy cost here
@@ -28,5 +28,5 @@ class Goblin(Monster):
             gold_taken = target.inventory.get_gold() // 2
             self.inventory.change_gold_amount(gold_taken)
             target.inventory.change_gold_amount(-gold_taken)
-            loop.add_message("The goblin takes gold away from the defender!")
+            loop.add_message("The goblins takes gold away from the defender!")
         return damage

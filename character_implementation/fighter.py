@@ -41,6 +41,9 @@ class Fighter():
         defense = self.armor + (self.parent.character.get_attribute("Endurance") // 3)
         return defense
 
+    def change_base_damage(self, change):
+        self.base_damage += change
+
     """
     1. Damage: Calculate how much damage opponent you would deal
     2. Chance to hit: dexterity vs dexterity affected by how heavy the armor is for both sides (% shave off damage?)

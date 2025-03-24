@@ -104,7 +104,7 @@ class Display:
         self.y_end = player.y + self.r_y
 
         mini_map_left_offset = action_screen_width
-        mini_map_top_offset = self.screen_height // 3
+        mini_map_top_offset = 0
         mini_map_width = self.screen_width - action_screen_width
         mini_map_height = self.screen_height // 3
 
@@ -125,13 +125,20 @@ class Display:
         self.draw_examine_window(loop, loop.targets.get_target_coordinates())
         self.draw_health_and_mana_orbs(loop, action_screen_width)
 
+        button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((20, 20),
+                                      (30, 30)),
+            text="Hello",
+            manager=self.uiManager)
+        button.action = "H"
+
         self.depth_label.update(1)
 
     def draw_health_and_mana_orbs(self, loop, action_screen_width):
         orb_size = 180
-        health_orb_x = action_screen_width // 3 - orb_size
+        health_orb_x = self.screen_width * 2 // 5 - orb_size
         health_orb_y = self.screen_height - orb_size
-        mana_orb_x = action_screen_width * 2 // 3
+        mana_orb_x = self.screen_width * 3 // 5
         mana_orb_y = self.screen_height - orb_size
 
         if loop.player.character.get_health() / loop.player.character.get_max_health() >= .85:

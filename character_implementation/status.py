@@ -8,6 +8,7 @@ class Status():
         self.parent = parent
         self.can_move = True
         self.can_grab = True
+        self.can_spellcast = True
         self.can_take_actions = True
         self.flee = False
         self.can_teleport = True
@@ -38,10 +39,12 @@ class Status():
     def set_awake(self, status):
         self.awake = status
 
+    def set_can_spellcast(self, status):
+        self.can_spellcast = status
 
     def remove_status_effect(self, effect):
         if not effect.active:
-            effect.remove(self)
+            effect.remove(self.parent.parent)
             self.status_effects.remove(effect)
 
     def has_negative_effects(self):
@@ -57,7 +60,7 @@ class Status():
 
     def add_status_effect(self, effect):
         if not self.has_effect(effect.name):
-            effect.apply_effect(self)
+            effect.apply_effect(self.parent.parent)
             self.status_effects.append(effect)
         else:
             # refresh duration of existing status effect

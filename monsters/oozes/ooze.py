@@ -12,7 +12,7 @@ class Ooze(Monster):
         self.description = "These amorphous blobs of translucent, gelatinous matter emerge from the depths of the rifts. Their bodies pulse with a sickly green glow, fueled by the chaotic energies of their environment. Rift Slimes mindlessly dissolve anything they touch with acidic secretions, leaving behind only a faint, acrid odor. They show no preference or intelligence, simply drawn to any item_implementation they encounter, which they swiftly corrode beyond recognition.."
         self.character.action_costs["grab"] = 0
         self.character.action_costs["move"] = 300
-        self.traits["ooze"] = True
+        self.traits["oozes"] = True
 
     def do_defend(self, attacker, loop):
         chance_to_destroy_weapon = random.randint(1, 100)
@@ -22,7 +22,7 @@ class Ooze(Monster):
                 weapon.set_destroy(True)
                 attacker.body.unequip(weapon)
                 attacker.inventory.remove_item(weapon)
-                loop.add_message("The ooze destroys the weapon of the attacker!")
+                loop.add_message("The oozes destroys the weapon of the attacker!")
             else:
                 attacker.character.take_damage(self, 1)
         return self.fighter.do_defend()

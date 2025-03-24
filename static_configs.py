@@ -218,6 +218,7 @@ class TileDict():
         tiles[1000] = image.load('assets/crawl-tiles/dc-mon/brown_ooze.png')
         tiles[1010] = image.load('assets/crawl-tiles/dc-mon/goblin.png')
         tiles[1020] = image.load('assets/crawl-tiles/dc-mon/kobold.png')
+        tiles[1030] = image.load('assets/crawl-tiles/dc-mon/orc_knight.png')
 
         #2000-2999 all tiles assets
         tiles[2000] = image.load('assets/crawl-tiles/dc-dngn/floor/cobble_blood1.png')
@@ -272,6 +273,10 @@ class TileDict():
         tiles[5300] = image.load('assets/crawl-tiles/player/head/cap_black1.png')
         tiles[5400] = image.load('assets/crawl-tiles/player/body/aragorn.png')
         tiles[5500] = image.load('assets/crawl-tiles/player/legs/pants_blue.png')
+
+
+        #UI
+        tiles[9000] = image.load('assets/UI/buttonStock1d.png')
 
         self.tiles = tiles
 
