@@ -104,9 +104,9 @@ class Display:
         self.y_end = player.y + self.r_y
 
         mini_map_left_offset = action_screen_width
-        mini_map_top_offset = 0
+        mini_map_top_offset = action_screen_height - 100
         mini_map_width = self.screen_width - action_screen_width
-        mini_map_height = self.screen_height // 3
+        mini_map_height = self.screen_height - mini_map_top_offset
 
        #Making all the tiles
         for x in range(self.x_start, self.x_end):
@@ -122,44 +122,68 @@ class Display:
         self.draw_player(loop)
         self.uiManager.draw_ui(self.win)
         self.update_mini_map(loop, mini_map_left_offset, mini_map_top_offset, mini_map_width, mini_map_height, num_tiles_wide, num_tiles_height)
-        self.draw_examine_window(loop, loop.targets.get_target_coordinates())
-        self.draw_health_and_mana_orbs(loop, action_screen_width)
-
-        button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((20, 20),
-                                      (30, 30)),
-            text="Hello",
-            manager=self.uiManager)
-        button.action = "H"
-
+        self.draw_examine_window(loop, loop.targets.get_target_coordinates(), action_screen_height - 100)
+        self.draw_health_and_mana_orbs(loop)
+        self.draw_experience_bar(loop, action_screen_height)
+        self.draw_menu_buttons(action_screen_height)
         self.depth_label.update(1)
 
-    def draw_health_and_mana_orbs(self, loop, action_screen_width):
+    def draw_menu_buttons(self, action_screen_height):
+        button_screen_height = self.screen_height - action_screen_height
+        button_width = 130
+        button_height = 40
+
+        buttons = [("Inventory", "i"), ("Equipment", "e"), ("Spells", "p")]
+        for i, button in enumerate(buttons):
+            button_on_screen = pygame_gui.elements.UIButton(
+                relative_rect=pygame.Rect(
+                    (self.screen_width // 5 + 20,
+                     action_screen_height + i * (button_height + 10) ,
+                     button_width, button_height)),
+                text=button[0],
+                manager=self.uiManager,
+                starting_height=1000)  # Important! Need this to be high so it's above the panel.
+            button_on_screen.action = button[1]
+    def draw_experience_bar(self, loop, action_screen_height):
+        experience_bar_x = self.screen_width * 2 // 5 + 3
+        experience_bar_y = action_screen_height - 10
+        experience_bar_width = self.screen_width // 5 - 6
+        experience_bar_height = 10
+        rectangle = pygame.Rect(experience_bar_x, experience_bar_y,
+                                experience_bar_width, experience_bar_height)
+        pygame.draw.rect(self.win, (150, 150, 150), rectangle, 2)
+
+        experience_percentage = loop.player.character.get_experience() / loop.player.character.attributes.get_experience_to_next_level()
+        rectangle = pygame.Rect(experience_bar_x, experience_bar_y,
+                                experience_bar_width * experience_percentage, experience_bar_height)
+        pygame.draw.rect(self.win, (150, 150, 150), rectangle)
+
+    def draw_health_and_mana_orbs(self, loop):
         orb_size = 180
         health_orb_x = self.screen_width * 2 // 5 - orb_size
         health_orb_y = self.screen_height - orb_size
         mana_orb_x = self.screen_width * 3 // 5
         mana_orb_y = self.screen_height - orb_size
 
-        if loop.player.character.get_health() / loop.player.character.get_max_health() >= .85:
-            health_orb = image.load("assets/status_orbs/health_full.png")
-        elif loop.player.character.get_health() / loop.player.character.get_max_health() >= .65:
-            health_orb = image.load("assets/status_orbs/health_75.png")
-        elif loop.player.character.get_health() / loop.player.character.get_max_health() >= .35:
-            health_orb = image.load("assets/status_orbs/health_50.png")
-        elif loop.player.character.get_health() / loop.player.character.get_max_health() >= .10:
-            health_orb = image.load("assets/status_orbs/health_25.png")
+        if loop.player.character.status.has_effect("Poison"):
+            prefix = "poison"
+        else:
+            prefix = "health"
+        health_percentage = loop.player.character.get_health() / loop.player.character.get_max_health()
+        health_percentage = int(min(round(health_percentage, 1) * 100, 100))
+        suffix = str(health_percentage)
+
+        if loop.player.character.get_health() / loop.player.character.get_max_health() >= .05:
+            health_orb = image.load("assets/status_orbs/" + prefix + "_" + suffix + ".png")
         else:
             health_orb = image.load("assets/status_orbs/itsmars_orb_border.png")
 
-        if loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .85:
-            mana_orb = image.load("assets/status_orbs/mana_full.png")
-        elif loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .65:
-            mana_orb = image.load("assets/status_orbs/mana_75.png")
-        elif loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .35:
-            mana_orb = image.load("assets/status_orbs/mana_50.png")
-        elif loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .10:
-            mana_orb = image.load("assets/status_orbs/mana_25.png")
+        mana_percentage = loop.player.character.get_mana() / loop.player.character.get_max_mana()
+        mana_percentage = int(min(round(mana_percentage, 1) * 100,100))
+        suffix = str(mana_percentage)
+
+        if loop.player.character.get_mana() / loop.player.character.get_max_mana() >= .05:
+            mana_orb = image.load("assets/status_orbs/mana_" + suffix + ".png")
         else:
             mana_orb = image.load("assets/status_orbs/itsmars_orb_border.png")
         
@@ -209,6 +233,7 @@ class Display:
         floormap = loop.generator.tile_map
         monster_map = loop.generator.monster_map
         item_map = loop.generator.item_map
+        interact_map = loop.generator.interact_map
 
         # Making all map tiles
         for x in range(x_map_start, x_map_end):
@@ -228,9 +253,8 @@ class Display:
                             pygame.draw.rect(self.win, (0, 75, 100), rectangle)
                         else:
                             pygame.draw.rect(self.win, (131, 131, 131), rectangle)
-                        #     for interact in interact_map.all_entities():
-                        #         if floormap.track_map[interact.x][interact.y].seen:
-                        #             pygame.draw.rect(self.win, (200, 100, 0),rectangle)
+                    elif interact_map.get_has_entity(x, y):
+                            pygame.draw.rect(self.win, (200, 100, 0),rectangle)
                     else:
                         pygame.draw.rect(self.win, (100, 100, 100), rectangle)
         pygame.draw.rect(self.win, (150, 100, 50),
@@ -250,31 +274,35 @@ class Display:
             text = font.render(message[0], True, message[1])
             self.win.blit(text, (self.screen_width // 100 * 12, self.screen_height // 100 * (85 + i * 3)))
 
-    def draw_examine_window(self, loop, target):
+    def draw_examine_window(self, loop, target, offset_from_top):
         tileDict = loop.tileDict
         floormap = loop.generator.tile_map
         monster_map = loop.generator.monster_map
         item_map = loop.generator.item_map
-        player = loop.player
-        examine_offset_from_left = 10
-        examine_offset_from_top = 10
+        interact_map = loop.generator.interact_map
+        examine_offset_from_left = 0
+        examine_offset_from_top = offset_from_top
+        examine_offset_from_top = offset_from_top
+        examine_window_height = self.screen_height - examine_offset_from_top
+        entity_picture_size = 100
+        examine_window_width = 350
+        font = pygame.font.Font('freesansbold.ttf', 12)
+        pygame.draw.rect(self.win, (100, 100, 100),
+                         pygame.Rect(examine_offset_from_left, examine_offset_from_top, examine_window_width,
+                                     examine_window_height), 1)
         if target is not None:
             x, y = target
-            if loop.generator.in_map(x, y) and floormap.get_entity(x,y).visible:
-                # black_screen = pygame.transform.scale(pygame.image.load("assets/ui/black_screen.png"), (self.screen_width // 5, self.screen_height // 5))
-                # self.win.blit(black_screen, (0, 0))
-                font = pygame.font.Font('freesansbold.ttf', 12)
-
+            if loop.generator.in_map(x, y) and floormap.get_entity(x,y).get_visible() and loop.player.get_distance(x, y) > 0.5:
                 # find monster at target
                 if monster_map.get_has_entity(x,y):
                     monster = monster_map.get_entity(x,y)
                     # draw monster
-                    tag = tileDict.tile_string(monster.get_render_tag())
-                    self.win.blit(tag, (examine_offset_from_left, examine_offset_from_top))
+                    tag = pygame.transform.scale(tileDict.tile_string(monster.get_render_tag()), (entity_picture_size, entity_picture_size))
+                    self.win.blit(tag, (examine_offset_from_left + 10, examine_offset_from_top + examine_window_height // 2 - entity_picture_size // 2))
 
-                    for i, descriptor in enumerate(monster.get_string_description()):
+                    for i, descriptor in enumerate(monster.get_render_text()):
                         text = font.render(descriptor, True, (255, 255, 255))
-                        self.win.blit(text, (examine_offset_from_left, examine_offset_from_top + 50 + i * 15))
+                        self.win.blit(text, (examine_offset_from_left + entity_picture_size + 10, examine_offset_from_top + 10 + i * 15))
 
                 elif item_map.get_has_entity(x,y):
                     # find item at target
@@ -291,17 +319,33 @@ class Display:
                                 self.win.blit(text, (examine_offset_from_left, examine_offset_from_top + 50 + top_offset_item))
                                 top_offset_item += 15
                             top_offset_item += 30
-
-                elif player.get_distance(x, y) == 0:
-                    tag = tileDict.tile_string(player.get_render_tag())
+                elif interact_map.get_has_entity(x,y):
+                    interact = interact_map.get_entity(x,y)
+                    tag = tileDict.tile_string(interact.get_render_tag())
                     self.win.blit(tag, (examine_offset_from_left, examine_offset_from_top))
+                    for i, descriptor in enumerate(interact.get_string_description()):
+                        text = font.render(descriptor, True, (255, 255, 255))
+                        self.win.blit(text, (examine_offset_from_left, examine_offset_from_top + 50 + i * 15))
+                else:
+                    tag = pygame.transform.scale(tileDict.tile_string(loop.player.get_render_tag()),
+                                                 (entity_picture_size, entity_picture_size))
+                    self.win.blit(tag, (examine_offset_from_left + 10,
+                                        examine_offset_from_top + examine_window_height // 2 - entity_picture_size // 2))
 
                     # random flavor text since detailed player info is elsewhere
-                    text = font.render("You", True, (255, 255, 255))
-                    self.win.blit(text, (examine_offset_from_left, examine_offset_from_top + 50))
-                else:
-                    return False
-                return True
+                    for i, descriptor in enumerate(loop.player.get_render_text()):
+                        text = font.render(descriptor, True, (255, 255, 255))
+                        self.win.blit(text, (
+                        examine_offset_from_left + entity_picture_size + 10, examine_offset_from_top + 10 + i * 15))
+            else: # loop.player.get_distance(x, y) == 0:
+                tag = pygame.transform.scale(tileDict.tile_string(loop.player.get_render_tag()), (entity_picture_size, entity_picture_size))
+                self.win.blit(tag, (examine_offset_from_left + 10, examine_offset_from_top + examine_window_height // 2 - entity_picture_size // 2))
+
+                # random flavor text since detailed player info is elsewhere
+                for i, descriptor in enumerate(loop.player.get_render_text()):
+                    text = font.render(descriptor, True, (255, 255, 255))
+                    self.win.blit(text, (examine_offset_from_left + entity_picture_size + 10, examine_offset_from_top + 10 + i * 15))
+            return True
         return False
 
     def draw_on_button(self, button, img, letter="", button_size=None, shrink=False, offset_factor = 10, text_offset = (15, 0.8)):
@@ -360,7 +404,7 @@ class Display:
                         "Mana: " + str(player.character.get_mana()) + " / " + str(player.character.get_max_mana()) + "<br>"
                         "<br>"
                         "Damage: " + str(player.fighter.get_damage_min()) + " - " + str(player.fighter.get_damage_max()) + " (" + strength_modifier + ") <br>"
-                        "Defense: " + str(player.fighter.get_armor()) + " (+" + str(player.character.get_endurance() // 3) + ") <br>"
+                        "Defense: " + str(player.character.attributes.get_armor()) + " <br>"
                         "Movement Delay: " + str(player.character.action_costs["move"]) + "<br>"
                         "Skill Damage Bonus: " + str(player.character.skill_damage_increase()) + "<br>"
                         "Effect Duration Bonus: " + str(player.character.skill_duration_increase()) + "<br>"
@@ -555,7 +599,7 @@ class Display:
         elif entity.has_trait("monster"):
             entity_text += "Health: " + str(entity.character.get_health()) + " / " + str(entity.character.get_max_health()) + "<br>"
             entity_text += "Attack: " + str(entity.fighter.get_damage_min()) + " - " + str(entity.fighter.get_damage_max()) + "<br>"
-            entity_text += "Armor: " + str(entity.fighter.get_armor()) + "<br>"
+            entity_text += "Armor: " + str(entity.character.attributes.get_armor()) + "<br>"
             for skill in entity.character.skills:
                 entity_text += "Has skill: " + str(skill.name)+ "<br>"
             if entity.has_trait("orb"):
@@ -593,6 +637,12 @@ class Display:
         if tile.get_visible() or tile.get_seen():
             tag = loop.tileDict.tile_string(tile.get_render_tag())
             self.win.blit(tag, (self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)))
+            if loop.generator.interact_map.get_has_entity(tile.get_x(), tile.get_y()):
+                tag = loop.tileDict.tile_string(loop.generator.interact_map.get_entity(tile.get_x(), tile.get_y()).get_render_tag())
+                self.win.blit(tag, (self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)))
+            for terrain in tile.get_terrain():
+                terrain_tag = loop.tileDict.tile_string(terrain.get_render_tag())
+                self.win.blit(terrain_tag, (self.textSize * (tile.get_x() - self.x_start), self.textSize * (tile.get_y() - self.y_start)))
         if tile.get_seen() and not tile.get_visible() or (loop.currentLoop == LoopType.targeting and
                                                                 loop.targets.get_range() is not None and
                                                                 tile.get_distance(

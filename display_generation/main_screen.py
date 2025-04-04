@@ -41,7 +41,7 @@ def create_main_screen(display, loop):
 
     button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
         (button_offset_from_left + button_width * 3 + button_offset_from_each_other * 3, button_offset_from_bottom),
-        (button_width, button_height)),
+                    (button_width, button_height)),
         text='Help',
         manager=display.uiManager)
     button.action = "h"

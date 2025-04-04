@@ -416,13 +416,13 @@ class StatBox(pygame_gui.elements.UITextBox):
                 self.status_effect_durations == curr_status_effect_durations and
                 self.stat_points == entity.stat_points and
                 self.level == entity.level and
-                self.experience == entity.experience and
-                self.experience_to_next_level == entity.experience_to_next_level and
+                self.experience == entity.character.get_experience() and
+                self.experience_to_next_level == entity.character.attributes.get_experience_to_next_level() and
                 self.strength == entity.character.get_strength() and
                 self.dexterity ==entity.character.get_dexterity() and
                 self.endurance == entity.character.get_endurance() and
                 self.intelligence == entity.character.get_intelligence() and
-                self.armor == entity.fighter.get_armor())
+                self.armor == entity.get_attribute("Armor"))
 
     def SetCompareStats(self, entity):
         self.status = self.get_health_status(entity)
@@ -432,13 +432,13 @@ class StatBox(pygame_gui.elements.UITextBox):
             self.status_effect_durations.append(effect.duration)
         self.stat_points = entity.stat_points
         self.level = entity.level
-        self.experience = entity.experience
-        self.experience_to_next_level = entity.experience_to_next_level
+        self.experience = entity.character.get_experience()
+        self.experience_to_next_level = entity.character.attributes.get_experience_to_next_level()
         self.strength = entity.character.get_strength()
         self.dexterity = entity.character.get_dexterity()
         self.endurance = entity.character.get_endurance()
         self.intelligence = entity.character.get_intelligence()
-        self.armor = entity.fighter.get_armor()
+        self.armor = entity.character.attributes.get_armor()
 
     def get_health_status(self, entity):
         if entity.character.get_health() < entity.character.get_max_health() // 3 * 2:
@@ -461,7 +461,7 @@ class StatBox(pygame_gui.elements.UITextBox):
             return "<shadow size=1 offset=0,0 color=#306090><font color=#E0F0FF>Level: " \
                     + str(entity.level) + " (Press L to allocate stat points)</font></shadow>"
         else:
-            to_next_level = str(format(entity.experience / entity.experience_to_next_level, ".1%"))
+            to_next_level = str(format(entity.character.attributes.get_experience() / entity.character.attributes.get_experience_to_next_level(), ".1%"))
             return "Level: " + str(entity.level) + " (" + to_next_level + " there to next level)"
 
     def stat_text(self, entity, stat, useRounded=False):
@@ -491,7 +491,7 @@ class StatBox(pygame_gui.elements.UITextBox):
                             "Dexterity: " + self.stat_text(self.player, self.player.character.get_dexterity()) + "<br>"
                             "Endurance: " + self.stat_text(self.player, self.player.character.get_endurance()) + " "
                             "Intelligence: " + self.stat_text(self.player, self.player.character.get_intelligence()) + "<br>" + \
-                            "Armor: " + self.stat_text(self.player, self.player.fighter.get_armor(), False) + "<br>" + \
+                            "Armor: " + self.stat_text(self.player, self.player.character.attributes.get_armor(), False) + "<br>" + \
                             self.round_text(self.player) + \
                             "Gold: " + self.stat_text(self.player, self.player.inventory.get_gold(), False) + "<br>" + \
                             "Status: " + self.get_status_text(self.player) + "<br>" + \

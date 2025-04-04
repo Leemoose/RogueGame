@@ -98,15 +98,15 @@ def create_display(display, loop):
 
     stats_offset_from_left = action_screen_width
     stats_offset_from_top = display.screen_height * 2 // 3
-    stats_width = display.screen_width - stats_offset_from_left
+    stats_width = 400
     stats_height = display.screen_height // 3
 
     map_tile_size = 10
     map_offset_from_left = action_screen_width
-    map_offset_from_top = 0
+    map_offset_from_top = action_screen_height - 100
     map_width = display.screen_width - action_screen_width
     map_message_width = stats_width
-    map_height = display.screen_height // 3
+    map_height = display.screen_height - map_offset_from_top
     map_message_height = 30
     num_map_tiles_wide = map_width // map_tile_size
     num_map_tiles_height = map_height // map_tile_size
@@ -147,11 +147,11 @@ def create_display(display, loop):
                                manager=display.uiManager,
                                loop=loop)
 
-    stat_box = StatBox(
-        pygame.Rect((stats_offset_from_left, stats_offset_from_top), (stats_width, stats_height)),
-        display.uiManager,
-        player
-    )
+    # stat_box = StatBox(
+    #     pygame.Rect((stats_offset_from_left, stats_offset_from_top), (stats_width, stats_height)),
+    #     display.uiManager,
+    #     player
+    # )
 
     # button_num_height = 0
     # button_num_width = 0
@@ -234,9 +234,9 @@ def create_display(display, loop):
 
     # create_skill_bar(display, loop)
 
-    healthBar = HealthBar(
-        pygame.Rect((stats_offset_from_left + 70, stats_offset_from_top + 12), (stats_width // 3, stats_height // 12)),
-        display.uiManager, player)
-    manaBar = ManaBar(
-        pygame.Rect((stats_offset_from_left + 70, stats_offset_from_top + 38), (stats_width // 3, stats_height // 12)),
-        display.uiManager, player)
+    # healthBar = HealthBar(
+    #     pygame.Rect((stats_offset_from_left + 70, stats_offset_from_top + 12), (stats_width // 3, stats_height // 12)),
+    #     display.uiManager, player)
+    # manaBar = ManaBar(
+    #     pygame.Rect((stats_offset_from_left + 70, stats_offset_from_top + 38), (stats_width // 3, stats_height // 12)),
+    #     display.uiManager, player)

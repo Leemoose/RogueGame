@@ -1,6 +1,6 @@
 from navigation_utility import pathfinding
 import random
-def do_nothing(ai, loop):
+def do_wait     (ai, loop):
     # print("doing nothing")
     pass
 
@@ -67,11 +67,9 @@ def do_combat(ai, loop):
     # print("Attacking player")
     monster = ai.parent
     if not monster.character.can_take_action():
-        monster.character.energy -= ai.parent.character.action_costs[
-            "move"]  # (monster.character.move_cost - monster.character.dexterity)
+        monster.character.energy -= ai.parent.character.action_costs["move"]  # (monster.character.move_cost - monster.character.dexterity)
         loop.add_message(f"{monster} is petrified and cannot attack.")
     elif ai.parent.get_distance(loop.player.get_x(), loop.player.get_y()) <= ai.parent.fighter.get_range():
-        monster.character.energy -= ai.parent.character.action_costs["attack"]
         if ai.target != None:
             damage = monster.do_attack(ai.target, loop)
             loop.add_message(f"{monster} attacked {ai.target.name} for {damage} damage")

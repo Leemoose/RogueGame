@@ -1,7 +1,5 @@
-"""
-I want to make it so that status effects are cleared at the start of every turn but then each effect is applied on top of that
 
-"""
+from global_vars import global_bugtesting
 
 class Status():
     def __init__(self, parent, invincible):
@@ -16,6 +14,7 @@ class Status():
         self.alive = True
         self.invincible = invincible
         self.status_effects = []
+        self.status_effects_immunity = []
         if self.parent.parent.has_trait("Player"):
             self.awake = True
         else:
@@ -46,6 +45,9 @@ class Status():
         if not effect.active:
             effect.remove(self.parent.parent)
             self.status_effects.remove(effect)
+            if global_bugtesting:
+                print(f"Removed status effect {effect.name} from {self.parent.parent.name}")
+                print("Current status effects: " + str([x.name for x in self.status_effects]))
 
     def has_negative_effects(self):
         for x in self.status_effects:
@@ -59,17 +61,18 @@ class Status():
         return False
 
     def add_status_effect(self, effect):
-        if not self.has_effect(effect.name):
-            effect.apply_effect(self.parent.parent)
-            self.status_effects.append(effect)
-        else:
-            # refresh duration of existing status effect
-            for x in self.status_effects:
-                if x.id_tag == effect.id_tag:
-                    if x.is_cumulative():
-                        x.change_duration(effect.get_duration()) #add more duration
-                    else:
-                        x.change_duration(effect.get_duration() - x.get_duration()) #reset duration
+        if effect.name not in self.status_effects_immunity:
+            if not self.has_effect(effect.name):
+                effect.apply_effect(self.parent.parent)
+                self.status_effects.append(effect)
+            else:
+                # refresh duration of existing status effect
+                for x in self.status_effects:
+                    if x.id_tag == effect.id_tag:
+                        if x.is_cumulative():
+                            x.change_duration(effect.get_duration()) #add more duration
+                        else:
+                            x.change_duration(effect.get_duration() - x.get_duration()) #reset duration
 
     def get_status_messages(self):
         messages = []

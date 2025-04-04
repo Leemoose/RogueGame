@@ -65,17 +65,7 @@ class StatusEffect():
 #     def remove(self, target):
 #         target.can_take_actions = True
 #
-# class Might(StatusEffect):
-#     def __init__(self, duration, strength):
-#         super().__init__(803, "Might", "feels strong", duration)
-#         self.strength = strength
-#         self.positive = True
-#
-#     def apply_effect(self, target):
-#         target.strength += self.strength
-#
-#     def remove(self, target):
-#         target.strength -= self.strength
+
 #
 # class Weak(StatusEffect):
 #     def __init__(self, duration, strength):
@@ -245,21 +235,7 @@ class StatusEffect():
 #     def remove(self, target):
 #         pass
 #
-# class Poison(StatusEffect):
-#     def __init__(self, inflictor, duration = 2, damage = 3):
-#         super().__init__(801, "Poison", "is being poisoned for " + str(damage) + "damage", duration)
-#         self.damage = damage
-#         self.inflictor = inflictor
-#         self.cumulative = True
-#
-#     def tick(self, target):
-#         if self.duration == -100: # -100 is a special value that means the effect lasts forever, -1 probably works too but made it larger just in case
-#             return
-#         self.duration -= 1
-#         if self.duration <= 0:
-#             self.active = False
-#         else:
-#             target.take_damage(self.inflictor, self.damage)
+
 #
 # class Rooted(StatusEffect):
 #     def __init__(self, inflictor, duration = 5):

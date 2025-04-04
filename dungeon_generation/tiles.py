@@ -1,8 +1,61 @@
-import objects as O
+from objects import Objects 
 
-class Floor(O.Tile):
-    def __init__(self, x, y, render_tag = 2000, passable = True, blocks_vision = False, id_tag = 0, type = "Floor"):
-        super().__init__(x, y,  render_tag = render_tag, passable = passable, id_tag = id_tag, blocks_vision=blocks_vision, type = type)
+class Tile(Objects):
+    def __init__(self, x, y, render_tag=0, passable=False, blocks_vision=True, id_tag=0, walkable=False):
+        super().__init__(x, y, id_tag, render_tag, "Tile")
+        self.passable = passable
+        self.blocks_vision = blocks_vision
+        self.walkable = walkable
+        self.seen = False
+        self.visible = False
+
+        self.terrain = []
+
+    def get_visible(self):
+        return self.visible
+
+    def set_seen(self, seen):
+        self.seen = seen
+
+    def get_seen(self):
+        return self.seen
+
+    def get_terrain(self):
+        return self.terrain
+
+    def get_terrain_message(self):
+        message = []
+        if len(self.terrain) > 0:
+            for terrain in self.terrain:
+                message.append(terrain.get_terrain_message())
+        return message
+
+    def is_passable(self):
+        return self.passable
+
+    def is_blocking_vision(self):
+        return self.blocks_vision
+
+    def add_terrain(self, terrain):
+        self.terrain.append(terrain)
+
+    def has_terrain(self):
+        return len(self.terrain) > 0
+
+    def apply_terrain_effects(self, entity):
+        for terrain_mod in self.terrain:
+            terrain_mod.apply_effects(entity)
+
+    def __str__(self):
+        if self.passable:
+            return (".")
+        else:
+            return ("#")
+
+
+class Floor(Tile):
+    def __init__(self, x, y, render_tag = 2000, passable = True, blocks_vision = False, id_tag = 0):
+        super().__init__(x, y,  render_tag = render_tag, passable = passable, id_tag = id_tag, blocks_vision=blocks_vision)
         self.traits["floor"] = True
 
 class Door(Floor):
@@ -14,14 +67,14 @@ class Door(Floor):
         self.shaded_render_tag = -31
         self.blocks_vision = False
 
-class Wall(O.Tile):
+class Wall(Tile):
     def __init__(self, x, y, render_tag = 2100, passable = False, blocks_vision = True, id_tag = 0):
-        super().__init__(x, y,  render_tag = render_tag, passable = passable, blocks_vision = blocks_vision, id_tag = id_tag, type = "Wall")
+        super().__init__(x, y,  render_tag = render_tag, passable = passable, blocks_vision = blocks_vision, id_tag = id_tag)
         self.traits["wall"] = True
 
-class Stairs(O.Tile):
+class Stairs(Tile):
     def __init__(self, x, y, render_tag = 0, passable = True, id_tag = 0):
-        super().__init__(x, y, render_tag, passable, id_tag, type = "Stairs")
+        super().__init__(x, y, render_tag, passable, id_tag)
         self.stairs = True
         self.pair = None
         self.level_change = 0
@@ -51,9 +104,9 @@ class UpStairs(Stairs):
         super().__init__(x, y, render_tag = render_tag, passable = passable, id_tag = id_tag)
         self.level_change = -1
 
-class Gateway(O.Tile):
+class Gateway(Tile):
     def __init__(self, x, y, level = 1, branch = "Dungeon", render_tag = 92, passable = True, id_tag = 0):
-        super().__init__(x, y, render_tag = render_tag, passable = passable, id_tag = id_tag, type = "Gateway")
+        super().__init__(x, y, render_tag = render_tag, passable = passable, id_tag = id_tag)
         self.branch = branch
         self.level = level
         self.outgoing = None

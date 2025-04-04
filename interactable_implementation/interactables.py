@@ -3,7 +3,7 @@ from item_implementation.talismans.orbs.orb import *
 from item_implementation.items import YellowFlowerPetal
 
 class Interactable(Objects):
-    def __init__(self, render_tag = 0, x=-1, y=-1, name="Interactable"):
+    def __init__(self, x=-1, y=-1, render_tag = 0, name="Interactable"):
         super().__init__(x=x, y=y,id_tag=-1, render_tag= render_tag, name = name)
         self.name = name
         self.active = True

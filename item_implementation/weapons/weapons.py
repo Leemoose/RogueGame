@@ -14,7 +14,8 @@ class Weapon(Equipment):
         self.armor_piercing = armor_piercing
         self.equipment_type = "Weapon"
         self.slots_taken = 1
-        self.on_hit = None
+        self.on_hit = []
+        self.on_damage = []
         self.effective = []
         self.attack_cost = attack_cost
         self.diff_action_cost = 0
@@ -37,9 +38,23 @@ class Weapon(Equipment):
     def get_range(self):
         return self.range
 
-    def attack(self):
+    def get_damage(self):
         damage = random.randint(self.damage_min, self.damage_max)
         return damage
+
+    def get_on_hit_effect(self):
+        return self.on_hit
+    def get_has_on_hit_effect(self):
+        return len(self.on_hit) > 0
+
+    def get_on_damage_effect(self):
+        return self.on_damage
+
+    def get_has_on_damage_effect(self):
+        return len(self.on_damage) > 0
+
+    def add_on_damage_effect(self, effect):
+        self.on_damage.append(effect)
 
 
 

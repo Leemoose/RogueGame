@@ -15,7 +15,7 @@ class Character():
         self.main_weapon = None
 
 
-        self.action_costs = {"attack": 80,
+        self.action_costs = {"attack": 100,
                              "move": 100,
                              "grab": 30,
                              "equip": 100,
@@ -66,9 +66,11 @@ class Character():
             damage = 0
         self.attributes.change_health(-damage)
         if not self.is_alive():
-            if hasattr(dealer, "experience"): # acts as a check for it its a player
-                dealer.statistics.add_killed_monster(self.parent)
-                dealer.gain_experience(self.attributes.get_experience_given())
+            #if hasattr(dealer, "experience"): # acts as a check for it its a player
+            dealer.statistics.add_killed_monster(self.parent)
+            dealer.gain_experience(self.attributes.get_experience_given())
+            print("The experience is " + str(self.attributes.get_experience_given()))
+            print("Your experience is now " + str(dealer.character.attributes.get_experience()))
         return self.is_alive()
 
 
@@ -236,6 +238,19 @@ class Character():
             return self.attributes.get_endurance()
         elif attribute == "dexterity":
             return self.attributes.get_dexterity()
+        elif attribute == "armor":
+            return self.attributes.get_armor()
+        elif attribute == "health":
+            return self.attributes.get_health()
+        elif attribute == "max_health":
+            return self.attributes.get_max_health()
+        elif attribute == "mana":
+            return self.attributes.get_mana()
+        elif attribute == "max_mana":
+            return self.attributes.get_max_mana()
+
+    def get_experience(self):
+        return self.attributes.get_experience()
 
     def change_attribute(self, attribute, change):
         attribute = attribute.lower()

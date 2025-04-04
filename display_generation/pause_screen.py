@@ -15,8 +15,8 @@ def create_pause_screen(display, loop):
     pause_button_offset_from_top = pause_offset_from_top
     pause_button_offset_from_left = pause_offset_from_left + (pause_screen_width - pause_button_width) // 2
 
-    display.draw_empty_box(pause_offset_from_left, pause_offset_from_top, pause_screen_width,
-                        pause_screen_height)
+    # display.draw_empty_box(pause_offset_from_left, pause_offset_from_top, pause_screen_width,
+    #                     pause_screen_height)
 
     button_num = 0
     unpause = pygame_gui.elements.UIButton(

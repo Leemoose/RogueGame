@@ -3,6 +3,8 @@ from character_implementation import character as C, statistics, Body, Fighter, 
 from navigation_utility import pathfinding
 from loop_workflow import LoopType
 from character_implementation import Inventory
+from spell_implementation.fire_school.burning_attack import BurningAttack
+from item_implementation.consumables.potions import MightPotion
 
 
 class Player(Objects):
@@ -18,8 +20,6 @@ class Player(Objects):
 
         self.level = 1
         self.max_level = 20
-        self.experience = 0
-        self.experience_to_next_level = 20
 
         self.visited_stairs = []
         self.stat_points = 0
@@ -34,6 +34,7 @@ class Player(Objects):
 
         if self.character.status.get_invincible():  # only get the gun if you're invincible at the start
             bug_test_spells = [
+                BurningAttack(self, cooldown=10, cost=0, damage=3, burn_damage=1, burn_duration=10, range=10)
                 # S.Gun(self),  # 1
                 # S.BlinkStrike(self, cooldown=0, cost=10, damage=25, range=10, action_cost=1), # 3
                 #spell.SummonGargoyle(self), # 2
@@ -48,22 +49,25 @@ class Player(Objects):
             for spell in bug_test_spells:
                 self.mage.add_spell(spell)
             self.stat_points = 20 # free stat points for debugging
-            # self.inventory.get_item(MightPotion())
+            self.inventory.get_item(MightPotion())
             # self.inventory.get_item(BlinkScrorb())
-
-    def get_attribute(self, attribute):
-        attribute = attribute.lower()
-        if attribute in ["strength", 'intelligence','endurance',"dexterity"]:
-            return self.character.get_attribute(attribute)
-        elif attribute in ['armor']:
-            return self.fighter.get_attribute(attribute)
+    def get_render_text(self):
+        text = ["Name: " + self.get_name() + " (level " + str(self.get_level()) + ")",
+                "Health: " + str(self.get_attribute("health")) + " / " + str(self.get_attribute("max_health")),
+                "Mana: " + str(self.get_attribute("mana")) + " / " + str(self.get_attribute("max_mana")),
+                "Strength: " + str(self.get_attribute("strength")) + "  Dexterity: " + str(self.get_attribute("dexterity")),
+                "Endurance: " + str(self.get_attribute("endurance")) + "  Intelligence: " + str(self.get_attribute("intelligence")),
+                "Armor: " + str(self.get_attribute("armor")),
+                "Gold: " + str(self.get_attribute("gold")),
+                "Status: " + str(self.character.status.get_status_effects())]
+        return text
 
     def change_attribute(self, attribute, change):
         attribute = attribute.lower()
         if attribute in ["strength", 'intelligence','endurance',"dexterity"]:
             return self.character.change_attribute(attribute, change)
         elif attribute in ['armor']:
-            return self.fighter.change_attribute(attribute, change)
+            return self.character.attributes.change_armor(change)
 
     def get_inventory(self):
         return self.inventory.get_inventory()
@@ -72,7 +76,7 @@ class Player(Objects):
         return self.character.get_action_cost(action)
 
     def gain_experience(self, experience):
-        self.experience += experience
+        self.character.attributes.change_experience(experience)
         self.check_for_levelup()
 
     def attack_move(self, move_x, move_y, loop):
@@ -89,8 +93,8 @@ class Player(Objects):
                 elif loop.generator.monster_map.get_has_entity(x, y):
                     defender = loop.generator.monster_map.get_entity(x,y)
                     self.attack(defender, loop)
-                # elif not loop.generator.interact_map.get_passable(x, y):
-                #     self.do_interact(loop, input_direction=(move_x, move_y))
+                elif loop.generator.interact_map.get_has_entity(x, y):
+                    self.do_interact(loop, input_direction=(move_x, move_y))
                 elif not self.character.can_move:
                     loop.add_message("You are currently restricted!")
                 else:
@@ -98,21 +102,23 @@ class Player(Objects):
 
     def move(self, move_x, move_y, loop):
         if loop.generator.get_passable((self.get_x() + move_x, self.get_y() + move_y)) and self.character.can_move() and self.character.can_take_action():
-            self.character.energy -= self.character.action_costs[
-                "move"]  # / (1.02**(self.character.dexterity + self.character.round_bonus())))
+            self.character.energy -= self.character.action_costs["move"]
             self.y += move_y
             self.x += move_x
             self.statistics.add_move_details()
-            if loop.currentLoop != LoopType.pathing:
-                loop.add_message("The player moved.")
+            if loop.generator.tile_map.get_entity(self.x, self.y).has_terrain():
+                loop.generator.tile_map.get_entity(self.x, self.y).apply_terrain_effects(self)
+                for message in loop.generator.tile_map.get_entity(self.x, self.y).get_terrain_message():
+                    loop.add_message(message)
+            # if loop.currentLoop != LoopType.pathing:
+            #     loop.add_message("The player moved.")
         else:
             loop.add_message("You can't move there")
 
     def attack(self, defender, loop):
         if defender.has_trait("monster"):
             if self.character.can_take_action() and self.get_distance(defender.get_x(), defender.get_y()) <= self.fighter.get_range():
-                self.character.energy -= self.character.action_costs[
-                    "attack"]  # / (1.05**(self.character.dexterity + self.character.round_bonus())))
+                self.character.energy -= self.character.action_costs["attack"]
                 #Set target to the defender
                 damage = self.fighter.do_attack(defender, loop)
                 self.statistics.add_attack_details(damage)
@@ -261,12 +267,9 @@ class Player(Objects):
             loop.after_pathing = after_stairs
 
     def check_for_levelup(self):
-        while self.level != self.max_level and self.experience >= self.experience_to_next_level:
+        while self.level != self.max_level and self.character.attributes.can_level_up():
             self.level += 1
             self.stat_points += 2
-            exp_taken = self.experience_to_next_level
-            self.experience_to_next_level += 20 + self.experience_to_next_level // 4
-            self.experience -= exp_taken
             self.character.level_up()
 
     def modify_stat_decisions(self, i, increase=True):  # 0 = strength, 1 = dexterity, 2 = endurance, 3 = intelligence
@@ -381,6 +384,17 @@ class Player(Objects):
 
     def do_defend(self, attacker, loop):
         return self.fighter.do_defend()
+
+    def get_level(self):
+        return self.level
+
+    def get_attribute(self, attribute):
+        attribute = attribute.lower()
+        if attribute in ["strength", 'intelligence','endurance',"dexterity", "armor", "health", "mana","max_health", "max_mana"]:
+            return self.character.get_attribute(attribute)
+
+
+
 
     """
     """

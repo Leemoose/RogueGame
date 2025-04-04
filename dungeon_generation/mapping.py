@@ -30,8 +30,8 @@ class DungeonGenerator():
 
         self.player = player
 
-        place_spawn_monsters(self, monster_spawner)
         place_spawn_interactables(self, interactable_spawner)
+        place_spawn_monsters(self, monster_spawner)
         place_spawn_items(self, item_spawner)
 
     def get_width(self):
@@ -68,6 +68,13 @@ class DungeonGenerator():
                     candidates.append((x, y))
         startx, starty = random.choice(candidates)
         return startx, starty
+
+    def get_random_passable_location_not_in_hallway(self, stairs_block = True):
+        x,y = self.get_random_passable_location(stairs_block)
+        while self.get_is_in_corridor(x, y):
+            x,y = self.get_random_passable_location(stairs_block)
+        return x,y
+
 
     def get_monsters_in_sight(self):
         in_sight = []
@@ -132,6 +139,9 @@ class DungeonGenerator():
             return True
         return False
 
+    def get_visible(self, x, y):
+        self.tile_map.get_visible(x, y)
+
     def get_nearest_empty_tile(self, location, move = False):
       #  import pdb; pdb.set_trace()
         if location == None:
@@ -176,7 +186,7 @@ class DungeonGenerator():
 
     def get_is_in_corridor(self, x, y):
         count_passable = self.count_passable_neighbors(x, y)
-        if count_passable > 4:
+        if count_passable > 6:
             return False
         else:
             directions = [(0, 1), (1, 0), (-1, 0), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]

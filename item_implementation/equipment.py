@@ -56,7 +56,7 @@ class Equipment(Item):
         entity.change_attribute("Intelligence", intl)
         entity.change_attribute("Endurance", end)
         entity.change_attribute("Dexterity", dex)
-        entity.fighter.change_attribute("Armor", arm)
+        entity.change_attribute("Armor", arm)
 
     def can_be_equipped(self, entity):
         return self.equipable and entity.get_attribute("Strength") >= self.required_strength

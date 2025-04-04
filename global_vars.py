@@ -1,3 +1,3 @@
 
-global_bugtesting = False
+global_bugtesting = True
 

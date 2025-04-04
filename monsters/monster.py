@@ -12,8 +12,8 @@ class Monster(O.Objects):
         self.character = C.Character(self, health = health, mana = mana, experience_given = experience_given)
         self.brain = brain(self)
         self.inventory = Inventory(self, gold = gold)
-        self.body = Body(self)
-        self.fighter = Fighter(self, min_damage=min_damage, max_damage = max_damage)
+        self.body = Body(self,min_damage=min_damage, max_damage = max_damage)
+        self.fighter = Fighter(self)
         self.mage = Mage(self)
         self.level = 1
 
@@ -22,6 +22,22 @@ class Monster(O.Objects):
         self.rarity = rarity
 
         self.description = f"This is a {self.name}. It wants to eat you."
+
+    def get_attribute(self, attribute):
+        attribute = attribute.lower()
+        if attribute in ["strength", 'intelligence','endurance',"dexterity", "armor", "health", "mana","max_health", "max_mana"]:
+            return self.character.get_attribute(attribute)
+
+    def get_render_text(self):
+        text = ["Name: " + self.get_name() + " (level " + str(self.get_level()) + ")",
+                "Health: " + str(self.get_attribute("health")) + " / " + str(self.get_attribute("max_health")),
+                "Mana: " + str(self.get_attribute("mana")) + " / " + str(self.get_attribute("max_mana")),
+                "Strength: " + str(self.get_attribute("strength")) + "  Dexterity: " + str(self.get_attribute("dexterity")),
+                "Endurance: " + str(self.get_attribute("endurance")) + "  Intelligence: " + str(self.get_attribute("intelligence")),
+                "Armor: " + str(self.get_attribute("armor")),
+                "Gold: " + str(self.get_attribute("gold")),
+                "Status: " + str(self.character.status.get_status_effects())]
+        return text
 
     def get_inventory(self):
         return self.inventory.get_inventory()
@@ -49,7 +65,7 @@ class Monster(O.Objects):
         return description
 
     def do_attack(self, target, loop):
-        #Make sure to add energy cost here
+        self.character.change_energy(-self.character.get_action_cost("attack"))
         return self.fighter.do_attack(target, loop)
 
     def do_grab(self, item, loop):
@@ -91,7 +107,7 @@ class Monster(O.Objects):
         if attribute in ["strength", 'intelligence','endurance',"dexterity"]:
             return self.character.change_attribute(attribute, change)
         elif attribute in ['armor']:
-            return self.fighter.change_attribute(attribute, change)
+            return self.character.attributes.change_armor(change)
 
     def __str__(self):
         return self.name

@@ -114,13 +114,7 @@ class Inventory():
             if i < len(self.orb_inventory):
                 self.orb_inventory.pop(i)
                 return True
-        elif len(self.inventory) > 0:
-            print(self.inventory)
-            print(item)
-            i = 0
-            while (self.inventory[i] != item) and i < len(self.inventory):
-                i += 1
-            if i < len(self.inventory) and self.inventory[i] == item:
-                self.inventory.pop(i)
-                return True
+        elif item in self.inventory:
+            self.inventory.remove(item)
+            return True
         return False

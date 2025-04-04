@@ -219,11 +219,18 @@ class TileDict():
         tiles[1010] = image.load('assets/crawl-tiles/dc-mon/goblin.png')
         tiles[1020] = image.load('assets/crawl-tiles/dc-mon/kobold.png')
         tiles[1030] = image.load('assets/crawl-tiles/dc-mon/orc_knight.png')
+        tiles[1040] = image.load('assets/crawl-tiles/dc-mon/animals/jumping_spider.png')
+
+        tiles[1050] = image.load('assets/crawl-tiles/dc-mon/undead/skeletons/skeleton_humanoid_large.png')
+        tiles[1051] = image.load('assets/crawl-tiles/dc-mon/undead/skeletons/skeleton_centaur.png')
+
 
         #2000-2999 all tiles assets
         tiles[2000] = image.load('assets/crawl-tiles/dc-dngn/floor/cobble_blood1.png')
 
         tiles[2100] = image.load('assets/crawl-tiles/dc-dngn/wall/stone_dark1.png')
+
+        tiles[2200] = image.load('assets/crawl-tiles/dc-dngn/dngn_trap_zot.png')
 
         #3000 -4999 all items assets
         tiles[3000] = image.load('assets/crawl-tiles/item/armour/leather_armour1.png')
@@ -273,6 +280,11 @@ class TileDict():
         tiles[5300] = image.load('assets/crawl-tiles/player/head/cap_black1.png')
         tiles[5400] = image.load('assets/crawl-tiles/player/body/aragorn.png')
         tiles[5500] = image.load('assets/crawl-tiles/player/legs/pants_blue.png')
+
+        #Interactables 6000
+        tiles[6000] = image.load('assets/crawl-tiles/dc-dngn/dngn_blood_fountain2.png')
+        tiles[6010] = image.load('assets/crawl-tiles/dc-dngn/dngn_dry_fountain.png')
+        tiles[6100] = image.load('assets/crawl-tiles/dc-dngn/dngn_orcish_idol.png')
 
 
         #UI

@@ -9,8 +9,7 @@
 #                       2: MassFear,
 #                       3: Charm}
 #
-#     def random_spell(self):
-#         return self.level[3]
+
 #
 # class Lullaby(Spell):
 #     def __init__(self, parent, name="Lullaby", cooldown=10, cost=5, range=5, action_cost=100, duration = 5):

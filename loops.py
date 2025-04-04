@@ -36,6 +36,7 @@ class Loops():
         self.generator = None  # Dungeon Generator
         self.messages = MessageHandler()
 
+        self.player = player.Player(0, 0)
         self.targets = T.Target(self)
 
         self.current_stat = 0  # index of stat for levelling up
@@ -297,7 +298,6 @@ class Loops():
 
 
     def init_game(self):
-        self.player = player.Player(0, 0)
         dungeon_data = self.dungeon_data
         for branch in dungeon_data.get_branches():
             for level in range(1, dungeon_data.get_depth(branch) + 1):
@@ -312,6 +312,7 @@ class Loops():
                 x, y = stairs.get_location()
                 self.player.x = x
                 self.player.y = y
+                self.targets.set_target((x, y))
 
 
     def start_targetting(self, start_on_player=False):
@@ -351,19 +352,16 @@ class Loops():
             for quest in self.player.quests:
                 quest.check_for_progress(self)
 
-            if self.generator.tile_map.get_entity(self.player.x,self.player.y).check_if_status_applies(self.player):
-                for status_effect in self.generator.tile_map.get_entity(self.player.x,self.player.y).get_status_effects():
-                    self.player.character.add_status_effect(status_effect)
+            if self.generator.tile_map.get_entity(self.player.x,self.player.y).has_terrain():
+                self.generator.tile_map.get_entity(self.player.x,self.player.y).apply_terrain_effects(self.player)
 
             for monster in self.generator.monster_map.get_all_entities():
                 monster.character.tick_all_status_effects(self)
                 monster.character.tick_cooldowns()
                 monster.character.tick_regen()
 
-                if self.generator.tile_map.get_entity(monster.x, monster.y).check_if_status_applies(monster):
-                    for status_effect in self.generator.tile_map.get_entity(monster.x,
-                                                                        monster.y).get_status_effects():
-                        monster.character.add_status_effect(status_effect)
+                if self.generator.tile_map.get_entity(monster.get_x(), monster.get_y()).has_terrain():
+                    self.generator.tile_map.get_entity(monster.get_x(), monster.get_y()).apply_terrain_effects(monster)
 
         self.timer = self.timer % 100
 

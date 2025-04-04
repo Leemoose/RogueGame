@@ -1,5 +1,6 @@
+from item_implementation.weapons.hands import Unarmed
 class Body():
-    def __init__(self, parent):
+    def __init__(self, parent, min_damage=2, max_damage = 3):
         self.equipment_slots = {"body_armor_slot": [None],
                                 "helmet_slot": [None],
                                 "gloves_slot": [None],
@@ -10,6 +11,7 @@ class Body():
                                 "hand_slot": [None, None]
                                 }
         self.parent = parent
+        self.unarmed = Unarmed(self.parent, min_damage, max_damage)
 
 
     def can_equip(self, item):
@@ -129,7 +131,7 @@ class Body():
         for item in carried_items:
             if item is not None and item.has_trait("weapon"):
                 return item
-        return None
+        return self.unarmed
     
     def get_shield(self):
         carried_items = self.equipment_slots["hand_slot"]

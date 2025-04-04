@@ -62,7 +62,7 @@ def rank_ungroup(ai, loop):
 def rank_combat(ai, loop):
     ai.target = None
     player = loop.player
-    if ai.parent.get_distance(player.get_x(), player.get_y()) <= ai.parent.fighter.get_range():
+    if ai.parent.get_distance(player.get_x(), player.get_y()) <= ai.parent.fighter.get_range() and loop.generator.tile_map.get_visible(ai.parent.get_x(), ai.parent.get_y()):
         ai.target = player
         return ai.randomize_action("combat")
     else:
@@ -102,7 +102,7 @@ def rank_find_item(ai, loop):
         return ai.randomize_action("find_item")
     return -1
 
-def rank_nothing(ai, loop):
-    return ai.randomize_action("nothing")
+def rank_wait(ai, loop):
+    return ai.randomize_action("wait")
 
 

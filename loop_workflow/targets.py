@@ -3,10 +3,10 @@ class Target:
     def __init__(self, parent):
         self.parent = parent
 
-        self.target_coordinates = (0, 0)
-        self.target_current = None
+        self.target_coordinates = (parent.player.get_x(), parent.player.get_y())
+        self.target_current = parent.player
 
-        self.origin_range_coordinates = (0, 0)
+        self.origin_range_coordinates = (parent.player.get_x(), parent.player.get_y())
         self.range = None
 
         self.index_to_cast = None
@@ -30,8 +30,8 @@ class Target:
 
     def set_target(self, target):
         if target is None:
-            self.target_current = None
-            self.target_coordinates = (0, 0)
+            self.target_current = self.parent.player
+            self.target_coordinates = (self.parent.player.get_x(), self.parent.player.get_y())
         else:
             x, y = target
             if self.parent.generator.tile_map.in_map(x,y) and self.parent.generator.tile_map.get_visible(x,y):
@@ -86,6 +86,7 @@ class Target:
         self.caster = None
         self.temp_cast = False
         self.set_queued_action(None)
+        self.range = None
 
     def cast_on_target(self, loop):
         x, y = self.target_current
@@ -125,5 +126,6 @@ class Target:
                     self.void_skill()
             else:
                 loop.add_message("Not a valid target there")
+        self.range = None
 
 

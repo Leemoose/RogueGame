@@ -11,6 +11,7 @@ class Item(Objects):
         self.dropable = True
         self.consumeable = False
         self.equipped = False
+        self.indestructible = False
         self.destroy = False
         self.description = "Its a " + self.name + "."
         self.stackable = False
@@ -29,7 +30,11 @@ class Item(Objects):
         return description
 
     def set_destroy(self, destroy):
-        self.destroy = destroy
+        if not self.indestructible:
+            self.destroy = destroy
+
+    def get_can_be_destroyed(self):
+        return not self.indestructible
 
 
 

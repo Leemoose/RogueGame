@@ -15,9 +15,10 @@ def do_burning_hands(ai, loop):
 def rank_combat(ai, loop):
     ai.target = None
     player = loop.player
-    print("The distance is {}".format(ai.parent.get_distance(player.get_x(), player.get_y())))
-    print("The range is {}".format(ai.parent.fighter.get_range()))
-    if ai.parent.get_distance(player.get_x(), player.get_y()) <= ai.parent.fighter.get_range() and ai.parent.get_distance(player.get_x(), player.get_y()) > 1.5:
+    # print("The distance is {}".format(ai.parent.get_distance(player.get_x(), player.get_y())))
+    # print("The range is {}".format(ai.parent.fighter.get_range()))
+    if (ai.parent.get_distance(player.get_x(), player.get_y()) <= ai.parent.fighter.get_range() and
+            ai.parent.get_distance(player.get_x(), player.get_y()) > 1.5 and loop.generator.get_visible(ai.parent.get_x(), ai.parent.get_y())):
         ai.target = player
         return ai.randomize_action("combat")
     else:

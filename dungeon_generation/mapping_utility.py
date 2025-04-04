@@ -11,6 +11,11 @@ def place_spawn_monsters(dungeongenerator, monster_spawner):
         else:
             place_spawn_monster(dungeongenerator, monster)
 
+def place_spawn_interactables(dungeongenerator, interactable_spawner):
+    interactable_spawns = (interactable_spawner.spawn_interactables(dungeongenerator.get_depth(), dungeongenerator.get_branch()))
+    for interactable in interactable_spawns:
+        place_spawn_interactable(dungeongenerator, interactable)
+
 def place_spawn_monster(dungeongenerator, creature):
     # if dungeongenerator.spawn_params.check_monster_restrictions != None:
     #     def monster_restriction(location):
@@ -57,30 +62,10 @@ def place_spawn_statics(dungeongenerator):
             elif dungeongenerator.tile_map.get_entity(x,y).has_trait("item_spawn"): # this is used for static monster spawns
                 dungeongenerator.place_item_at_location(dungeongenerator.tile_map.get_entity(x,y).spawn_entity(), x, y)
 
-def place_spawn_interactables(dungeongenerator, interactable_spawner):
-    interactable_spawns = interactable_spawner.spawn_interactables(dungeongenerator.get_depth(), dungeongenerator.get_branch())
-    first = True
-    force_near_stairs = False
-    for interactable in interactable_spawns:
-        dungeongenerator.place_interactable(interactable)
-
 def place_spawn_interactable(dungeongenerator, interactable, force_near_stairs=False):
-    startx = random.randint(0, dungeongenerator.get_width() - 1)
-    starty = random.randint(0, dungeongenerator.get_height() - 1)
-    map = dungeongenerator.interact_map
-
-    # make sure the item is placed on a passable tile that is not stairs or in a corridor
-    check_on_stairs = dungeongenerator.get_is_on_stairs(startx, starty)
-    check_in_corridor = dungeongenerator.get_is_in_corridor(startx, starty)
-    while ((not dungeongenerator.tile_map.get_has_no_entity(startx, starty)) or
-               (not map.get_has_no_entity(startx, starty)) or
-               check_on_stairs or check_in_corridor):
-            startx = random.randint(0, dungeongenerator.get_width() - 1)
-            starty = random.randint(0, dungeongenerator.get_height() - 1)
-            check_on_stairs = dungeongenerator.on_stairs(startx, starty)
-            check_in_corridor = dungeongenerator.get_is_in_corridor(startx, starty)
-
-    dungeongenerator.place_interactable_at_location(interactable, startx, starty)
+    x, y = dungeongenerator.get_random_passable_location_not_in_hallway()
+    dungeongenerator.place_interactable_at_location(interactable, x, y)
+    print("Placed interactable at " + str(x) + ", " + str(y))
 
 def place_spawn_items(dungeongenerator, item_spawner ):
     itemSpawns = item_spawner.spawnItems(dungeongenerator.get_depth(), dungeongenerator.get_branch())

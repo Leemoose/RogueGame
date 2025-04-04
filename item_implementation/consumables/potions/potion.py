@@ -13,10 +13,9 @@ class Potion(Item):
         self.equipable = False
         self.can_be_levelled = False
         self.attached_skill_exists = False
-        self.description = "A potiorb that does something."
+        self.description = "A potior that does something."
         self.action_description = "Something flows through your body"
         self.rarity = "Common"
-        self.yendorb = False
         self.traits["potion"] = True
 
     def can_be_equipped(self, entity):
@@ -36,16 +35,7 @@ class Potion(Item):
             entity.inventory.remove_item(self)
 
 
-# class MightPotion(Potion):
-#     def __init__(self, render_tag=404):
-#         super().__init__(render_tag, "Might Potiorb")
-#         self.description = "A potiorb that makes you stronger for a few turns."
-#         self.rarity = "Rare"
-#         self.action_description = "Gain 5 strength temporarily."
-#
-#     def activate_once(self, entity):
-#         effect = Might(5, 5)
-#         entity.character.add_status_effect(effect)
+
 #
 # class DexterityPotion(Potion):
 #     def __init__(self, render_tag):

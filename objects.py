@@ -43,6 +43,9 @@ class Objects():
     def get_name(self):
         return self.name
 
+    def get_string_description(self):
+        return [self.name, self.description]
+
     def get_is_in_square(self, x_start, x_end, y_start, y_end):
         if self.get_x() >= x_start and self.get_x() < x_end and self.get_y()>= y_start and self.get_y() < y_end:
             return True
@@ -53,44 +56,7 @@ class Objects():
         self.x = x
         self.y = y
 
+    def set_render_tag(self, render_tag):
+        self.render_tag = render_tag
 
-class Tile(Objects):
-    def __init__(self, x, y, render_tag = 0, passable = False, blocks_vision = True, id_tag = 0, type = None, walkable = False):
-        super().__init__(x, y, id_tag, render_tag, "Tile")
-        self.passable = passable
-        self.blocks_vision = blocks_vision
-        self.walkable = walkable
 
-        self.seen = False
-        self.visible = False
-        self.on_fire = False
-        self.type = type
-
-        self.effect = []
-
-    def get_visible(self):
-        return self.visible
-
-    def set_seen(self, seen):
-        self.seen = seen
-
-    def get_seen(self):
-        return self.seen
-
-    def is_passable(self):
-        return self.passable
-
-    def is_blocking_vision(self):
-        return self.blocks_vision
-
-    def check_if_status_applies(self, entity):
-        return True
-
-    def get_status_effects(self):
-        return self.effect
-
-    def __str__(self):
-        if self.passable:
-            return(".")
-        else:
-            return("#")

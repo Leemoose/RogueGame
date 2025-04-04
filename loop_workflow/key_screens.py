@@ -21,7 +21,6 @@ def key_targeting_screen(loop, key):
         targets.adjust(1, 1)
     elif key == "esc":
         targets.void_skill()
-        loop.set_target(None)
         loop.player.inventory.ready_scroll = None
         loop.change_loop(LoopType.action)
     elif key == "return":
@@ -30,7 +29,6 @@ def key_targeting_screen(loop, key):
             targets.use_queued_action(loop)
         targets.void_skill()
         loop.change_loop(LoopType.action)
-        loop.set_target(None)
 
 def key_examine_screen(loop, key):
     loop.update_screen = True
@@ -53,7 +51,6 @@ def key_examine_screen(loop, key):
         targets.adjust(1, 1)
     elif key == "esc":
         targets.void_skill()
-        loop.set_target(None)
         loop.change_loop(LoopType.action)
     elif key == "return":
         loop.change_loop(LoopType.specific_examine)
@@ -165,15 +162,16 @@ def key_action(loop, key):
         if skill_num < len(player.mage.quick_cast_spells):
             if player.mage.quick_cast_spells[skill_num] == None:
                 return
-            if not player.mage.quick_cast_spells[skill_num].targetted:
-                if player.mage.quick_cast_spells[skill_num].castable(player):
-                    print("Casted a spell.")
-                    player.mage.cast_spell(skill_num, loop.player, loop, quick_cast=True)
-                else:
-                    loop.add_message("You can't cast " + player.mage.quick_cast_spells[skill_num].name + " right now.")
+            # if not player.mage.quick_cast_spells[skill_num].targetted:
+            #     if player.mage.quick_cast_spells[skill_num].castable(player):
+            #         print("Casted a spell.")
+            #         player.mage.cast_spell(skill_num, loop.player, loop, quick_cast=True)
+            #     else:
+            #         loop.add_message("You can't cast " + player.mage.quick_cast_spells[skill_num].name + " right now.")
             else:
-                loop.start_targetting(start_on_player=(not player.mage.quick_cast_spells[skill_num].targets_monster))
-                loop.targets.store_skill(skill_num, player.mage.quick_cast_spells[skill_num], player.character, quick_cast=True)
+                loop.targets.set_target_range(loop.player.get_location(), loop.player.fighter.get_range())
+                loop.targets.set_queued_action(loop.player.mage.known_spells[skill_num].activate)
+                loop.start_targetting()
 
 def key_inventory(loop, key):
     player = loop.player
