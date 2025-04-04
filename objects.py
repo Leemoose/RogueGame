@@ -43,7 +43,7 @@ class Objects():
     def get_name(self):
         return self.name
 
-    def get_string_description(self):
+    def get_render_text(self):
         return [self.name, self.description]
 
     def get_is_in_square(self, x_start, x_end, y_start, y_end):

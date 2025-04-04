@@ -20,7 +20,7 @@ class Display:
         self.textHeight = textHeight
         self.textSize = textSize
 
-        action_screen_width = self.screen_width * 3 // 4
+        action_screen_width = self.screen_width
         action_screen_height = self.screen_height * 5 // 6
         num_tiles_wide = action_screen_width // self.textSize
         num_tiles_height = action_screen_height // self.textSize
@@ -90,7 +90,7 @@ class Display:
         item_map = loop.generator.item_map
         player = loop.player
 
-        action_screen_width = self.screen_width * 4 // 5
+        action_screen_width = self.screen_width
         action_screen_height = self.screen_height * 5 // 6
         num_tiles_wide = action_screen_width // self.textSize
         num_tiles_height = action_screen_height // self.textSize
@@ -103,9 +103,9 @@ class Display:
         self.y_start = player.y - self.r_y
         self.y_end = player.y + self.r_y
 
-        mini_map_left_offset = action_screen_width
+        mini_map_left_offset = action_screen_width - 250
         mini_map_top_offset = action_screen_height - 100
-        mini_map_width = self.screen_width - action_screen_width
+        mini_map_width = 200
         mini_map_height = self.screen_height - mini_map_top_offset
 
        #Making all the tiles
@@ -214,7 +214,7 @@ class Display:
     def draw_single_entity(self, loop, entity):
         if entity.get_is_in_square(self.x_start, self.x_end, self.y_start, self.y_end):
             if loop.generator.tile_map.get_visible(entity.get_x(), entity.get_y()):
-                entity_tile = loop.tileDict.tile_string(entity.get_render_tag())
+                entity_tile = pygame.transform.scale(loop.tileDict.tile_string(entity.get_render_tag()), (self.textSize, self.textSize))
                 self.win.blit(entity_tile,self.get_pixel_location_from_entity_location(entity))
 
     #HORRIBLE HACK - THIS IS ALSO DEFINED IN UI.PY - KEEP THEM SYNCED!
@@ -292,59 +292,30 @@ class Display:
                                      examine_window_height), 1)
         if target is not None:
             x, y = target
-            if loop.generator.in_map(x, y) and floormap.get_entity(x,y).get_visible() and loop.player.get_distance(x, y) > 0.5:
-                # find monster at target
+            if loop.generator.in_map(x, y) and floormap.get_entity(x,y).get_visible():
                 if monster_map.get_has_entity(x,y):
-                    monster = monster_map.get_entity(x,y)
-                    # draw monster
-                    tag = pygame.transform.scale(tileDict.tile_string(monster.get_render_tag()), (entity_picture_size, entity_picture_size))
-                    self.win.blit(tag, (examine_offset_from_left + 10, examine_offset_from_top + examine_window_height // 2 - entity_picture_size // 2))
-
-                    for i, descriptor in enumerate(monster.get_render_text()):
-                        text = font.render(descriptor, True, (255, 255, 255))
-                        self.win.blit(text, (examine_offset_from_left + entity_picture_size + 10, examine_offset_from_top + 10 + i * 15))
-
+                    entity = monster_map.get_entity(x,y)
                 elif item_map.get_has_entity(x,y):
-                    # find item at target
-                    top_offset_item = 0
-                    for item in item_map.get_all_entities():
-                        count = 0
-                        if item.get_distance(x, y) == 0 and count < 6:
-                            # draw item
-                            tag = tileDict.tile_string(item.get_render_tag())
-                            self.win.blit(tag, (examine_offset_from_left, examine_offset_from_top + top_offset_item + 20))
-
-                            for descriptor in item.get_string_description():
-                                text = font.render(descriptor, True, (255, 255, 255))
-                                self.win.blit(text, (examine_offset_from_left, examine_offset_from_top + 50 + top_offset_item))
-                                top_offset_item += 15
-                            top_offset_item += 30
+                    entity = item_map.get_entity(x,y)
                 elif interact_map.get_has_entity(x,y):
-                    interact = interact_map.get_entity(x,y)
-                    tag = tileDict.tile_string(interact.get_render_tag())
-                    self.win.blit(tag, (examine_offset_from_left, examine_offset_from_top))
-                    for i, descriptor in enumerate(interact.get_string_description()):
-                        text = font.render(descriptor, True, (255, 255, 255))
-                        self.win.blit(text, (examine_offset_from_left, examine_offset_from_top + 50 + i * 15))
+                    entity = interact_map.get_entity(x,y)
                 else:
-                    tag = pygame.transform.scale(tileDict.tile_string(loop.player.get_render_tag()),
-                                                 (entity_picture_size, entity_picture_size))
-                    self.win.blit(tag, (examine_offset_from_left + 10,
-                                        examine_offset_from_top + examine_window_height // 2 - entity_picture_size // 2))
+                    entity = loop.player
+            else:
+                entity = loop.player
 
-                    # random flavor text since detailed player info is elsewhere
-                    for i, descriptor in enumerate(loop.player.get_render_text()):
-                        text = font.render(descriptor, True, (255, 255, 255))
-                        self.win.blit(text, (
-                        examine_offset_from_left + entity_picture_size + 10, examine_offset_from_top + 10 + i * 15))
-            else: # loop.player.get_distance(x, y) == 0:
-                tag = pygame.transform.scale(tileDict.tile_string(loop.player.get_render_tag()), (entity_picture_size, entity_picture_size))
-                self.win.blit(tag, (examine_offset_from_left + 10, examine_offset_from_top + examine_window_height // 2 - entity_picture_size // 2))
+            tag = pygame.transform.scale(tileDict.tile_string(entity.get_render_tag()),
+                                         (entity_picture_size, entity_picture_size))
+            self.win.blit(tag, (examine_offset_from_left + 10,
+                                examine_offset_from_top + examine_window_height // 2 - entity_picture_size // 2))
 
-                # random flavor text since detailed player info is elsewhere
-                for i, descriptor in enumerate(loop.player.get_render_text()):
-                    text = font.render(descriptor, True, (255, 255, 255))
-                    self.win.blit(text, (examine_offset_from_left + entity_picture_size + 10, examine_offset_from_top + 10 + i * 15))
+            num_lines = len(entity.get_render_text())
+            line_spacing = 15
+            description_offset_from_top = examine_offset_from_top + examine_window_height // 2 - num_lines * line_spacing // 2
+            for i, descriptor in enumerate(entity.get_render_text()):
+                text = font.render(descriptor, True, (255, 255, 255))
+                self.win.blit(text, (
+                    examine_offset_from_left + entity_picture_size + 10, description_offset_from_top + i * line_spacing))
             return True
         return False
 

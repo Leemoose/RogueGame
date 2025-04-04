@@ -52,6 +52,7 @@ class Player(Objects):
             self.inventory.get_item(MightPotion())
             # self.inventory.get_item(BlinkScrorb())
     def get_render_text(self):
+        statustext = [status1.get_name() for status1 in self.character.status.get_status_effects()]
         text = ["Name: " + self.get_name() + " (level " + str(self.get_level()) + ")",
                 "Health: " + str(self.get_attribute("health")) + " / " + str(self.get_attribute("max_health")),
                 "Mana: " + str(self.get_attribute("mana")) + " / " + str(self.get_attribute("max_mana")),
@@ -59,7 +60,7 @@ class Player(Objects):
                 "Endurance: " + str(self.get_attribute("endurance")) + "  Intelligence: " + str(self.get_attribute("intelligence")),
                 "Armor: " + str(self.get_attribute("armor")),
                 "Gold: " + str(self.get_attribute("gold")),
-                "Status: " + str(self.character.status.get_status_effects())]
+                "Status: " + str(statustext)]
         return text
 
     def change_attribute(self, attribute, change):

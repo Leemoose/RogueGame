@@ -1,4 +1,5 @@
-class StatusEffect():
+from objects import Objects
+class StatusEffect(Objects):
     def __init__(self, id_tag, name, message, duration, cumulative = False):
         self.id_tag = id_tag
         self.name = name
@@ -8,6 +9,7 @@ class StatusEffect():
         self.positive = False
         self.traits = {"status_effect": True}
         self.cumulative = cumulative
+        self.traits["status_effect"] = True
 
     def get_duration(self):
         return self.duration
@@ -29,12 +31,6 @@ class StatusEffect():
         self.duration -= 1
         if self.duration <= 0:
             self.active = False
-
-    def has_trait(self, trait):
-        if trait in self.traits:
-            return self.traits[trait]
-        else:
-            return False
 
     def remove(self, target):
         pass
